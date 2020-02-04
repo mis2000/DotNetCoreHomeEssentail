@@ -45,6 +45,7 @@ namespace MySqlBasicCore.Controllers
         public ActionResult Items(ItemViewModel model, string submit)
         {
             ItemUtility itemutility = new ItemUtility(_appSettings);
+            var test = "1";
             if (submit != "submit")
             {
                 if (String.IsNullOrEmpty(model.SearchItemnum))
