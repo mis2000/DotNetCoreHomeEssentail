@@ -44,7 +44,7 @@ namespace MySqlBasicCore.Controllers
         [HttpPost]
         public ActionResult Items(ItemViewModel model, string submit)
         {
-            var test = "2";
+           
             ItemUtility itemutility = new ItemUtility(_appSettings);
             if (submit != "submit")
             {
