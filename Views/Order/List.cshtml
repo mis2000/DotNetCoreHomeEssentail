@@ -1,0 +1,89 @@
+﻿@model MySqlBasicCore.Models.Order_MasterViewModel
+@{
+    ViewBag.Title = "Order List";
+}
+@using Microsoft.Extensions.Options;
+@inject IOptions<Appsettings> Settings
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h3>Order List</h3>
+                </div>
+
+                <div class="ibox-content">
+
+                    <form role="form">
+                        <div class="form-group row">
+                            <div class="col-lg-1 col-form-label">OrderNum </div>
+                            <div class="col-lg-2">
+                                @Html.TextBoxFor(m => m.ordernum, new { @class = "form-control", placeholder = "Enter ordernum", @maxlength = "50" })
+                            </div>
+                            <div class="col-lg-2 col-form-label">Custnum/Name</div>
+                            <div class="col-lg-2">
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Enter custno or name", @maxlength = "50", @style = "margin-left:-40%" })
+                            </div>
+                            <div class="col-lg-2 col-form-label" style="margin-left:-4%">Ship Date</div>
+                            <div class="col-lg-2">
+                                @Html.TextBoxFor(m => m.Shipdate, new { @class = "form-control", placeholder = "Enter ship date", @style = "margin-left:-55%" })
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <jquery-datatables id="fingers10"
+                                       class="table table-sm table-striped table-bordered table-hover"
+                                       model="@Model"
+                                       enable-searching="false"
+                                       search-row-th-class="p-0"
+                                       search-input-class="form-control form-control-sm"
+                                       search-input-style="width:100%"
+                                       thead-class="text-center">
+                    </jquery-datatables>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section Styles {
+
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap-datepicker/dist/css/datepicker3.css" />
+    </environment>
+    <style>
+        .label-warning {
+            background-color: orange !important;
+        }
+    </style>
+}
+
+
+
+@section scripts
+{
+    <script src="~/lib/momentjs/moment.min.js" asp-append-version="true"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js" asp-append-version="true"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    <script src="~/js/order.js" asp-append-version="true"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            window.baseUrl = '@Settings.Value.WebBaseURL';
+
+            $('#Shipdate').datepicker({
+                weekStart: 1,
+                daysOfWeekHighlighted: "6,0",
+                autoclose: true,
+                todayHighlight: true,
+            });
+            $("#Shipdate").val('');
+
+        });
+    </script>
+
+}

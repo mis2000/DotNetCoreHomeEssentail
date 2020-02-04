@@ -1,0 +1,302 @@
+-------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------5-November-2019-------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+
+create database Sample;
+use Sample;
+
+
+create table bol_1 (
+bol1_no int primary key auto_increment,
+bol1_date datetime ,
+bol1_custnum int ,
+bol1_name varchar(250),
+bol1_adrs1 varchar(500),
+bol1_city varchar(100),
+bol1_state varchar(100),
+bol1_zip varchar(5),
+bol1_Lctn varchar(100),
+bol1_pro_no int,
+bol1_scac varchar(100),
+bol1_frght_terms varchar(100),
+bol1_ttl_pkgs int,
+bol1_ttl_weight  numeric ,
+bol1_HE_WH varchar(100)
+);
+ 
+ 
+ 
+Create table bol_2 (
+bol2_order_no int ,
+bol2_pkgs int, 
+bol2_weight numeric
+);
+
+create table users(
+UserId int primary key auto_increment,
+Username varchar(150),
+Password varchar(150)
+);
+ 
+
+insert into bol_1 (bol1_date, bol1_custnum, bol1_name, bol1_adrs1, bol1_city, bol1_state, bol1_zip,bol1_Lctn,
+bol1_pro_no,bol1_scac,bol1_frght_terms,bol1_ttl_pkgs,bol1_ttl_weight ,bol1_HE_WH) values 
+(now(),1,'John Deo 1','Nulla St 1','Mankato 1','Mississippi',20620,'Test location',1,'','',1,1,1) ;
+
+insert into bol_1 (bol1_date, bol1_custnum, bol1_name, bol1_adrs1, bol1_city, bol1_state, bol1_zip,bol1_Lctn,
+bol1_pro_no,bol1_scac,bol1_frght_terms,bol1_ttl_pkgs,bol1_ttl_weight ,bol1_HE_WH) values 
+(now(),2,'John Deo 2','Nulla St 2','Mankato 2','Mississippi',20620,'Test location',1,'','',1,1,1) ;
+
+insert into bol_1 (bol1_date, bol1_custnum, bol1_name, bol1_adrs1, bol1_city, bol1_state, bol1_zip,bol1_Lctn,
+bol1_pro_no,bol1_scac,bol1_frght_terms,bol1_ttl_pkgs,bol1_ttl_weight ,bol1_HE_WH) values 
+(now(),3,'John Deo 3','Nulla St 3','Mankato 3','Mississippi',20620,'Test location',1,'','',1,1,1) ;
+
+insert into bol_1 (bol1_date, bol1_custnum, bol1_name, bol1_adrs1, bol1_city, bol1_state, bol1_zip,bol1_Lctn,
+bol1_pro_no,bol1_scac,bol1_frght_terms,bol1_ttl_pkgs,bol1_ttl_weight ,bol1_HE_WH) values 
+(now(),4,'John Deo 4','Nulla St 4','Mankato 4','Mississippi',20620,'Test location',1,'','',1,1,1) ;
+
+
+insert into bol_2 (bol2_order_no, bol2_pkgs,bol2_weight) values (1,1,1);
+insert into bol_2 (bol2_order_no, bol2_pkgs,bol2_weight) values (2,1,1);
+insert into bol_2 (bol2_order_no, bol2_pkgs,bol2_weight) values (3,1,1);
+insert into bol_2 (bol2_order_no, bol2_pkgs,bol2_weight) values (4,1,1);
+
+insert into users (username, password) values ('Admin','Password123');
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------8-November-2019-------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+
+
+
+create table Items(
+Category varchar(3),
+Itemnum varchar(20) NOT NULL,
+Description varchar(30),
+Class varchar(3),
+Landedcost decimal(8,3),
+Cost decimal(8,3),
+Min1 int(11),
+Price1 decimal(8,3),
+Min2 int(11),
+Price2 decimal(8,3),
+Min3 int(11),
+Price3 decimal(8,3),
+Onhand int(7),
+Commited int(6),
+Onorder int(6),
+Onwater int(6),
+Ytdsold int(6),
+Ytdsales decimal(9,2),
+Lysold int(6),
+Lysales decimal(9,2),
+Upc char(12),
+Size char(5),
+Selectioncode char(3),
+Selectiondesc varchar(13),
+PatternCode varchar(5),
+PatternDesc varchar(30),
+UsageCode varchar(5),
+UsageDesc varchar(30),
+Vendor varchar(6),
+Vendorcode varchar(9),
+Pforeign decimal(8,3),
+Weight decimal(6,2),
+Defectivecount int(3),
+Costprev decimal(8,3),
+Listprev decimal(8,3),
+Pack int(4),
+Casepack int(4),
+Innerpack int(2),
+X decimal(4,2),
+Y decimal(4,2),
+Z decimal(4,2),
+CF decimal(5,2),
+Xi decimal(4,2),
+Yi decimal(4,2),
+Zi decimal(4,2),
+C1 int(5),
+Ship1 date,
+Eta1 date,
+C2 int(5),
+Ship2 date ,
+Eta2 date,
+C3 int(5),
+Ship3 date ,
+Eta3 date,
+Origin varchar(10),
+Deptnum varchar(11),
+Deptname varchar(25),
+Buyer char(2),
+Volume decimal(5,2),
+Available bigint(12),
+Createdon date NOT NULL,
+Deleted int(1) NOT NULL,
+Proposal varchar(7),
+ItemLength decimal(4,2),
+ItemWidth decimal(4,2),
+ItemHeight decimal(4,2),
+MaterialCode varchar(5),
+MaterialDesc varchar(30),
+GeneralCode varchar(5),
+GeneralDesc varchar(30)
+)
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------15 NOV 2019------------------------------------------------------------
+
+
+Create table Order_Master(
+Custnum varchar(8) NOT NULL,
+ordernum char(9) NOT NULL,
+Orderdate date  NOT NULL,
+Credit varchar(1) NOT NULL,
+Freight decimal(9,2) NOT NULL,
+Slnum char(2) NOT NULL,
+Slnum2 char(2) NOT NULL,
+D0 char(2) NOT NULL,
+Name varchar(30) NOT NULL,
+Address1 varchar(25) NOT NULL,
+Address2 varchar(25) NOT NULL,
+Address3 varchar(25) NOT NULL,
+Shipname varchar(30) NOT NULL,
+Shipaddress1 varchar(25) NOT NULL,
+Shipaddress2 varchar(25) NOT NULL,
+Shipaddress3 varchar(25) NOT NULL,
+Terms char(1)  NOT NULL,
+Via varchar(2)  NOT NULL,
+Backorder varchar(1) NOT NULL,
+Tax varchar(5) NOT NULL,
+Ponum varchar(10) NOT NULL,
+Shippeddate date NULL,
+Shipdate date  NOT NULL,
+Canceldate date NULL,
+Edidate date  NOT NULL,
+Terminal char(2) NOT NULL,
+Custnote varchar(25) NOT NULL,
+clerk char(2) NOT NULL,
+Poammount decimal(9,2) NOT NULL,
+Commission decimal(5,2) NOT NULL,
+Status varchar(1) NOT NULL,
+D1 char(1) NOT NULL,
+D2 varchar(1) NOT NULL,
+Creditmemo varchar(2) NOT NULL,
+Storenum varchar(6) NOT NULL,
+Dept varchar(6) NOT NULL,
+Ordertype char(1)  NOT NULL,
+WeborderId varchar(10) NULL,
+IsOpenOrder tinyint(1) NOT NULL
+);
+
+
+Create table Order_Detail (
+Ordernum char(9) NOT NULL,
+Itemnum varchar(10) NOT NULL,
+Qtyordered int(11) NOT NULL,
+Qtyinvoiced int(11) NOT NULL,
+Saleprice float(7,2) NOT NULL,
+Listprice float(7,2) NOT NULL,
+Commission float(4,2) NOT NULL
+)
+
+
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------19 NOV 2019--------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------
+
+Create table itemclass (
+Class varchar(5),
+`Desc`  varchar(40) ,
+Dept varchar(25) ,
+Market varchar(25),
+Deptnum int(11) ,
+Buyer char(2)
+);
+
+-----------------------------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------17 DEC 2019--------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------
+
+Create TABLE `DeptProjection`
+(
+  `DeptName` varchar(20) NOT NULL,
+  `mm` int(11) NOT NULL,
+  `Projection` decimal(8,2) DEFAULT NULL,
+  PRIMARY KEY (`DeptName`,`mm`)
+)
+
+--------------------------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------19 DEC 2019--------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------
+
+create table invoice(
+custNum	varchar(8),
+invoiceNum	char(9),
+releaseDate	date,
+freight	decimal(6,2),
+salesManNum	char(2),
+salesManNum2	char(2),
+billName	varchar(30),
+billAddress1	varchar(25),
+billAddress2	varchar(25),
+billAddress3	varchar(25),
+shipName	varchar(30),
+shipAddress1	varchar(25),
+shipAddress2	varchar(25),
+shipAddress3	varchar(25),
+termId	char(1),
+carrierCode	varchar(2),
+d2	varchar(5),
+poNum	varchar(10),
+orderDate	date,
+shipDate	date,
+cancelDate	date,
+enterDate	date,
+terminal	char(2),
+custNote	varchar(25),
+clerk	char(2),
+netTotal	decimal(8,2),
+commision	decimal(4,2),
+d4	char(1),
+d6	varchar(2),
+storeNum	varchar(6),
+dept	varchar(6),
+orderType	char(1),
+bolNum	varchar(7),
+bolDate	date,
+tracking1	varchar(18),
+tracking2	varchar(18),
+orderNum	char(9),
+invoiceDate	date,
+isCreditMemo	tinyint(1),
+isCreditHold	tinyint(1),
+isFreightCollect	tinyint(1)
+);
+
+create table invoieclines(
+invoicenum	char(9),
+itemnum	varchar(10),
+qtyordered	int(11),
+qtyshipped	int(11),
+saleprice	decimal(7,2),
+listprice	decimal(7,2),
+listlanded	decimal(7,2),
+commission	decimal(4,2),
+discount	decimal(6,5)
+);
+
+--------------------------------------------------------------------------------------------------------------------------
+

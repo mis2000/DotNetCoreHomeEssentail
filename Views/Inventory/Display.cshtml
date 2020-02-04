@@ -1,0 +1,592 @@
+﻿@model MySqlBasicCore.Models.ItemViewModel
+@{
+    ViewBag.Title = "Inventory display";
+    List<SelectListItem> operationList = new List<SelectListItem>();
+    operationList.Add(new SelectListItem { Text = "Contains", Value = "Contains" });
+    operationList.Add(new SelectListItem { Text = "Starts with", Value = "Starts with" });
+}
+@using Microsoft.Extensions.Options;
+@inject IOptions<Appsettings> Settings
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+
+                <div class="ibox-content">
+                    <form role="form" method="post" action="@Settings.Value.WebBaseURL/Inventory/Display">
+                        @Html.HiddenFor(h => h.SearchItemnum)
+                        @Html.HiddenFor(h => h.SearchDescription)
+                        @Html.HiddenFor(h => h.Itemnum)
+                        <div id="encodeSearchItemnumDescription" style="display:none">
+                            @Html.Raw(@Model.SearchItemnum + "-" + @Model.SearchDescription)
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-3 col-form-label">Item Number/Description </div>
+                            <div class="col-lg-5" style="margin-left:-6%">
+                                @Html.TextBoxFor(m => m.SearchItemnumDescription, new { @class = "form-control", placeholder = "Enter item number or description to search", @maxlength = "500", })
+                                <span class="form-text m-b-none text-navy" style="margin-top:0.12rem"> *Note : Press PageUp for Next and PageDn for Previous Record</span>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="input-group m-b">
+                                    @Html.DropDownListFor(model => model.OperationType, new SelectList(operationList.Select(x => new { Value = x.Value, Text = x.Text }), "Value", "Text"), "Search", new { @class = "form-control" })
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-addon"><i class="fa fa-filter"></i></span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-2">
+                                <button class="btn btn-primary" style="display:none" id="btnSearch" name="submit" value="submit" type="submit" onclick="return validateForm();">Search</button>
+                                <button class="btn btn-primary btn-sm" value="down" name="submit" id="btnDown" type="submit">Previous</button>
+                                <button class="btn btn-primary btn-sm" value="up" name="submit" id="btnUp" type="submit">Next</button>
+                            </div>
+
+                        </div>
+                    </form>
+
+                    @if (ViewBag.NoRecord == true)
+                    {
+                        <div class="card noItem">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12 text-error">No item found ! </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="card noItem" id="cardValidateError">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12 text-error">Please enter item number or description to search item !</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (ViewBag.ItemDetail != null)
+                    {
+                        <div class="ibox-content" id="displayBody">
+
+                            <div>
+                                <div class="row" style="margin-bottom:0px;">
+                                    <div class="col-lg-12 text-center">
+                                        <b>INVENTORY DISPLAY</b>
+                                        <a href="#" class="btn btn-primary btn-sm"
+                                           style="display:none;padding-top: 0.10rem;padding-bottom: 0.10rem;font-size: small;float:right">
+                                            Back to search
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label>1. ITEM NO.</label>
+                                    </div>
+
+                                    <div class="col-lg-6  text-center">
+                                        <span class=" text-primary">------------------------------QUANTITIES------------------------------</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>VENDOR-ID </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Vendorcode</span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>15. BULK CODE </label>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <label>QTY </label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>PRODUCT LINE </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left"> </span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>16. QTY ON-HAND </label>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <span class=" text-primary text-left"> </span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <label>WH </label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left"> </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>ITEM-ID </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Itemnum</span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>17. QTY COMMITTED </label>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Commited</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <label>HFC </label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left">HFC</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 ">
+                                        <label>2. DESC </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Description    </span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>18. QTY ON-ORDER </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Onorder</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 ">
+                                        <label>3. VENDOR ITEM NO. </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Itemnum</span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>19. DPT </label>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Deptnum</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <label>GRP </label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 ">
+                                        <label>4. PRODUCT CATEGORY </label>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Category</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <label>CLASS  </label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Class</span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>20. SELEC. CODE </label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Qrsselcode</span>
+                                    </div>
+                                    <div class="col-lg-3  text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Qrsseldesc</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 ">
+                                        <label>VENDOR NAME </label>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Vendor</span>
+                                    </div>
+                                    <div class="col-lg-1" style="width:10.33%">
+                                        <label>VENDORCODE  </label>
+                                    </div>
+                                    <div class="col-lg-1 text-left" style="width:6.33%">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Vendorcode</span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>21. GENERAL</label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.GeneralCode</span>
+                                    </div>
+                                    <div class="col-lg-3  text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.GeneralDesc</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4 ">
+                                        <label>5. INDV/SET </label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>CLR</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>22. MATERIAL</label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.MaterialCode</span>
+                                    </div>
+                                    <div class="col-lg-3  text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.MaterialDesc</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 ">
+                                        <label style="padding-left:3.6%">BOX STYLE </label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>23. USAGE</label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.UsageCode</span>
+                                    </div>
+                                    <div class="col-lg-3  text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.UsageDesc</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>6. LIST/NET PRICE </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>24. PATTERN </label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.PatternCode</span>
+                                    </div>
+                                    <div class="col-lg-3  text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.PatternDesc</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>7. COST DISCNT/MULTI </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Cost</span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>26 . WEIGHT </label>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Weight</span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>CAPACITY</label>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>8. PRICE1 (A) </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Price1</span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label style="font-size: 11.6px;">26. COUNTRY OF ORIGIN </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Origin</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>9. PRICE2 (B) </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Price2 </span>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label>27. </label><label>VOLUME DISCOUNT BREAK</label>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Volume</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>10. PRICE3 (C) </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Price3</span>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label>28. SOLD IN MULTIPLES OF </label>
+                                    </div>
+                                    <div class="col-lg-3 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>11. PRICE4 (D) </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>29. DEFECTIVE COUNT  </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Defectivecount</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>10. PRICE5 (E) </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>30. COST-PREVIOUS </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Costprev</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>13. COST-CURRENT </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Cost</span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>31. LIST-PREVIOUS </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left">@ViewBag.ItemDetail.Listprev</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>14. COST AVERAGE </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>32. CUBIC FT </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 innerlbl">
+                                        <label>LANDING</label>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                    <div class="col-lg-1 innerlbl">
+                                        <label>FOREIGN</label>
+                                    </div>
+                                    <div class="col-lg-1 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>33. QTY PER CASE </label>
+                                    </div>
+                                    <div class="col-lg-4 text-left">
+                                        <span class=" text-primary text-left"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section styles
+{
+    <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+    <link href="~/css/jquery-ui.min.css" rel="stylesheet" />
+    <style>
+        #displayBody .row {
+            height: 22px;
+        }
+
+        #displayBody {
+            font-size: 12px !important;
+            font-weight: bold;
+        }
+
+        label {
+            color: #212529;
+        }
+
+        .innerlbl {
+            padding-left: 3%
+        }
+
+        .lbl {
+            width: 10%;
+            padding-top: 0.5%;
+        }
+
+        .panel-heading {
+            background-color: #f8f8f8;
+            border-color: #e7e7e7;
+        }
+
+        .panel {
+            border-color: #e7e7e7;
+        }
+
+
+        .label-primary {
+            font-size: inherit;
+        }
+
+        #tabPanle {
+        }
+
+        .nav-tabs {
+            border-bottom: none
+        }
+
+            .nav-tabs > li.active > a {
+                border-radius: 0px;
+                font-weight: bold;
+                border-radius: 0px;
+            }
+
+        .noItem {
+            border-color: red;
+            margin-top: 3%;
+            margin-bottom: 3%
+        }
+
+        .ui-widget {
+            font-family: Arial,Helvetica,sans-serif;
+            font-size: 0.75em;
+            background-color: white;
+            width: 27.5% !important;
+            box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        }
+
+        .ui-menu-item {
+            padding: 2px 2px;
+            font-size: .675rem;
+        }
+    </style>
+}
+@section scripts
+{
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+    <script type="text/javascript">
+          $(document).ready(function () {
+         $('#OperationType').children('option')[0].remove()
+
+           var checkItem = '@Model.SearchItemnum';
+            if (checkItem) {
+                $("#SearchItemnumDescription").val('@Model.SearchItemnum - @Model.SearchDescription');
+                $("#SearchItemnum").val('@Model.SearchItemnum');
+                $("#SearchDescription").val('@Model.SearchDescription');
+               }
+
+                var noItem = '@ViewBag.NoRecord';
+
+              $("#SearchItemnumDescription").val($("#encodeSearchItemnumDescription").text().trim())
+
+              var noItem = '@ViewBag.NoRecord';
+               var PageLoad = '@ViewBag.PageLoad';
+              if (noItem == 'True'  || PageLoad=='True') {
+                   $("#SearchItemnumDescription").val('');
+            }
+
+            $("#cardValidateError").hide();
+            $(".topNavBar li").removeClass("active");
+            $("#liInventory").addClass("active");
+            $(document).keydown(function (event) {
+
+                if (event.keyCode == 38 || event.keyCode == 33) {
+                    $("#btnUp").trigger("click");
+                }
+                if (event.keyCode == 40 || event.keyCode == 34) {
+                    $("#btnDown").trigger("click");
+                }
+            });
+
+        });
+        function validateForm() {
+            $("#cardValidateError").hide();
+            var checkCount = 0;
+            if ($("#SearchItemnumDescription").val()) {
+                checkCount++;
+            }
+
+            if (checkCount > 0) {
+                return true;
+            }
+            else {
+                $("#cardValidateError").show();
+                return false;
+            }
+        }
+        $("#SearchItemnumDescription").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Inventory/GetItemDetail",
+                    type: "POST",
+                    dataType: "json",
+                   data: { SearchItemnum: request.term, OperationType:$('#OperationType').val() },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.Itemnum + " - " + item.Description, value: item.Itemnum + " - " + item.Description };
+                        }))
+
+                    }
+                })
+            },
+            messages: {
+                noResults: "", results: ""
+            },
+            select: function (event, ui) {
+                try {
+                    var itemValues = ui.item.value.split(" - ");
+                    $("#SearchItemnum").val(itemValues[0].trim());
+                    $("#SearchDescription").val(itemValues[1].trim());
+                    $("#SearchItemnumDescription").val(ui.item.value);
+                    $("#btnSearch").trigger('click');
+
+                } catch (e) {
+
+                }
+
+            }
+
+        });
+    </script>
+}

@@ -1,0 +1,74 @@
+﻿@using Microsoft.AspNetCore.Http
+@using  Newtonsoft.Json;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    String Username = Convert.ToString(@HttpContextAccessor.HttpContext.Session.GetString("Username"));
+    List<MenuViewModel> UserMenus = JsonConvert.DeserializeObject<List<MenuViewModel>>(@HttpContextAccessor.HttpContext.Session.GetString("UserMenus"));
+    List<String> ParentMenus = UserMenus.Select(s => s.Parent).Distinct().ToList();
+
+}
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <img alt="image" class="img-thumbnail"
+                         style="width:150px;"
+                         src="~/Images/logo.svg" />
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs" style="position: absolute; top: 91px; left: 0px; will-change: top, left;">
+                        <li><a class="dropdown-item" href="@Url.Action("Login", "Account")">Logout</a></li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    HE
+                </div>
+            </li>
+
+            @foreach (var parent in ParentMenus)
+            {
+                var menus = UserMenus.Where(w => w.Parent == parent).ToList();
+                <li class="@Html.IsSelected(controller: parent)">
+                    @if (menus.Count() == 1)
+                    {
+                        if (parent == menus[0].Name)
+
+                        {
+                            <a href="@Url.Action(menus[0].Action, menus[0].Controller)">
+                                <i class="@menus[0].Parenticon"></i> <span class="nav-label" data-i18n="nav.layouts">
+                                    @menus[0].Name
+                                </span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#"><i class="@menus[0].Parenticon"></i> <span class="nav-label" data-i18n="nav.dashboard">@parent</span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level collapse @Html.IsSelected(controller: parent, cssClass: "in")">
+                                @foreach (var menu in menus)
+                                {
+                                    var selectedChildMenus = menu.Childmenus.Split(",");
+                                    <li class=" @foreach(var childMenu in selectedChildMenus) { @Html.IsSelected(action: childMenu) } "><a href="@Url.Action(menu.Action, menu.Controller)">@menu.Name</a></li>
+                                }
+                            </ul>
+
+                        }
+
+                    }
+                    else
+                    {
+                        <a href="#"><i class="@menus[0].Parenticon"></i> <span class="nav-label" data-i18n="nav.dashboard">@parent</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse @Html.IsSelected(controller: menus[0].Controller, cssClass: "in")">
+                            @foreach (var menu in menus)
+                            {
+                                var selectedChildMenus = menu.Childmenus.Split(",");
+                                <li class=" @foreach(var childMenu in selectedChildMenus) {@Html.IsSelected(action: childMenu) } "><a href="@Url.Action(menu.Action, menu.Controller)">@menu.Name</a></li>
+                            }
+                        </ul>
+                    }
+
+                </li>
+            }
+
+            
+        </ul>
+    </div>
+</nav>

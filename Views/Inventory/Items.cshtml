@@ -1,0 +1,910 @@
+﻿@model MySqlBasicCore.Models.ItemViewModel
+@{
+    ViewBag.Title = "Item detail";
+    List<SelectListItem> operationList = new List<SelectListItem>();
+    operationList.Add(new SelectListItem { Text = "Contains", Value = "Contains" });
+    operationList.Add(new SelectListItem { Text = "Starts with", Value = "Starts with" });
+}
+@using Microsoft.Extensions.Options;
+@inject IOptions<Appsettings> Settings
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+
+                <div class="ibox-content">
+                    <form role="form" method="post" action="@Settings.Value.WebBaseURL/Inventory/Items">
+                        @Html.HiddenFor(h => h.SearchItemnum)
+                        @Html.HiddenFor(h => h.SearchDescription)
+                        @Html.HiddenFor(h => h.Itemnum)
+                        <div id="encodeSearchItemnumDescription" style="display:none">
+                            @Html.Raw(@Model.SearchItemnum + "-" + @Model.SearchDescription)
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-3 col-form-label">Item Number/Description </div>
+                            <div class="col-lg-5" style="margin-left:-6%">
+                                @Html.TextBoxFor(m => m.SearchItemnumDescription, new { @class = "form-control", placeholder = "Enter item number or description to search", @maxlength = "500", })
+                                <span class="form-text m-b-none text-navy" style="margin-top:0.12rem"> *Note : Press PageUp for Next and PageDn for Previous Record</span>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="input-group m-b">
+                                    @Html.DropDownListFor(model => model.OperationType, new SelectList(operationList.Select(x => new { Value = x.Value, Text = x.Text }), "Value", "Text"), "Search", new { @class = "form-control" })
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-addon"><i class="fa fa-filter"></i></span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-2">
+                                <button class="btn btn-primary" style="display:none" id="btnSearch" name="submit" value="submit" type="submit" onclick="return validateForm();">Search</button>
+                                <button class="btn btn-primary btn-sm" value="down" name="submit" id="btnDown" type="submit">Previous</button>
+                                <button class="btn btn-primary btn-sm" value="up" name="submit" id="btnUp" type="submit">Next</button>
+                            </div>
+
+                        </div>
+                    </form>
+                    @if (ViewBag.NoRecord == true)
+                    {
+                        <div class="card noItem">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12 text-error">No item found ! </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="card noItem" id="cardValidateError">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12 text-error">Please enter item number or description to search item !</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (ViewBag.ItemDetail != null)
+                    {
+                        <div id="tabPanle" class="tabs-container" style="margin-top:1%">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="itemSummaryTab" href="#itemSummary" data-toggle="tab">Item Summary</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" id="itemInventoryTab" href="#itemInventory" data-toggle="tab">Inventory Price Lookup</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" id="itemDisplayTab" href="#itemDisplay" data-toggle="tab">Item Display</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content clearfix">
+                            <div class="tab-pane active" id="itemSummary">
+                                <div class="ibox-content">
+
+                                    <div class="cardIem">
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>ITEM NUMBER</label>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Itemnum</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>NAME</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Class</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>DESCRIPTION</label>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Description</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>PRODUCT MATERIAL</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.MaterialDesc</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>PACKAGING</label>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Pack</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>CATEGORY</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Category</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="itemInventory">
+                                <div class="ibox-content">
+
+                                    <div class="cardIem">
+                                        @*<div class="col-lg-7 text-right">
+                                                <b> INVENTORY PRICE LOOKUP</b>
+                                            </div>*@
+                                        <div class="row">
+                                            <div class="col-lg-2 col-lg-offset-1">
+                                                <label>ORIGIN:</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Origin</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 col-lg-offset-8">
+                                                <label>INNER PACK:</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Innerpack</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>ITEM #</label>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Itemnum</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>CASE PACK:</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Casepack</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>DESCRIPTION:</label>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Description</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>WEIGHT:</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Weight</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>CLASS:</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Class</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>UPC CODE:</label>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Upc</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>CATG:</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Category</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>PALET</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">Palet</span>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-top:2%">
+                                            <div class="col-lg-2">
+                                                <label>PRICE A</label>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Price1</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>ON ORDER:</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Onorder</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>ON WATER:</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Onwater</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>PRICE B</label>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Price2</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>PRICE C</label>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Price3</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                            </div>
+                                            <div class="col-lg-1">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">DIMENSIONS:</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 innerlbl">
+                                                <label>MASTER</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Casepack</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.CaseLength</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.CaseWidth</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 innerlbl">
+                                                <label>SINGLE</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.BoxLength</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.BoxWidth</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.BoxHeight</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 innerlbl">
+                                                <label>ITEM</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.ItemLength</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.ItemWidth</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.ItemHeight</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 innerlbl">
+                                                <label>CONT</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@(((ViewBag.ItemDetail.Casepack ?? 0) * (ViewBag.ItemDetail.BoxLength ?? 0) * (ViewBag.ItemDetail.ItemLength ?? 0)) / 1728)</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@(((ViewBag.ItemDetail.CaseLength ?? 0) * (ViewBag.ItemDetail.BoxWidth ?? 0) * (ViewBag.ItemDetail.ItemWidth ?? 0)) / 1728)</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@(((ViewBag.ItemDetail.CaseWidth ?? 0) * (ViewBag.ItemDetail.BoxHeight ?? 0) * (ViewBag.ItemDetail.ItemHeight ?? 0)) / 1728)</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>IN STOCK:</label>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Onhand</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>POE ORDER:</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary"> 1</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>POE WATER:</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">11</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>COMMITTED:</label>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Commited</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>AVAILABLE:</label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <span class=" text-primary">@(ViewBag.ItemDetail.Onhand - ViewBag.ItemDetail.Commited)</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>HFC:</label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <span class=" text-primary">1</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>PROPOSALS:</label>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Proposal</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>REG. WHSE:</label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <span class=" text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>OTHR WHSE:</label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <span class=" text-primary">1</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <label>LOC:</label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <span class=" text-primary">1) 1</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <span class=" text-primary">2) 12212</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <span class=" text-primary">3) 12212</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="itemDisplay">
+                                <div class="ibox-content">
+
+                                    <div class="cardIem">
+                                        <div class="row">
+                                            <div class="col-lg-6 text-right">
+                                                <b style="display:none">  ITEM DISPLAY</b>
+                                            </div>
+                                            <div class="col-lg-2 col-lg-offset-2">
+                                                <label>Price A</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Price1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Price1</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1">
+                                                <label>ITEM</label>
+                                            </div>
+                                            <div class="col-lg-1 text-left">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Itemnum</span>
+                                            </div>
+                                            <div class="col-lg-2 col-lg-offset-6">
+                                                <label>Price B</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Price2</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Price2</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <span class="text-primary">Item Detail</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label>Price C</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Price3</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Price3</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 col-lg-offset-8">
+                                                <label>Op Price</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Price1</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1">
+                                                <label>COST</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Cost</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>YTD</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Ytdsales</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>D1</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary"> D1</span>
+                                            </div>
+                                            <div class="col-lg-2 col-lg-offset-2">
+                                                <label>Map Price</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">Map Price</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1">
+                                                <label>LAND</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Landedcost</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>LYR</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Lysales</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>D1</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">D1</span>
+                                            </div>
+                                            <div class="col-lg-2 col-lg-offset-2">
+                                                <label>Average YTD Price</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">1</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1">
+                                                <label>OHAND</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Onhand</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>COMTD</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">Comtd</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>VARS</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">Vars</span>
+                                            </div>
+                                            <div class="col-lg-2 col-lg-offset-2">
+                                                <label>Average LYR Price</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">LYr</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1">
+                                                <label>ONORDER</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Onorder</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>HFC</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">Hfc</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>PROPOS</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">Propos</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>CATG</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Category</span>
+                                            </div>
+                                            <div class="col-lg-2 ">
+                                                <label>Average 2YR Price</label>
+                                            </div>
+                                            <div class="col-lg-2 text-right">
+                                                <span class=" text-primary">2YR</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1">
+                                                <label>VENDOR</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Vendor</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>CODE</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Vendorcode</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>CASE</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Casepack</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <label>WT</label>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Weight</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">  <label>DIMENSIONS:</label></div>
+                                            <div class="col-lg-1">  <label>TARRIF</label></div>
+                                            <div class="col-lg-1 text-right col-lg-offset-3">  <label>RATE</label></div>
+                                            <div class="col-lg-1 text-right">  <label>FIXED</label></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 innerlbl">
+                                                <label>MASTER</label>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <span class=" text-primary">12212</span>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <span class=" text-primary">Tarrif</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right col-lg-offset-3">  <span class="text-primary">RATE</span></div>
+                                            <div class="col-lg-1 text-right">  <span class="text-primary">FIXED</span></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 innerlbl">
+                                                <label>SINGLE</label>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <span class=" text-primary">12212</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 innerlbl">
+                                                <label>ITEM</label>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <span class=" text-primary">@ViewBag.ItemDetail.Itemnum</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1 text-right">
+                                                <label>ETV ||</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <label>DATE</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <label>DAYS</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <label>QUANTITY</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <label>COST</label>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <label>PORT</label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1">
+                                                <label>1.</label>   <span class="text-primary innerlbl pull-right">121</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1">
+                                                <label>2.</label>   <span class="text-primary innerlbl  pull-right">121</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1 ">
+                                                <label>3.</label>   <span class="text-primary innerlbl  pull-right">121</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                            <div class="col-lg-1 text-right">
+                                                <span class="text-primary">1</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section styles
+{
+    <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+    <link href="~/css/jquery-ui.min.css" rel="stylesheet" />
+    <style>
+        .tabs-container .nav-tabs {
+            border-bottom: none
+        }
+
+        .tab-pane .ibox-content {
+            border-top: none
+        }
+
+        .tab-content {
+            font-size: 13px;
+            font-weight: bold !important;
+        }
+
+        .cardIem {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem
+        }
+
+            .cardIem .row {
+                height: 22px;
+            }
+
+        .innerlbl {
+            padding-left: 3%
+        }
+
+        .lbl {
+            width: 10%;
+            padding-top: 0.5%;
+        }
+
+        .panel-heading {
+            background-color: #f8f8f8;
+            border-color: #e7e7e7;
+        }
+
+        .panel {
+            border-color: #e7e7e7;
+        }
+
+        label {
+            color: #212529;
+        }
+
+
+        .label-primary {
+            font-size: inherit;
+        }
+
+
+        .nav-tabs {
+            border-bottom: none
+        }
+
+            .nav-tabs > li.active > a {
+                border-radius: 0px;
+                font-weight: bold;
+                border-radius: 0px;
+            }
+
+        .noItem {
+            border-color: red;
+            margin-top: 3%;
+            margin-bottom: 3%
+        }
+
+        .ui-widget {
+            font-family: Arial,Helvetica,sans-serif;
+            font-size: 0.75em;
+            background-color: white;
+            width: 27.5% !important;
+            box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        }
+
+        .ui-menu-item {
+            padding: 2px 2px;
+            font-size: .675rem;
+        }
+    </style>
+}
+@section scripts
+{
+    @*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+    <script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#OperationType').children('option')[0].remove()
+
+
+            var PageLoad = '@ViewBag.PageLoad';
+
+            if (PageLoad=='True') {
+                 window.localStorage.setItem('activeTab', '');
+            }
+            else {
+                var activeTab = window.localStorage.getItem('activeTab');
+                if (activeTab) {
+                    $("#" + activeTab).trigger("click");
+                }
+             }
+
+            var checkItem = '@Model.SearchItemnum';
+            if (checkItem) {
+                $("#SearchItemnumDescription").val('@Model.SearchItemnum - @Model.SearchDescription');
+                $("#SearchItemnum").val('@Model.SearchItemnum');
+                $("#SearchDescription").val('@Model.SearchDescription');
+               }
+
+             $("#SearchItemnumDescription").val($("#encodeSearchItemnumDescription").text().trim())
+
+              var noItem = '@ViewBag.NoRecord';
+              if (noItem == 'True' || PageLoad=='True') {
+
+                   $("#SearchItemnumDescription").val('');
+            }
+
+            $("#cardValidateError").hide();
+            $(".topNavBar li").removeClass("active");
+            $("#liInventory").addClass("active");
+            $(document).keydown(function (event) {
+
+                if (event.keyCode == 38 || event.keyCode == 33) {
+                    $("#btnUp").trigger("click");
+                }
+                if (event.keyCode == 40 || event.keyCode == 34) {
+                    $("#btnDown").trigger("click");
+                }
+            });
+            $(".btn").on("click", function () {
+                  window.localStorage.setItem('activeTab', $("#tabPanle .active").prop('id'));
+        })
+        });
+        function validateForm() {
+            $("#cardValidateError").hide();
+            var checkCount = 0;
+            if ($("#SearchItemnumDescription").val()) {
+                checkCount++;
+            }
+
+            if (checkCount > 0) {
+                return true;
+            }
+            else {
+                $("#cardValidateError").show();
+                return false;
+            }
+        }
+        $("#SearchItemnumDescription").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Inventory/GetItemDetail",
+                    type: "POST",
+                    dataType: "json",
+                    data: { SearchItemnum: request.term, OperationType:$('#OperationType').val() },
+                    success: function (data) {
+                        if (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.Itemnum.trim() + " - " + item.Description.trim(), value: item.Itemnum.trim() + " - " + item.Description.trim() };
+                        }))
+                        }
+
+
+                    }
+                })
+            },
+            messages: {
+                noResults: "", results: ""
+            },
+            select: function (event, ui) {
+                try {
+
+                    var itemValues = ui.item.value.split(" - ");
+                    $("#SearchItemnum").val(itemValues[0].trim());
+                    $("#SearchDescription").val(itemValues[1].trim());
+                    $("#SearchItemnumDescription").val(ui.item.value);
+                    $("#btnSearch").trigger('click');
+
+                } catch (e) {
+
+                }
+
+            }
+
+        });
+
+
+    </script>
+}

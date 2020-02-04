@@ -1,0 +1,487 @@
+﻿@model MySqlBasicCore.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+@using Microsoft.Extensions.Options;
+@inject IOptions<Appsettings> Settings
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row" style="margin-top:0px;margin-bottom:-6px">
+                        <div class="col-lg-3" style="text-align:center">
+                            <button class="btn btn-info btn-outline" id="btnorders" onclick="setBoxes('orders')">ORDERS</button>
+                        </div>
+                        <div class="col-lg-3" style="text-align:center">
+                            <button class="btn btn-success btn-outline" id="btnsales" onclick="setBoxes('sales')">SALES</button>
+                        </div>
+                        <div class="col-lg-3" style="text-align:center">
+                            <button class="btn btn-warning btn-outline" id="btnboxes" onclick="setBoxes('boxes')">BOXES</button>
+                        </div>
+                        <div class="col-lg-3" style="text-align:center">
+                            <button class="btn btn-primary btn-outline" id="btncredits" onclick="setBoxes('credits')">CREDITS</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row" id="orders">
+        <div class="col-lg-4">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-info ">Today</span>
+                    </div>
+                    <h5>Order Amount</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <h1 class="no-margins"><span id="ordersTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
+                    <h1 class="no-margins text-info"></h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-success float-right">YTD</span>
+                    </div>
+                    <h5>Order Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="ordersYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-primary float-right">Last Year</span>
+                    </div>
+                    <h5>Order Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="ordersLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="sales" style="display:none">
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-info float-right">Today</span>
+                    </div>
+                    <h5>Sales Amount</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <h1 class="no-margins"><span id="salesTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
+                    <h1 class="no-margins text-info"></h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-success float-right">YTD</span>
+                    </div>
+                    <h5>Sales Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="salesYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-warning float-right">LYTD</span>
+                    </div>
+                    <h5>Sales Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="salesLYTDAmount">0</span><i class="fa fa-dollar text-warning pull-right"></i></h1>
+
+
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-primary float-right">Last Year</span>
+                    </div>
+                    <h5>Sales Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="salesLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="boxes" style="display:none">
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-info float-right">Today</span>
+                    </div>
+                    <h5>Boxes Amount</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <h1 class="no-margins"><span id="boxesTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
+                    <h1 class="no-margins text-info"></h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-success float-right">YTD</span>
+                    </div>
+                    <h5>Boxes Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="boxesYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-warning float-right">LYTD</span>
+                    </div>
+                    <h5>Boxes Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="boxesLYTDAmount">0</span><i class="fa fa-dollar text-warning pull-right"></i></h1>
+
+
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-primary float-right">Last Year</span>
+                    </div>
+                    <h5>Boxes Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="boxesLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="credits" style="display:none">
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-info float-right">Today</span>
+                    </div>
+                    <h5>Credits Amount</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <h1 class="no-margins"><span id="creditsTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
+                    <h1 class="no-margins text-info"></h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-success float-right">YTD</span>
+                    </div>
+                    <h5>Credits Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="creditsYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-warning float-right">LYTD</span>
+                    </div>
+                    <h5>Credits Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="creditsLYTDAmount">0</span><i class="fa fa-dollar text-warning pull-right"></i></h1>
+
+
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <span class="label label-primary float-right">Last Year</span>
+                    </div>
+                    <h5>Credits Amount</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="creditsLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5><span id="spnBoxName"></span></h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <canvas id="lineChart" height="85"></canvas>
+                        </div>
+                        <div class="col-lg-3">
+                            <ul class="stat-list" style="margin-top:20%">
+                                <li>
+                                    <h2 class="no-margins" id="ytd"> 0</h2>
+                                    <small>Total YTD No </small>
+                                    <div class="stat-percent"></div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 100%;" class="progress-bar"></div>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <h2 class="no-margins " id="lytd">  </h2>
+                                    <small>Total LYTD No</small>
+                                    <div class="stat-percent"></div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 100%;" class="progress-bar"></div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/flot/jquery.flot.js"></script>
+        <script src="~/lib/flot/jquery.flot.tooltip.min.js"></script>
+        <script src="~/lib/flot/jquery.flot.resize.js"></script>
+        <script src="~/lib/flot/jquery.flot.pie.js"></script>
+        <script src="~/lib/flot/jquery.flot.time.js"></script>
+        <script src="~/lib/flot/jquery.flot.spline.js"></script>
+        <script src="~/lib/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+        <script src="~/lib/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+        <script src="~/lib/chartJs/Chart.min.js"></script>
+        <script src="~/js/date.js"></script>
+    </environment>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+             window.currentBox = "orders";
+            bindChart('YTD');
+            bindBoxAmount("orders");
+
+            $("#sales").hide();
+            $("#boxes").hide();
+            $("#credits").hide();
+             $("#btnorders").removeClass('btn-outline');
+
+        });
+
+        function bindBoxAmount(boxname) {
+            $("#" + boxname + "TodayAmount").html(' <i class="fa fa-spinner fa-spin text-info"></i>');
+            $("#" + boxname + "YTDAmount").html(' <i class="fa fa-spinner fa-spin text-success"></i>');
+            $("#" + boxname + "LYTDAmount").html(' <i class="fa fa-spinner fa-spin text-warning"></i>');
+            $("#" + boxname + "LastYearAmount").html(' <i class="fa fa-spinner fa-spin text-primary"></i>');
+
+             $.ajax({
+                url: "@Settings.Value.WebBaseURL/Home/GetBoxAmount",
+                type: "POST",
+                 dataType: "json",
+                 data: {boxName : boxname},
+                 success: function (data) {
+                     $("#" + boxname + "TodayAmount").html(data.TodayAmount);
+                     $("#" + boxname + "YTDAmount").html(data.YTDAmount);
+                     $("#" + boxname + "LYTDAmount").html(data.LYTDAmount);
+                     $("#" + boxname + "LastYearAmount").html(data.LastYearAmount);
+                  }
+            })
+        }
+
+        function bindChart(charttype) {
+            $("#spnBoxName").html(window.currentBox);
+            $("#ytd").html(' <i class="fa fa-spinner fa-spin text-primary"></i>');
+            $("#lytd").html(' <i class="fa fa-spinner fa-spin text-primary"></i>');
+            $.ajax({
+                url: "@Settings.Value.WebBaseURL/Home/GetChartDetail",
+                type: "POST",
+                dataType: "json",
+                 data: {boxName : window.currentBox,chartType : charttype},
+                success: function (data) {
+                    window.YTDList = data.YTDList;
+                    window.LYTDList = data.LYTDList;
+                    bindChartUi();
+                    setTotalNums(window.YTDList, "ytd");
+                    setTotalNums(window.LYTDList,"lytd");
+
+                }
+            })
+
+        }
+
+        function setTotalNums(list,id) {
+            var totalno = 0;
+            for (var i = 0; i < list.length; i++) {
+                totalno = totalno + Number(list[i]["ordernum"]);
+            }
+            $("#"+id).html(totalno);
+
+
+        }
+
+        function bindChartUi () {
+            var  chartDetail;
+            var data1 = [];
+            var data2 = [];
+            for (var i = 1; i <= 12; i++) {
+                 chartDetail = checkOrderDateExists(window.YTDList,i);
+                data1.push(chartDetail.amount);
+                chartDetail = checkOrderDateExists(window.LYTDList,i);
+                 data2.push(chartDetail.amount);
+           }
+
+             var lineData = {
+                labels: ["January", "February", "March", "April", "May", "June", "July","August","September","October","November","December"],
+                datasets: [
+                    {
+                        label: "YTD",
+                        backgroundColor: "rgba(26,179,148,0.5)",
+                        borderColor: "rgba(26,179,148,0.7)",
+                        pointBackgroundColor: "rgba(26,179,148,1)",
+                        pointBorderColor: "#fff",
+                        data: data1
+                    },
+                    {
+                        label: "LYTD",
+                        backgroundColor: "rgba(220,220,220,0.5)",
+                        borderColor: "rgba(220,220,220,1)",
+                        pointBackgroundColor: "rgba(220,220,220,1)",
+                        pointBorderColor: "#fff",
+                        data: data2
+                    }
+                ]
+            };
+
+            var lineOptions = {
+                responsive: true
+            };
+
+
+            var ctx = document.getElementById("lineChart").getContext("2d");
+            new Chart(ctx, {type: 'line', data: lineData, options:lineOptions});
+
+
+
+        }
+
+        function checkTwoDate(date1,date2) {
+            var year1, month1, day1, year2, month2, day2;
+            year1 = date1.getFullYear();
+            month1 = date1.getMonth();
+            day1 = date1.getDate();
+             year2 = date2.getFullYear();
+            month2 = date2.getMonth();
+            day2 = date2.getDate();
+
+            if (year1 == year2 && month1 == month2 && day1 == day2) {
+                return true;
+            }
+            else {
+                return false
+            }
+        }
+
+        function checkOrderDateExists(list,monthCheck) {
+            var detail = { no: 0, amount: 0 };
+
+            for (var i = 0; i < list.length; i++) {
+                if (list[i]["Month"].toString()== monthCheck) {
+                    detail.amount = list[i]["Poammount"];
+                }
+            }
+            return detail;
+
+        }
+
+        function setBoxes(idToShow) {
+             window.currentBox = idToShow;
+            $("#orders").hide();
+            $("#sales").hide();
+            $("#boxes").hide();
+            $("#credits").hide();
+            $("#" + idToShow).show();
+            $("#btn"+idToShow).removeClass('btn-outline');
+            $("#btnorders").hasClass('btn-outline') ? '' : $("#btnorders").addClass('btn-outline');
+            $("#btnsales").hasClass('btn-outline') ? '' : $("#btnsales").addClass('btn-outline');
+            $("#btnboxes").hasClass('btn-outline') ? '' : $("#btnboxes").addClass('btn-outline');
+            $("#btncredits").hasClass('btn-outline') ? '' : $("#btncredits").addClass('btn-outline');
+            bindBoxAmount(idToShow);
+            $("#btnYTD").removeClass('active');
+            $("#btnLYTD").removeClass('active');
+            $("#btnYTD").addClass('active');
+            bindChart('YTD');
+        }
+
+    </script>
+}

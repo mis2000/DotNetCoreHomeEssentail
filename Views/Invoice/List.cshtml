@@ -1,0 +1,77 @@
+﻿@model MySqlBasicCore.Models.InvoiceViewModel
+@{
+    ViewBag.Title = "Invoice List";
+}
+@using Microsoft.Extensions.Options;
+@inject IOptions<Appsettings> Settings
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h3>Order List</h3>
+                </div>
+
+                <div class="ibox-content">
+
+                    <form role="form">
+                        <div class="form-group row">
+                            <div class="col-lg-1 col-form-label">InvoiceNum </div>
+                            <div class="col-lg-2">
+                                @Html.TextBoxFor(m => m.InvoiceNum, new { @class = "form-control", placeholder = "Enter invoice num", @maxlength = "50" })
+                            </div>
+                            <div class="col-lg-2 col-form-label">Cust Num</div>
+                            <div class="col-lg-2">
+                                @Html.TextBoxFor(m => m.CustNum, new { @class = "form-control", placeholder = "Enter cust num", @maxlength = "50", @style = "margin-left:-40%" })
+                            </div>
+                            <div class="col-lg-2 col-form-label" style="margin-left:-4%">Bill Name</div>
+                            <div class="col-lg-2">
+                                @Html.TextBoxFor(m => m.BillName, new { @class = "form-control", placeholder = "Enter bill name", @style = "margin-left:-55%" })
+                            </div>
+                        </div>
+                    </form>
+
+                    <jquery-datatables id="fingers10"
+                                       class="table table-sm table-striped table-bordered table-hover"
+                                       model="@Model"
+                                       enable-searching="false"
+                                       search-row-th-class="p-0"
+                                       search-input-class="form-control form-control-sm"
+                                       search-input-style="width:100%"
+                                       thead-class="text-center">
+                    </jquery-datatables>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+@section Styles {
+    
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
+    </environment>
+}
+
+
+@section scripts
+{
+    <script src="~/lib/momentjs/moment.min.js" asp-append-version="true"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js" asp-append-version="true"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js" asp-append-version="true"></script>
+    <script src="~/js/invoice.js" asp-append-version="true"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            window.baseUrl = '@Settings.Value.WebBaseURL';
+           
+
+        });
+    </script>
+
+}
