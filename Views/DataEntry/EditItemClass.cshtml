@@ -18,41 +18,55 @@
                     <form method="post" asp-action="EditItemClass">
                         @Html.HiddenFor(m => m.ClassId)
 
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Class" class="control-label"></label>
+                        <div class="row form-group">
+                            <div class="col-lg-1">
+                                <label asp-for="Class" class="col-form-label"></label>
+                            </div>
+
+                            <div class="col-md-5">
                                 <input asp-for="Class" class="form-control" placeholder="Class" maxlength="5" />
                                 <span asp-validation-for="Class" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Desc" class="control-label"></label>
+                            <div class="col-lg-1">
+                                <label asp-for="Desc" class="col-form-label"></label>
+                            </div>
+                            <div class="col-md-5">
                                 <input asp-for="Desc" class="form-control" placeholder="Desc" maxlength="40" />
                                 <span asp-validation-for="Desc" class="text-danger"></span>
                             </div>
                         </div>
 
 
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Dept" class="control-label"></label>
+                        <div class="form-group row">
+                            <div class="col-lg-1">
+                                <label asp-for="Dept" class="col-form-label"></label>
+                            </div>
+                            <div class="col-md-5">
                                 <input asp-for="Dept" class="form-control" placeholder="Dept" maxlength="25" />
                                 <span asp-validation-for="Dept" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Market" class="control-label"></label>
+                            <div class="col-lg-1">
+                                <label asp-for="Market" class="col-form-label"></label>
+                            </div>
+                            <div class="col-md-5">
+
                                 <input asp-for="Market" class="form-control" placeholder="Market" maxlength="25" />
                                 <span asp-validation-for="Market" class="text-danger"></span>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Deptnum" class="control-label"></label>
+                        <div class="form-group row">
+                            <div class="col-lg-1">
+                                <label asp-for="Deptnum" class="col-form-label"></label>
+                            </div>
+                            <div class="col-md-5">
                                 <input asp-for="Deptnum" class="form-control" placeholder="Deptnum" maxlength="5" />
                                 <span asp-validation-for="Deptnum" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Buyer" class="control-label"></label>
+                            <div class="col-lg-1">
+                                <label asp-for="Buyer" class="col-form-label"></label>
+                            </div>
+                            <div class="col-md-5">
                                 <input asp-for="Buyer" class="form-control" placeholder="Buyer" maxlength="2" />
                                 <span asp-validation-for="Buyer" class="text-danger"></span>
                             </div>

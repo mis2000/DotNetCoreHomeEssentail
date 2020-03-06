@@ -18,23 +18,29 @@
                         @Html.HiddenFor(m => m.DeptNameId)
                         @Html.HiddenFor(m => m.mmId)
 
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="DeptName" class="control-label"></label>
+                        <div class="row form-group">
+                            <div class="col-lg-2">
+                                <label asp-for="DeptName" class="col-form-label"></label>
+                            </div>
+                            <div class="col-md-4">
                                 <input asp-for="DeptName" class="form-control" placeholder="Department Name" maxlength="20" />
                                 <span asp-validation-for="DeptName" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="mm" class="control-label"></label>
+                            <div class="col-lg-1">
+                                <label asp-for="mm" class="col-form-label"></label>
+                            </div>
+                            <div class="col-md-4">
                                 <input asp-for="mm" class="form-control" placeholder="MM" maxlength="11" />
                                 <span asp-validation-for="mm" class="text-danger"></span>
                             </div>
                         </div>
 
 
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Projection" class="control-label"></label>
+                        <div class="form-group row">
+                            <div class="col-lg-2">
+                                <label asp-for="Projection" class="col-form-label"></label>
+                            </div>
+                            <div class="col-md-4">
                                 <input asp-for="Projection" class="form-control" placeholder="Projection" maxlength="6" />
                                 <span asp-validation-for="Projection" class="text-danger"></span>
                             </div>
