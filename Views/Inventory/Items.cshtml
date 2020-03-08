@@ -38,10 +38,14 @@
 
                             </div>
 
-                            <div class="col-lg-2">
+                            <div class="col-lg-2" style="padding-left:0px;padding-right:0px;">
                                 <button class="btn btn-primary" style="display:none" id="btnSearch" name="submit" value="submit" type="submit" onclick="return validateForm();">Search</button>
                                 <button class="btn btn-primary btn-sm" value="down" name="submit" id="btnDown" type="submit">Previous</button>
                                 <button class="btn btn-primary btn-sm" value="up" name="submit" id="btnUp" type="submit">Next</button>
+                                <a id="btnExternal" style="display:none" class="btn btn-primary btn-facebook btn-outline btn-sm"
+                                   target="_blank" href="">
+                                    <i class="fa fa-external-link"> </i>
+                                </a>
                             </div>
 
                         </div>
@@ -91,7 +95,7 @@
                                                         <label>ITEM NUMBER</label>
                                                     </div>
                                                     <div class="col-lg-6">
-                                                        <span class=" text-primary">@ViewBag.ItemDetail.Itemnum</span>
+                                                        <span class=" text-primary"><a id="lblItemNo">@ViewBag.ItemDetail.Itemnum</a></span>
                                                     </div>
                                                     <div class="col-lg-2">
                                                         <label>NAME</label>
@@ -286,7 +290,8 @@
                                             <li>
                                                 <div class="row">
                                                     <div class="col-lg-12">
-                                                        <span> DIMENSIONS:</span></div>
+                                                        <span> DIMENSIONS:</span>
+                                                    </div>
                                                 </div>
                                             </li>
                                             <li>
@@ -488,7 +493,7 @@
                                                         <span class=" text-primary">@ViewBag.ItemDetail.Itemnum</span>
                                                     </div>
                                                 </div>
-                                                </li>
+                                            </li>
                                             <li>
                                                 <div class="row">
 
@@ -523,14 +528,14 @@
                                                     </div>
                                                 </div>
                                             </li>
-                                            
-                                            
+
+
                                             <li>
                                                 <div class="row">
                                                     <div class="col-lg-8">
                                                         <span class="">Item Detail</span>
                                                     </div>
-                                                  
+
                                                 </div>
                                             </li>
                                             <li>
@@ -734,7 +739,7 @@
                                             </li>
                                             <li>
                                                 <div class="row">
-                                                    
+
                                                     <div class="col-lg-2 text-left">
                                                         <label>ETV ||</label>
                                                     </div>
@@ -757,7 +762,7 @@
                                             </li>
                                             <li>
                                                 <div class="row">
-                                                    
+
 
                                                     <div class="col-lg-2 text-left">
                                                         <span class="text-primary">1</span>
@@ -781,7 +786,7 @@
                                             </li>
                                             <li>
                                                 <div class="row">
-                                                     
+
                                                     <div class="col-lg-2 text-left">
                                                         <span class="text-primary">1</span>
                                                     </div>
@@ -804,7 +809,7 @@
                                             </li>
                                             <li>
                                                 <div class="row">
-                                                     
+
                                                     <div class="col-lg-2 text-left">
                                                         <span class="text-primary">1</span>
                                                     </div>
@@ -839,11 +844,11 @@
 
 
 
-                                       
-                                       
-                                       
-                                       
-                                       
+
+
+
+
+
                                     </div>
                                 </div>
                             </div>
@@ -984,6 +989,10 @@
                 $("#SearchItemnumDescription").val('@Model.SearchItemnum - @Model.SearchDescription');
                 $("#SearchItemnum").val('@Model.SearchItemnum');
                 $("#SearchDescription").val('@Model.SearchDescription');
+                $("#btnExternal").show();
+                $("#btnExternal").prop("href", "https://www.homeessentials.com/modules/inventory/details.php?id="+checkItem);
+                $("#lblItemNo").prop("href", "https://www.homeessentials.com/modules/inventory/details.php?id=" + checkItem);
+                $("#lblItemNo").prop("target","_blank");
                }
 
              $("#SearchItemnumDescription").val($("#encodeSearchItemnumDescription").text().trim())
@@ -1000,10 +1009,14 @@
             $(document).keydown(function (event) {
 
                 if (event.keyCode == 38 || event.keyCode == 33) {
-                    $("#btnUp").trigger("click");
+                    if (!$(event.target).hasClass('ui-autocomplete-input') && !$(event.target).hasClass('ui-autocomplete-input')) {
+                         $("#btnUp").trigger("click");
+                    }
                 }
                 if (event.keyCode == 40 || event.keyCode == 34) {
-                    $("#btnDown").trigger("click");
+                    if (!$(event.target).hasClass('ui-autocomplete-input') && !$(event.target).hasClass('ui-autocomplete-input')) {
+                          $("#btnDown").trigger("click");
+                    }
                 }
             });
             $(".btn").on("click", function () {
@@ -1038,7 +1051,8 @@
                             return { label: item.Itemnum.trim() + " - " + item.Description.trim(), value: item.Itemnum.trim() + " - " + item.Description.trim() };
                         }))
                         }
-
+                        $("#btnExternal").prop("href", "");
+                        $("#btnExternal").hide();
 
                     }
                 })

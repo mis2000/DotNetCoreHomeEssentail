@@ -37,10 +37,15 @@
 
                             </div>
 
-                            <div class="col-lg-2">
+                            <div class="col-lg-2" style="padding-left:0px;padding-right:0px;">
                                 <button class="btn btn-primary" style="display:none" id="btnSearch" name="submit" value="submit" type="submit" onclick="return validateForm();">Search</button>
                                 <button class="btn btn-primary btn-sm" value="down" name="submit" id="btnDown" type="submit">Previous</button>
                                 <button class="btn btn-primary btn-sm" value="up" name="submit" id="btnUp" type="submit">Next</button>
+                                <a id="btnExternal" style="display:none;"
+                                   class="btn btn-primary btn-facebook btn-outline btn-sm"
+                                   target="_blank" href="">
+                                    <i class="fa fa-external-link"> </i>
+                                </a>
                             </div>
 
                         </div>
@@ -72,7 +77,7 @@
                                 <div class="col-lg-12 text-center">
 
                                     <b class="label label-warning">INVENTORY DISPLAY</b>
-
+                                   
                                 </div>
                             </div>
 
@@ -83,11 +88,11 @@
                                             <label>1. ITEM NO.</label>
                                         </div>
                                         <div class="col-lg-4 text-left">
-                                            <span class=" text-primary text-left">@ViewBag.ItemDetail.Itemnum</span>
+                                            <span class=" text-primary text-left"><a id="lblItemNo">@ViewBag.ItemDetail.Itemnum</a></span>
                                         </div>
                                         @*<div class="col-lg-6  text-center">
-            <span class=" text-primary">------------------------------QUANTITIES------------------------------</span>
-        </div>*@
+                                                <span class=" text-primary">------------------------------QUANTITIES------------------------------</span>
+                                            </div>*@
                                     </div>
                                 </li>
                                 <li>
@@ -496,11 +501,12 @@
     <link href="~/css/jquery-ui.min.css" rel="stylesheet" />
     <style>
         .todo-list.small-list > li {
-        padding:4px 4px 4px 10px !important;
+            padding: 4px 4px 4px 10px !important;
         }
+
         span.text-primary {
-             color: #1ab394 !important;
-             box-shadow: inset 0 0 0 #1ab394, 0 2.5px 0 0 #1ab394, 0 0px 0px #999999 !important;
+            color: #1ab394 !important;
+            box-shadow: inset 0 0 0 #1ab394, 0 2.5px 0 0 #1ab394, 0 0px 0px #999999 !important;
         }
 
         #displayBody .row {
@@ -508,20 +514,20 @@
             /*border-bottom: 1px solid #DDDDDD;
             margin-bottom: 5px;*/
         }
+
         .m-t {
-        margin-top:3px !important;
+            margin-top: 3px !important;
         }
 
         #displayBody {
             font-size: 12px !important;
             font-weight: bold;
-            padding-top:5px !important;
+            padding-top: 5px !important;
         }
 
-        #displayBody label {
-            color: #1c84c6;
- 
-        }
+            #displayBody label {
+                color: #1c84c6;
+            }
 
         .innerlbl {
             padding-left: 3%
@@ -592,6 +598,11 @@
                 $("#SearchItemnumDescription").val('@Model.SearchItemnum - @Model.SearchDescription');
                 $("#SearchItemnum").val('@Model.SearchItemnum');
                 $("#SearchDescription").val('@Model.SearchDescription');
+                  $("#btnExternal").show();
+                $("#btnExternal").prop("href", "https://www.homeessentials.com/modules/inventory/details.php?id="+checkItem);
+                $("#lblItemNo").prop("href", "https://www.homeessentials.com/modules/inventory/details.php?id=" + checkItem);
+                $("#lblItemNo").prop("target","_blank");
+
                }
 
                 var noItem = '@ViewBag.NoRecord';
@@ -608,12 +619,16 @@
             $(".topNavBar li").removeClass("active");
             $("#liInventory").addClass("active");
             $(document).keydown(function (event) {
-
+                //.ui-widget
                 if (event.keyCode == 38 || event.keyCode == 33) {
-                    $("#btnUp").trigger("click");
+                    if (!$(event.target).hasClass('ui-autocomplete-input') && !$(event.target).hasClass('ui-autocomplete-input')) {
+                         $("#btnUp").trigger("click");
+                    }
                 }
                 if (event.keyCode == 40 || event.keyCode == 34) {
-                    $("#btnDown").trigger("click");
+                     if (!$(event.target).hasClass('ui-autocomplete-input') && !$(event.target).hasClass('ui-autocomplete-input')) {
+                          $("#btnDown").trigger("click");
+                    }
                 }
             });
 
@@ -633,6 +648,8 @@
                 return false;
             }
         }
+ 
+
         $("#SearchItemnumDescription").autocomplete({
             source: function (request, response) {
                 $.ajax({
