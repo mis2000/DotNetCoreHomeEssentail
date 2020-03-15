@@ -57,10 +57,18 @@ namespace MySqlBasicCore.Controllers
                     if (submit == "up")
                     {
                         ViewBag.ItemDetail = itemutility.GetNextItemDetailByItemNumOrDescription(model.SearchItemnum, true);
+                        if (ViewBag.ItemDetail.Category == null)
+                        {
+                            ViewBag.NoRecordArrowKey = true;
+                        }
                     }
                     else
                     {
                         ViewBag.ItemDetail = itemutility.GetNextItemDetailByItemNumOrDescription(model.SearchItemnum, false);
+                        if (ViewBag.ItemDetail.Category == null)
+                        {
+                            ViewBag.NoRecordArrowKey = true;
+                        }
                     }
                 }
             }
@@ -107,10 +115,18 @@ namespace MySqlBasicCore.Controllers
                     if (submit == "up")
                     {
                         ViewBag.ItemDetail = itemutility.GetNextItemDetailByItemNumOrDescription(model.SearchItemnum, true);
+                        if (ViewBag.ItemDetail.Category == null)
+                        {
+                            ViewBag.NoRecordArrowKey = true;
+                        }
                     }
                     else
                     {
                         ViewBag.ItemDetail = itemutility.GetNextItemDetailByItemNumOrDescription(model.SearchItemnum, false);
+                        if (ViewBag.ItemDetail.Category == null)
+                        {
+                            ViewBag.NoRecordArrowKey = true;
+                        }
                     }
                 }
             }
@@ -124,6 +140,7 @@ namespace MySqlBasicCore.Controllers
                 ViewBag.NoRecord = true;
                 model.SearchItemnum = "";
                 model.SearchDescription = "";
+                model.SearchItemnumDescription = model.SearchItemnum;
             }
             else
             {

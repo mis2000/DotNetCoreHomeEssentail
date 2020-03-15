@@ -77,7 +77,7 @@
                                 <div class="col-lg-12 text-center">
 
                                     <b class="label label-warning">INVENTORY DISPLAY</b>
-                                   
+
                                 </div>
                             </div>
 
@@ -606,12 +606,16 @@
                }
 
                 var noItem = '@ViewBag.NoRecord';
+              if ($("#encodeSearchItemnumDescription").text().trim() != "-") {
+                  $("#SearchItemnumDescription").val($("#encodeSearchItemnumDescription").text().trim());
+              }
 
-              $("#SearchItemnumDescription").val($("#encodeSearchItemnumDescription").text().trim())
 
               var noItem = '@ViewBag.NoRecord';
-               var PageLoad = '@ViewBag.PageLoad';
-              if (noItem == 'True'  || PageLoad=='True') {
+              var PageLoad = '@ViewBag.PageLoad';
+               var noRecordArrowKey = '@ViewBag.NoRecordArrowKey';
+              if (PageLoad == 'True' || noRecordArrowKey == 'True') {
+
                    $("#SearchItemnumDescription").val('');
             }
 
@@ -629,6 +633,15 @@
                      if (!$(event.target).hasClass('ui-autocomplete-input') && !$(event.target).hasClass('ui-autocomplete-input')) {
                           $("#btnDown").trigger("click");
                     }
+                }
+                if (event.keyCode == 13) {
+                    if (event.target.id == "SearchItemnumDescription") {
+                    $("#SearchItemnum").val( $("#SearchItemnumDescription").val());
+                    $("#SearchDescription").val( $("#SearchItemnumDescription").val());
+                    $("#SearchItemnumDescription").val();
+                    $("#btnSearch").trigger('click');
+                    }
+
                 }
             });
 
@@ -648,7 +661,7 @@
                 return false;
             }
         }
- 
+
 
         $("#SearchItemnumDescription").autocomplete({
             source: function (request, response) {

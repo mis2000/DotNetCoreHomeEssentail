@@ -995,10 +995,13 @@
                 $("#lblItemNo").prop("target","_blank");
                }
 
-             $("#SearchItemnumDescription").val($("#encodeSearchItemnumDescription").text().trim())
+             if ($("#encodeSearchItemnumDescription").text().trim() != "-") {
+                  $("#SearchItemnumDescription").val($("#encodeSearchItemnumDescription").text().trim());
+              }
 
               var noItem = '@ViewBag.NoRecord';
-              if (noItem == 'True' || PageLoad=='True') {
+              var noRecordArrowKey = '@ViewBag.NoRecordArrowKey';
+              if (PageLoad == 'True' || noRecordArrowKey == 'True') {
 
                    $("#SearchItemnumDescription").val('');
             }
@@ -1017,6 +1020,15 @@
                     if (!$(event.target).hasClass('ui-autocomplete-input') && !$(event.target).hasClass('ui-autocomplete-input')) {
                           $("#btnDown").trigger("click");
                     }
+                }
+                 if (event.keyCode == 13) {
+                    if (event.target.id == "SearchItemnumDescription") {
+                    $("#SearchItemnum").val( $("#SearchItemnumDescription").val());
+                    $("#SearchDescription").val( $("#SearchItemnumDescription").val());
+                    $("#SearchItemnumDescription").val();
+                    $("#btnSearch").trigger('click');
+                    }
+
                 }
             });
             $(".btn").on("click", function () {
