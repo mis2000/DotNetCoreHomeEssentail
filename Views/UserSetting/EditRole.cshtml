@@ -16,18 +16,20 @@
                 <div class="ibox-content">
                     <form method="post" asp-action="EditRole">
                         @Html.HiddenFor(m => m.RoleId)
-                        
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Rolename" class="control-label"></label>
-                                <input asp-for="Rolename" class="form-control" placeholder="Department Name" maxlength="50" />
+
+                        <div class="row form-group">
+                            <div class=" col-md-2">
+                                <label asp-for="Rolename" class="col-form-label"></label>
+                            </div>
+                            <div class=" col-md-4">
+                                <input asp-for="Rolename" class="form-control" placeholder="Role Name" maxlength="50" />
                                 <span asp-validation-for="Rolename" class="text-danger"></span>
                             </div>
-                           
+
                         </div>
 
 
-                        
+
 
                         @if (ViewBag.SuccessMessage != null)
                         {

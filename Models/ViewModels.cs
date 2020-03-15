@@ -536,6 +536,7 @@ namespace MySqlBasicCore.Models
         [Compare("Password", ErrorMessage ="Password and confirm password should me same")]
         public string ConfirmPassword { get; set; }
 
+        [Display(Name = "Role")]
         [Required(ErrorMessage = "Please select role")]
         public int RoleId { get; set; }
         public bool? IsActive { get; set; }
@@ -555,6 +556,7 @@ namespace MySqlBasicCore.Models
     {
          public int RoleId { get; set; }
 
+        [Display(Name ="Role Name")]
         [Required(ErrorMessage = "Please enter role name")]
         [MaxLength(50, ErrorMessage = "Role name should be less or equal to 50 characters.")]
         public string Rolename { get; set; }

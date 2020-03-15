@@ -318,7 +318,7 @@ namespace MySqlBasicCore.Controllers
                         role.ModifiedBy = _userId;
                         role.ModifiedDate = DateTime.Now;
                         _dbContext.SaveChanges();
-                        ViewBag.SuccessMessage = "Role added successfully";
+                        ViewBag.SuccessMessage = "Role updated successfully";
                     }
                     else
                     {

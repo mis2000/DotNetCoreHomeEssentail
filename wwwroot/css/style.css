@@ -1037,7 +1037,7 @@ ul.nav-second-level {
 }
 .minimalize-styl-2 {
   padding: 4px 12px;
-  margin: 14px 5px 5px 20px;
+  margin: 14px 5px 5px 25px;
   font-size: 14px;
   float: left;
 }
@@ -1262,7 +1262,7 @@ body.fixed-nav.fixed-nav-basic.fixed-sidebar.mini-navbar.body-small .navbar-fixe
   left: 220px;
 }
 .fixed-nav .minimalize-styl-2 {
-  margin: 10px 5px 5px 15px;
+  margin: 10px 5px 5px 25px;
 }
 .body-small .navbar-fixed-top {
   margin-left: 0;
@@ -8860,7 +8860,7 @@ body.rtls.top-navigation .footer.fixed {
   margin-right: 30px;
 }
 .skin-1.fixed-nav .minimalize-styl-2 {
-  margin: 14px 5px 5px 15px;
+  margin: 14px 5px 5px 25px;
 }
 .skin-1 .spin-icon {
   background: #0e9aef !important;
@@ -9878,3 +9878,4 @@ padding-top:14px;
 width:300px;
 margin-bottom:1rem;
 }
+ 
