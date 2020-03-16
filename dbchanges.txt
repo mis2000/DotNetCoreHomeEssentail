@@ -301,3 +301,10 @@ discount	decimal(6,5)
 --------------------------------------------------------------------------------------------------------------------------
 
 Test commit from krishnpal
+
+--------------------------------------------------------------------------------------------------------------------------
+server path : \\njdcdhcp\inetpub$\wwwroot\SampleSam
+publish path : \\heandb.local\Home-Essentials\Private\igross\Desktop\SamSample_Live
+backup path : \\heandb.local\Home-Essentials\Private\igross\Desktop\SampleSBack
+
+
