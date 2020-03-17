@@ -636,10 +636,23 @@
                 }
                 if (event.keyCode == 13) {
                     if (event.target.id == "SearchItemnumDescription") {
-                    $("#SearchItemnum").val( $("#SearchItemnumDescription").val());
-                    $("#SearchDescription").val( $("#SearchItemnumDescription").val());
-                    $("#SearchItemnumDescription").val();
-                    $("#btnSearch").trigger('click');
+                        if ($("#SearchItemnumDescription").val().indexOf("-") == -1) {
+                            $("#SearchItemnum").val($("#SearchItemnumDescription").val());
+                            $("#SearchDescription").val($("#SearchItemnumDescription").val());
+                            $("#SearchItemnumDescription").val();
+                            $("#btnSearch").trigger('click');
+                        }
+                        else {
+                            var itemValues = $("#SearchItemnumDescription").val().split(" - ");
+                            $("#SearchItemnum").val(itemValues[0].trim());
+                            $("#SearchDescription").val(itemValues[1].trim());
+                            $("#SearchItemnumDescription").val(ui.item.value);
+                            $("#btnSearch").trigger('click');
+                        }
+
+                    }
+                    else {
+
                     }
 
                 }
@@ -683,6 +696,7 @@
             },
             select: function (event, ui) {
                 try {
+
                     var itemValues = ui.item.value.split(" - ");
                     $("#SearchItemnum").val(itemValues[0].trim());
                     $("#SearchDescription").val(itemValues[1].trim());
