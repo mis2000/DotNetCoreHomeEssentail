@@ -526,7 +526,8 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
     <script type="text/javascript">
-          $(document).ready(function () {
+        $(document).ready(function () {
+               $("#displayBody").find('input').prop("readonly","readonly")
          $('#OperationType').children('option')[0].remove()
 
            var checkItem = '@Model.SearchItemnum';
