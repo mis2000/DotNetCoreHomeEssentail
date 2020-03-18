@@ -9878,4 +9878,6 @@ padding-top:14px;
 width:300px;
 margin-bottom:1rem;
 }
- 
+.col-form-label {
+font-weight:600
+}
