@@ -31,7 +31,7 @@ namespace MySqlBasicCore.Controllers
             try
             {
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset("Select * from tov.itemclass");
+                DataSet ds = dbfunction.GetDataset("Select * from itemclass");
 
                 itemClassList = (from row in ds.Tables[0].AsEnumerable()
                                  select new ItemclassViewModel
@@ -63,7 +63,7 @@ namespace MySqlBasicCore.Controllers
                 if (ModelState.IsValid)
                 {
                     DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                    DataSet ds = dbfunction.GetDataset("select * from tov.itemclass where class= '" + id + "'");
+                    DataSet ds = dbfunction.GetDataset("select * from itemclass where class= '" + id + "'");
 
                     if (ds.Tables[0].Rows.Count > 0)
                     {
@@ -97,11 +97,11 @@ namespace MySqlBasicCore.Controllers
                 if (ModelState.IsValid)
                 {
                     DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                    var query = "select * from tov.itemclass where class = '" + model.Class + "'";
+                    var query = "select * from itemclass where class = '" + model.Class + "'";
                     DataSet ds = dbfunction.GetDataset(query);
                     if (ds.Tables[0].Rows.Count == 0)
                     {
-                        query = "insert into tov.itemclass (Class,`Desc`,Dept,Market,Deptnum,Buyer) values ('" + model.Class + "', '" + model.Desc + "', '" + model.Dept + "', '" + model.Market + "', '" + model.Deptnum + "', '" + model.Buyer + "');insert into HEANDB.itemclass (Class,`Desc`,Dept,Market,Deptnum,Buyer) values ('" + model.Class + "', '" + model.Desc + "', '" + model.Dept + "', '" + model.Market + "', '" + model.Deptnum + "', '" + model.Buyer + "')";
+                        query = "insert into itemclass (Class,`Desc`,Dept,Market,Deptnum,Buyer) values ('" + model.Class + "', '" + model.Desc + "', '" + model.Dept + "', '" + model.Market + "', '" + model.Deptnum + "', '" + model.Buyer + "');insert into HEANDB.itemclass (Class,`Desc`,Dept,Market,Deptnum,Buyer) values ('" + model.Class + "', '" + model.Desc + "', '" + model.Dept + "', '" + model.Market + "', '" + model.Deptnum + "', '" + model.Buyer + "')";
                         ds = dbfunction.GetDataset(query);
                         ViewBag.SuccessMessage = "Class added successfully";
                     }
@@ -126,11 +126,11 @@ namespace MySqlBasicCore.Controllers
                 if (ModelState.IsValid)
                 {
                     DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                    var query = "select * from tov.itemclass where class = '" + model.Class + "' and class !='" + model.ClassId + "' ";
+                    var query = "select * from itemclass where class = '" + model.Class + "' and class !='" + model.ClassId + "' ";
                     DataSet ds = dbfunction.GetDataset(query);
                     if (ds.Tables[0].Rows.Count == 0)
                     {
-                        query = " update tov.itemclass set   Class = '" + model.Class + "',`Desc`= '" + model.Desc + "',Dept = '" + model.Dept + "',Market = '" + model.Market + "',Deptnum = '" + model.Deptnum + "',Buyer = '" + model.Buyer + "'          where class = " + model.ClassId + " ;";
+                        query = " update itemclass set   Class = '" + model.Class + "',`Desc`= '" + model.Desc + "',Dept = '" + model.Dept + "',Market = '" + model.Market + "',Deptnum = '" + model.Deptnum + "',Buyer = '" + model.Buyer + "'          where class = " + model.ClassId + " ;";
                         ds = dbfunction.GetDataset(query);
                         query = "update HEANDB.itemclass set   Class = '" + model.Class + "',`Desc`= '" + model.Desc + "',Dept = '" + model.Dept + "',Market = '" + model.Market + "',Deptnum = '" + model.Deptnum + "',Buyer = '" + model.Buyer + "'          where class = " + model.ClassId + " ;";
                         ds = dbfunction.GetDataset(query);
@@ -157,7 +157,7 @@ namespace MySqlBasicCore.Controllers
             {
                 ItemclassViewModel model = new ItemclassViewModel();
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                var query = " delete from tov.itemclass  where class ='" + id + "' ;delete from HEANDB.itemclass  where class ='" + id + "' ; ";
+                var query = " delete from itemclass  where class ='" + id + "' ;delete from HEANDB.itemclass  where class ='" + id + "' ; ";
                 DataSet ds = dbfunction.GetDataset(query);
                 response.Status = "1";
                 response.Message = "Class deleted successfully";
@@ -175,7 +175,7 @@ namespace MySqlBasicCore.Controllers
             try
             {
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset("Select * from tov.DeptProjection");
+                DataSet ds = dbfunction.GetDataset("Select * from DeptProjection");
 
                 itemClassList = (from row in ds.Tables[0].AsEnumerable()
                                  select new DeptProjectionViewModel
@@ -205,7 +205,7 @@ namespace MySqlBasicCore.Controllers
                 if (ModelState.IsValid)
                 {
                     DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                    DataSet ds = dbfunction.GetDataset("select * from tov.DeptProjection where DeptName= '" + DeptName + "' and  mm= " + mm + ";");
+                    DataSet ds = dbfunction.GetDataset("select * from DeptProjection where DeptName= '" + DeptName + "' and  mm= " + mm + ";");
 
                     if (ds.Tables[0].Rows.Count > 0)
                     {
@@ -237,11 +237,11 @@ namespace MySqlBasicCore.Controllers
                 if (ModelState.IsValid)
                 {
                     DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                    var query = "select * from tov.DeptProjection where DeptName = '" + model.DeptName + "' and mm = "+model.mm+"";
+                    var query = "select * from DeptProjection where DeptName = '" + model.DeptName + "' and mm = "+model.mm+"";
                     DataSet ds = dbfunction.GetDataset(query);
                     if (ds.Tables[0].Rows.Count == 0)
                     {
-                        query = "insert into tov.DeptProjection (DeptName,mm,Projection) values ('" + model.DeptName + "', " + model.mm + ", " + model.Projection + ");";
+                        query = "insert into DeptProjection (DeptName,mm,Projection) values ('" + model.DeptName + "', " + model.mm + ", " + model.Projection + ");";
                         ds = dbfunction.GetDataset(query);
                         ViewBag.SuccessMessage = "Department projection added successfully";
                     }
@@ -266,11 +266,11 @@ namespace MySqlBasicCore.Controllers
                 if (ModelState.IsValid)
                 {
                     DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                    var query = "select * from tov.DeptProjection where DeptName = '" + model.DeptName + "' and mm =" + model.mm + " and   DeptName != '" + model.DeptNameId + "' and mm !=" + model.mmId + " ";
+                    var query = "select * from DeptProjection where DeptName = '" + model.DeptName + "' and mm =" + model.mm + " and   DeptName != '" + model.DeptNameId + "' and mm !=" + model.mmId + " ";
                     DataSet ds = dbfunction.GetDataset(query);
                     if (ds.Tables[0].Rows.Count == 0)
                     {
-                        query = " update tov.DeptProjection set   DeptName = '" + model.DeptName + "',mm = " + model.mm + ",Projection = " + model.Projection + "   where  DeptName = '" + model.DeptNameId + "' and mm =" + model.mmId + " ;";
+                        query = " update DeptProjection set   DeptName = '" + model.DeptName + "',mm = " + model.mm + ",Projection = " + model.Projection + "   where  DeptName = '" + model.DeptNameId + "' and mm =" + model.mmId + " ;";
                         ds = dbfunction.GetDataset(query);
                         ViewBag.SuccessMessage = "Department projection detail updated successfully";
                     }
@@ -295,7 +295,7 @@ namespace MySqlBasicCore.Controllers
             {
                 ItemclassViewModel model = new ItemclassViewModel();
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                var query = " delete from tov.DeptProjection  where DeptName = '" +  DeptName + "' and mm =" +  mm + " ";
+                var query = " delete from DeptProjection  where DeptName = '" +  DeptName + "' and mm =" +  mm + " ";
                 DataSet ds = dbfunction.GetDataset(query);
                 response.Status = "1";
                 response.Message = "Department projection detail deleted successfully";
