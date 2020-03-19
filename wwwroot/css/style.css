@@ -9881,3 +9881,8 @@ margin-bottom:1rem;
 .col-form-label {
 font-weight:600
 }
+input[type="text"]:read-only {
+    
+    background-color: #f8f8f8;
+    
+}
