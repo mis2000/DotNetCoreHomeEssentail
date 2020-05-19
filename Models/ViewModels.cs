@@ -7,28 +7,34 @@ namespace MySqlBasicCore.Models
 {
     public class Bol_1_ViewModel
     {
-        public int bol1_no { get; set; }
-        public DateTime bol1_date { get; set; }
-        public int bol1_custnum { get; set; }
+        public string bol1_no { get; set; }
+        public DateTime? bol1_date { get; set; }
+        public string bol1_custnum { get; set; }
         public string bol1_name { get; set; }
         public string bol1_adrs1 { get; set; }
         public string bol1_city { get; set; }
         public string bol1_state { get; set; }
         public string bol1_zip { get; set; }
         public string bol1_Lctn { get; set; }
-        public int bol1_pro_no { get; set; }
+        public string bol1_pro_no { get; set; }
         public string bol1_scac { get; set; }
         public string bol1_frght_terms { get; set; }
-        public int bol1_ttl_pkgs { get; set; }
-        public decimal bol1_ttl_weight { get; set; }
+        public int ? bol1_ttl_pkgs { get; set; }
+        public decimal? bol1_ttl_weight { get; set; }
         public string bol1_HE_WH { get; set; }
+        public DateTime? bol1_OrderDate { get; set; }
+        public DateTime? bol1_CancelDate { get; set; }
+        public Decimal? bol1_ttlValue { get; set; }
     }
 
     public class Bol_2_ViewModel
     {
-        public int bol2_order_no { get; set; }
-        public int bol2_pkgs { get; set; }
-        public decimal bol2_weight { get; set; }
+        public int? bol2_order_no { get; set; }
+        public int? bol2_pkgs { get; set; }
+        public decimal? bol2_weight { get; set; }
+        public int? bol2_No { get; set; }
+        public string bol2_PO { get; set; }
+        public decimal? bol2_value { get; set; }
     }
 
     public class LoginViewModel
@@ -638,6 +644,24 @@ namespace MySqlBasicCore.Models
         public string YTDAmount { get; set; }
         public string LYTDAmount { get; set; }
         public string LastYearAmount { get; set; }
+
+    }
+
+    public class TovBolViewModel
+    {
+
+        public string TovBol_custnum { get; set; }
+        public long TovBol_Ordernum { get; set; }
+        public string TovBol_PO { get; set; }
+        public DateTime? TovBol_OrderDate { get; set; }
+        public DateTime? TovBol_CancelDate { get; set; }
+        public DateTime? TovBol_ShipDate { get; set; }
+        public DateTime? TovBol_UpdateDate { get; set; }
+        public long TovBol_Bol { get; set; }
+        public long? TovBol_Ref { get; set; }
+        public long? TovBol_Boxes { get; set; }
+        public decimal? TovBol_Value { get; set; }
+
 
     }
 }

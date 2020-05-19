@@ -23,6 +23,8 @@ namespace MySqlBasicCore.Models
         public DbSet<Invoiceline> tbl_Invoieclines { get; set; }
         public DbSet<Invoice> tbl_Invoice { get; set; }
         public DbSet<DeptProjection> tbl_DeptProjection { get; set; }
+        public DbSet<TovBol> tbl_TovBol { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +36,7 @@ namespace MySqlBasicCore.Models
             modelBuilder.Entity<Invoice>(eb => { eb.HasNoKey(); });
             modelBuilder.Entity<Invoiceline>(eb => { eb.HasNoKey(); });
             modelBuilder.Entity<DeptProjection>(eb => { eb.HasNoKey(); });
+            
         }
     }
 
@@ -57,6 +60,9 @@ namespace MySqlBasicCore.Models
         public int bol1_ttl_pkgs { get; set; }
         public decimal bol1_ttl_weight { get; set; }
         public string bol1_HE_WH { get; set; }
+        public DateTime? bol1_OrderDate { get; set; }
+        public DateTime? bol1_CancelDate { get; set; }
+        public Decimal? bol1_ttlValue { get; set; }
     }
 
     public class Bol_2
@@ -64,6 +70,9 @@ namespace MySqlBasicCore.Models
         public int bol2_order_no { get; set; }
         public int bol2_pkgs { get; set; }
         public decimal bol2_weight { get; set; }
+        public int? bol2_No { get; set; }
+        public string bol2_PO { get; set; }
+        public decimal? bol2_value { get; set; }
     }
 
     public class Item
@@ -405,6 +414,29 @@ namespace MySqlBasicCore.Models
         public decimal? Listlanded { get; set; }
         public decimal? Commission { get; set; }
         public decimal? Discount { get; set; }
+
+    }
+
+    [Table("TovBol")]
+    public class TovBol
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int TovBol_id { get; set; }
+        public string TovBol_custnum { get; set; }
+       
+        public long TovBol_Ordernum { get; set; }
+    
+        public string TovBol_PO { get; set; }
+        public DateTime? TovBol_OrderDate { get; set; }
+        public DateTime? TovBol_CancelDate { get; set; }
+        public DateTime? TovBol_ShipDate { get; set; }
+        public DateTime? TovBol_UpdateDate { get; set; }
+        public long TovBol_Bol { get; set; }
+        public long? TovBol_Ref { get; set; }
+        public long? TovBol_Boxes { get; set; }
+        public decimal? TovBol_Value { get; set; }
+      
 
     }
 

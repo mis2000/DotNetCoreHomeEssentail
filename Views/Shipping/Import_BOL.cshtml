@@ -1,0 +1,47 @@
+﻿@model IEnumerable<MySqlBasicCore.Models.Bol_1_ViewModel>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+ 
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h3>Import BOL Data</h3>
+                </div>
+                <div class="ibox-content">
+                    
+                    <form method="post" asp-action="Import_BOL" enctype="multipart/form-data">
+
+                        <div class="row form-group">
+                            <div class="col-lg-2">
+                                <label class="col-form-label">Import BOL</label>
+                            </div>
+
+                            <div class="col-md-5">
+                                <input type="file" name="file" class="form-control" placeholder="Select File" />
+                            </div>
+
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group row">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-primary btn-sm" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section Styles {
+    
+}
+
+@section Scripts {
+
+}

@@ -20,17 +20,21 @@
                             <tr>
                                 <th>bol2_order_no</th>
                                 <th>bol2_pkgs</th>
+                                <th>bol2_value</th>
                                 <th>bol2_weight</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var row in Model)
                             {
-                                <tr>
-                                    <td>@row.bol2_order_no</td>
-                                    <td>@row.bol2_pkgs</td>
-                                    <td>@row.bol2_weight</td>
-                                </tr>
+                            <tr>
+                                <td>@row.bol2_order_no</td>
+                                <td>@row.bol2_pkgs</td>
+                                <td>@row.bol2_value</td>
+                                <td>@row.bol2_weight</td>
+                                
+                            </tr>
                             }
                         </tbody>
                     </table>

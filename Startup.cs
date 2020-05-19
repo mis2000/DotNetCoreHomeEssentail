@@ -16,6 +16,8 @@ using MySqlBasicCore.Contracts;
 using MySqlBasicCore.Models;
 using MySqlBasicCore.Services;
 using AutoMapper;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace MySqlBasicCore
 {
@@ -31,7 +33,9 @@ namespace MySqlBasicCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddSingleton<IFileProvider>(
+            new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+
             services.AddDistributedMemoryCache();
             services.AddControllersWithViews()
             .AddJsonOptions(options =>
