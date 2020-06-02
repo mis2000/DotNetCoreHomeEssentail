@@ -308,3 +308,27 @@ publish path : \\heandb.local\Home-Essentials\Private\igross\Desktop\SamSample_L
 backup path : \\heandb.local\Home-Essentials\Private\igross\Desktop\SampleSBack
 
 
+
+insert into menus (Name,Parent,Action,Controller,Childmenus,Icon,parenticon )
+values
+('Import BOL','Shipping','Import_BOL','Shipping','Import_BOL','fa fa-truck','fa fa-truck' );
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Alter table bol_1 Add column bol1_carrierName varchar(30);
+Alter table bol_1 Add column bol1_carrierPhone varchar(13);
+Alter table bol_1 Add column bol1_PkupDate  datetime;
+Alter table bol_1 Add column bol1_pkupTime  datetime;
+
+
+
+
+Alter table TovBol Add column TovBol_scac varchar(100);
+Alter table TovBol Add column TovBol_pro	int(11);
+Alter table TovBol Add column TovBol_Whse varchar(100);
+Alter table TovBol Add column TovBol_freightTerms varchar(100);
+
+
+
+
+
