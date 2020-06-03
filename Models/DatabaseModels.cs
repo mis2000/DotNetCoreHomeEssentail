@@ -23,7 +23,7 @@ namespace MySqlBasicCore.Models
         public DbSet<Invoiceline> tbl_Invoieclines { get; set; }
         public DbSet<Invoice> tbl_Invoice { get; set; }
         public DbSet<DeptProjection> tbl_DeptProjection { get; set; }
-        public DbSet<TovBol> tbl_TovBol { get; set; }
+public DbSet<TovBol> tbl_TovBol { get; set; }
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,6 +48,7 @@ namespace MySqlBasicCore.Models
 
         public DateTime bol1_date { get; set; }
         public int bol1_custnum { get; set; }
+        public int bol1_order_no { get; set; }
         public string bol1_name { get; set; }
         public string bol1_adrs1 { get; set; }
         public string bol1_city { get; set; }

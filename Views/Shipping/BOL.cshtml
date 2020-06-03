@@ -17,6 +17,7 @@
                             <tr>
                                 <th>Action</th>
                                 <th>bol1_no</th>
+                                <th>bol1_order_no</th>
                                 <th>bol1_date</th>
                                 <th>bol1_name</th>
                                 <th>bol1_adrs1</th>
@@ -36,26 +37,27 @@
                         <tbody>
                             @foreach (var row in Model)
                             {
-                                <tr>
-                                    <th>
-                                        <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>   Detail</a>
-                                    </th>
-                                    <td>@row.bol1_no</td>
-                                    <td>@row.bol1_date</td>
-                                    <td>@row.bol1_name</td>
-                                    <td>@row.bol1_adrs1</td>
-                                    <td>@row.bol1_city</td>
-                                    <td>@row.bol1_state</td>
-                                    <td>@row.bol1_zip</td>
-                                    <td>@row.bol1_Lctn</td>
-                                    <td>@row.bol1_pro_no</td>
-                                    <td>@row.bol1_scac</td>
-                                    <td>@row.bol1_frght_terms</td>
-                                    <td>@row.bol1_ttl_pkgs</td>
-                                    <td>@row.bol1_ttlValue</td>
-                                    <td>@row.bol1_ttl_weight</td>
-                                    <th>@row.bol1_HE_WH</th>
-                                </tr>
+                            <tr>
+                                <th>
+                                    <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no,order_no = row.bol1_order_no })'>   Detail</a>
+                                </th>
+                                <td>@row.bol1_no</td>
+                                <td>@row.bol1_order_no</td>
+                                <td>@row.bol1_date</td>
+                                <td>@row.bol1_name</td>
+                                <td>@row.bol1_adrs1</td>
+                                <td>@row.bol1_city</td>
+                                <td>@row.bol1_state</td>
+                                <td>@row.bol1_zip</td>
+                                <td>@row.bol1_Lctn</td>
+                                <td>@row.bol1_pro_no</td>
+                                <td>@row.bol1_scac</td>
+                                <td>@row.bol1_frght_terms</td>
+                                <td>@row.bol1_ttl_pkgs</td>
+                                <td>@row.bol1_ttlValue</td>
+                                <td>@row.bol1_ttl_weight</td>
+                                <th>@row.bol1_HE_WH</th>
+                            </tr>
                             }
                         </tbody>
                     </table>

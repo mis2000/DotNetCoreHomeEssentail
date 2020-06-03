@@ -50,7 +50,8 @@ namespace MySqlBasicCore.Controllers
                                   bol1_ttl_pkgs = Convert.ToString(row["bol1_ttl_pkgs"]) == "" ? (Int32?)null : Convert.ToInt32(row["bol1_ttl_pkgs"]),
                                   bol1_ttl_weight = Convert.ToString(row["bol1_ttl_weight"]) == "" ? (Decimal?)null : Convert.ToDecimal(row["bol1_ttl_weight"]),
                                   bol1_ttlValue = Convert.ToString(row["bol1_ttlValue"]) == "" ? (Decimal?)null : Convert.ToDecimal(row["bol1_ttlValue"]),
-                                  bol1_HE_WH = Convert.ToString(row["bol1_HE_WH"])
+                                  bol1_HE_WH = Convert.ToString(row["bol1_HE_WH"]),
+                                  bol1_order_no = Convert.ToString(row["bol1_order_no"]) == "" ? (Int32?)null : Convert.ToInt32(row["bol1_order_no"]),
                               }).ToList();
             }
             catch (Exception Ex)
@@ -59,7 +60,7 @@ namespace MySqlBasicCore.Controllers
             return View(bol_1_List);
         }
 
-        public ActionResult BOLDetail(string id)
+        public ActionResult BOLDetail(string id,int order_no)
         {
             List<Bol_2_ViewModel> bol_2_List = new List<Bol_2_ViewModel>();
             try
@@ -70,7 +71,7 @@ namespace MySqlBasicCore.Controllers
                 }
                 ViewBag.OrderNo = id;
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset("select * from bol_2 where bol2_No =" + id);
+                DataSet ds = dbfunction.GetDataset("select * from bol_2 where bol2_No =" + id + "  and bol2_order_no ="+ order_no);
 
                 bol_2_List = (from row in ds.Tables[0].AsEnumerable()
                               select new Bol_2_ViewModel
