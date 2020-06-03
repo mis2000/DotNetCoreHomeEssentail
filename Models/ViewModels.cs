@@ -13,6 +13,8 @@ namespace MySqlBasicCore.Models
         public string bol1_custnum { get; set; }
         public string bol1_name { get; set; }
         public string bol1_adrs1 { get; set; }
+        public string bol1_adrs2 { get; set; }
+        public string bol1_adrs3 { get; set; }
         public string bol1_city { get; set; }
         public string bol1_state { get; set; }
         public string bol1_zip { get; set; }
@@ -26,6 +28,15 @@ namespace MySqlBasicCore.Models
         public DateTime? bol1_OrderDate { get; set; }
         public DateTime? bol1_CancelDate { get; set; }
         public Decimal? bol1_ttlValue { get; set; }
+        public string bol1_order_no { get; set; }
+        public string bol1_ref { get; set; }
+        public string bol1_PO_No { get; set; }
+        public string bol1_sname { get; set; }
+        public string bol1_carrierName { get; set; }
+        public string bol1_carrierPhone { get; set; }
+        public DateTime? bol1_PkupDate { get; set; }
+        public string bol1_pkupTime { get; set; }
+
     }
 
     public class Bol_2_ViewModel

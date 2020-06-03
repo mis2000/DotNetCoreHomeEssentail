@@ -64,6 +64,11 @@ public DbSet<TovBol> tbl_TovBol { get; set; }
         public DateTime? bol1_OrderDate { get; set; }
         public DateTime? bol1_CancelDate { get; set; }
         public Decimal? bol1_ttlValue { get; set; }
+        public string bol1_order_no { get; set; }
+        public string bol1_carrierName { get; set; }
+        public string bol1_carrierPhone { get; set; }
+        public DateTime? bol1_PkupDate { get; set; }
+        public DateTime? bol1_pkupTime { get; set; }
     }
 
     public class Bol_2
@@ -437,7 +442,10 @@ public DbSet<TovBol> tbl_TovBol { get; set; }
         public long? TovBol_Ref { get; set; }
         public long? TovBol_Boxes { get; set; }
         public decimal? TovBol_Value { get; set; }
-      
+        public string TovBol_scac { get; set; }
+        public long TovBol_pro { get; set; }
+        public string TovBol_Whse { get; set; }
+        public string TovBol_freightTerms { get; set; }
 
     }
 
