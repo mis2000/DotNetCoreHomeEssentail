@@ -8,6 +8,7 @@ namespace MySqlBasicCore.Models
     public class Bol_1_ViewModel
     {
         public string bol1_no { get; set; }
+        public int ? bol1_order_no { get; set; }
         public DateTime? bol1_date { get; set; }
         public string bol1_name { get; set; }
         public string bol1_adrs1 { get; set; }
