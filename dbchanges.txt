@@ -330,5 +330,121 @@ Alter table TovBol Add column TovBol_freightTerms varchar(100);
 
 
 
+Alter table bol_1 drop column bol1_custnum;
+Alter table bol_1 drop column bol1_order_no;
+Alter table bol_2 add column bol2_custnum nvarchar(100);
+
+
+
+
+
+-----------------------------------------------------
+
+
+
+ 
+DELIMITER //
+ /*drop procedure import_BOL;*/
+Create PROCEDURE import_BOL ()
+BEGIN
+
+
+
+declare bolCount_1 int ;
+declare bol1_no_1 varchar(100); 
+declare bol1_date_1 date;
+declare bol1_orderDate_1 date;
+declare bol1_CancelDate_1 date ;
+declare bol1_ttl_packs_1 int(11) ;
+declare bol1_ttlValue_1 decimal(10,2) ;
+declare error_string varchar(1000);
+declare code varchar(1000);
+declare bol1_order_no_1 varchar(100);
+declare bol1_scac_1 varchar(100);
+declare bol1_pro_no_1 int(11);
+declare bol1_HE_WH_1 varchar(100);
+declare bol1_frght_terms_1 varchar(100);
+declare bol2_custnum_1 varchar(100);
+declare exit handler for sqlexception
+begin
+get diagnostics condition 1
+	code = returned_sqlstate, error_string = Message_text;
+    select code,error_string;
+rollback;
+end;
+
+CREATE temporary TABLE Temp_bol1 ( bol1_no varchar(100) NOT NULL, 
+  bol1_date date DEFAULT NULL, bol1_orderDate date DEFAULT NULL, bol1_CancelDate date DEFAULT NULL,
+  bol1_scac varchar(100),bol1_pro_no int(11), bol1_HE_WH varchar(100), bol1_frght_terms varchar(100));
+  
+CREATE temporary TABLE Temp_bol2 ( bol2_No varchar(100) NOT NULL, bol2_order_no int(11) DEFAULT NULL,
+  bol2_pkgs int(7) unsigned DEFAULT NULL, bol2_PO varchar(100) DEFAULT NULL, bol2_Value decimal(7,2) DEFAULT NULL,
+  bol2_custnum varchar(100) DEFAULT NULL);
+
+ 
+
+
+insert into Temp_bol1 (bol1_no,bol1_date,bol1_orderDate,bol1_CancelDate,bol1_scac,bol1_pro_no,bol1_HE_WH,bol1_frght_terms) 
+select TovBol_Bol,max(TovBol_ShipDate),max(TovBol_OrderDate), max(TovBol_CancelDate)
+, max(TovBol_scac), max(TovBol_pro), max(TovBol_Whse), max(TovBol_freightTerms) from TovBol 
+group by TovBol_Bol;
+select    count(*) into bolCount_1 from Temp_bol1;
+
+insert into Temp_bol2 (bol2_No,bol2_order_no,bol2_pkgs,bol2_PO,bol2_Value,bol2_custnum) 
+select TovBol_Bol,TovBol_Ordernum,TovBol_Boxes,TovBol_PO,TovBol_Value,TovBol_custnum from TovBol;
+
+while bolCount_1 >0
+DO
+select    bol1_no,bol1_date,bol1_orderDate,bol1_CancelDate,bol1_scac,bol1_pro_no,bol1_HE_WH,bol1_frght_terms
+		  into 
+		  bol1_no_1,bol1_date_1,bol1_orderDate_1,bol1_CancelDate_1,bol1_scac_1,bol1_pro_no_1,bol1_HE_WH_1,bol1_frght_terms_1
+          from Temp_bol1 limit 1;
+          
+select    sum(bol2_pkgs),sum(bol2_Value) 
+		  into bol1_ttl_packs_1, bol1_ttlValue_1  
+          from  Temp_bol2 where bol2_No = bol1_no_1 ;
+
+if exists ( select * from bol_1 where bol1_no = bol1_no_1   )
+then
+set sql_safe_updates= 0;
+update  bol_1 set  bol1_date  = bol1_date_1 , bol1_orderDate = bol1_orderDate_1 ,bol1_CancelDate = bol1_CancelDate_1,
+		bol1_ttl_pkgs = bol1_ttl_packs_1,bol1_ttlValue = bol1_ttlValue,
+        bol1_scac = bol1_scac_1,bol1_pro_no= bol1_pro_no_1,bol1_HE_WH= bol1_HE_WH_1,bol1_frght_terms = bol1_frght_terms_1
+		where bol1_no = bol1_no_1 ;
+set sql_safe_updates= 0;
+delete from bol_2   where bol2_No = bol1_no_1 ; 
+insert into bol_2 (bol2_No,bol2_order_no,bol2_pkgs,bol2_PO,bol2_Value,bol2_custnum) 
+select bol2_No,bol2_order_no,bol2_pkgs,bol2_PO,bol2_Value,bol2_custnum from  Temp_bol2 where bol2_No = bol1_no_1  ; 
+
+
+else 
+ 
+	insert into bol_1 ( bol1_no,bol1_date,bol1_orderDate,bol1_CancelDate,bol1_ttl_pkgs,bol1_ttlValue,bol1_scac,bol1_pro_no,bol1_HE_WH,bol1_frght_terms) values 
+					  (bol1_no_1,bol1_date_1,bol1_orderDate_1,bol1_CancelDate_1,bol1_ttl_packs_1,bol1_ttlValue_1,bol1_scac_1,bol1_pro_no_1,bol1_HE_WH_1,bol1_frght_terms_1);
+
+	 
+	insert into bol_2 (bol2_No,bol2_order_no,bol2_pkgs,bol2_PO,bol2_Value,bol2_custnum) 
+	select bol2_No,bol2_order_no,bol2_pkgs,bol2_PO,bol2_Value,bol2_custnum from 
+    Temp_bol2 where bol2_No = bol1_no_1 ; 
+    set sql_safe_updates= 0;
+	delete from Temp_bol2 where bol2_No = bol1_no_1 ;
+end if;
+
+
+
+
+set bolCount_1 = bolCount_1-1;
+set sql_safe_updates= 0;
+delete from Temp_bol1 where bol1_no = bol1_no_1 ;
+
+
+
+END WHILE ;
+
+drop temporary table Temp_bol1;
+drop temporary table Temp_bol2;
+truncate table TovBol;
+END
+
 
 
