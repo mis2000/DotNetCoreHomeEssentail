@@ -23,7 +23,7 @@ namespace MySqlBasicCore.Models
         public DbSet<Invoiceline> tbl_Invoieclines { get; set; }
         public DbSet<Invoice> tbl_Invoice { get; set; }
         public DbSet<DeptProjection> tbl_DeptProjection { get; set; }
-public DbSet<TovBol> tbl_TovBol { get; set; }
+        public DbSet<TovBol> tbl_TovBol { get; set; }
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,8 +47,6 @@ public DbSet<TovBol> tbl_TovBol { get; set; }
         public int bol1_no { get; set; }
 
         public DateTime bol1_date { get; set; }
-        public int bol1_custnum { get; set; }
-        public int bol1_order_no { get; set; }
         public string bol1_name { get; set; }
         public string bol1_adrs1 { get; set; }
         public string bol1_city { get; set; }
@@ -68,16 +66,18 @@ public DbSet<TovBol> tbl_TovBol { get; set; }
         public string bol1_carrierPhone { get; set; }
         public DateTime? bol1_PkupDate { get; set; }
         public DateTime? bol1_pkupTime { get; set; }
+        public string Conformation { get; set; }
     }
 
     public class Bol_2
     {
-        public int bol2_order_no { get; set; }
+        public string bol2_order_no { get; set; }
         public int bol2_pkgs { get; set; }
         public decimal bol2_weight { get; set; }
         public int? bol2_No { get; set; }
         public string bol2_PO { get; set; }
         public decimal? bol2_value { get; set; }
+        public string bol2_custnum { get; set; }
     }
 
     public class Item

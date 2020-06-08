@@ -20,15 +20,15 @@
                                 <th>BOL_NO</th>
                                 <th>Order_No</th>
                                 <th>PO_No</th>
-                                <th>Date</th>
+                                <th>Ship Date</th>
                                 <th>Name</th>
-                                <th>Sname</th>
                                 <th>Adrs1</th>
                                 <th>Adrs2</th>
                                 <th>Adrs3</th>
-                                <th>Zip</th>
+                                
                                 <th>Lctn</th>
 
+                                <th>Conformation</th>
                                 <th>CarrierName</th>
                                 <th>CarrierPhone</th>
                                 <th>PkupDate</th>
@@ -56,21 +56,46 @@
                                     </th>
                                     <td>@row.bol1_HE_WH</td>
                                     <td>@row.bol1_no</td>
-                                    <td>@row.bol1_order_no</td>
-                                    <td>@row.bol1_PO_No</td>
+                                    <td>
+                                        @if (row.Count > 1)
+                                        {
+                                            <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
+                                        }
+                                        else
+                                        {
+                                            @row.bol2_order_no
+                                        }
+
+                                    </td>
+                                    <td>
+                                        @if (row.Count > 1)
+                                        {
+                                            <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
+                                        }
+                                        else
+                                        {
+                                            @row.bol1_PO_No
+                                        }
+                                        
+                                    </td>
                                     <td>@row.bol1_date</td>
                                     <td>@row.bol1_name</td>
-                                    <td>@row.bol1_sname</td>
                                     <td>@row.bol1_adrs1</td>
                                     <td>@row.bol1_adrs2</td>
                                     <td>@row.bol1_adrs3</td>
-                                    <td>@row.bol1_zip</td>
                                     <td>@row.bol1_Lctn</td>
 
                                     <td>
 
-                                        <input type="text" class="form-control" value="@row.bol1_carrierName" 
-                                               onchange="updateBolDetail('@row.bol1_no','@row.bol1_order_no','bol1_carrierName')" />
+                                        <input type="text" class="form-control expandOnHover" value="@row.Conformation"
+                                               onchange="updateBolDetail('@row.bol1_no','Conformation')" />
+
+
+                                    </td>
+                                    <td>
+
+                                        <input  type="text" class="form-control" value="@row.bol1_carrierName" 
+                                               onchange="updateBolDetail('@row.bol1_no','bol1_carrierName')" />
 
 
                                     </td>
@@ -81,20 +106,20 @@
                                     <td>
                                         <div class="input-group date" style="width:150px">
                                             <input type="text" class="form-control" 
-                                                   id="@(row.bol1_no+"_"+@row.bol1_order_no+"_date")"
-                                                    onchange="updateBolDetail('@row.bol1_no','@row.bol1_order_no','bol1_PkupDate')"
-                                                   value="@row.bol1_PkupDate?.ToString("MM/dd/yyyy")">
+                                                   id="@(row.bol1_no+"_date")"
+                                                    onchange="updateBolDetail('@row.bol1_no','bol1_PkupDate')"
+                                                   value="@row.bol1_PkupDate?.ToString("yyyy/MM/dd")">
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </span>
                                         </div>
 
                                     </td>
-                                    <td style="min-width:150px">
+                                    <td style="width:150px">
                                         <div class="input-group clockpicker" data-autoclose="true">
                                             <input type="text" class="form-control"  
-                                                   id="@(row.bol1_no+"_"+@row.bol1_order_no+"_time")"
-                                                    onchange="updateBolDetail('@row.bol1_no','@row.bol1_order_no','bol1_pkupTime')"
+                                                   id="@(row.bol1_no+"_time")"
+                                                    onchange="updateBolDetail('@row.bol1_no','bol1_pkupTime')"
                                                    value="@row.bol1_pkupTime">
                                             <span class="input-group-addon">
                                                 <span class="fa fa-clock-o"></span>
@@ -103,7 +128,7 @@
 
                                     </td>
 
-                                    <td>@row.bol1_CancelDate</td>
+                                    <td></td>
                                     <td>@row.bol1_scac</td>
                                     <td>@row.bol1_frght_terms</td>
                                     <td>@row.bol1_ttl_pkgs</td>
@@ -128,6 +153,13 @@
         <link href="~/css/plugins/datapicker/datepicker3.css" rel="stylesheet" />
         <link href="~/css/plugins/clockpicker/clockpicker.css" rel="stylesheet" />
     </environment>
+<style>
+    .expandOnHover:hover {
+     width:250px !important;
+     height:75px
+    }
+   
+</style>
 }
 
 @section Scripts {
@@ -178,14 +210,15 @@
                         }
                     }
                  ],
+                stateSave: true,
                  "scrollY": "" + (window.outerHeight - 350) + "px",
                  "scrollX": "" + (window.outerWidth - 300) + "px",
           });
         });
 
-        function updateBolDetail( bol1_no , bol1_order_no , column ) {
+        function updateBolDetail(bol1_no, column) {
             if (column=="bol1_pkupTime") {
-                var checkTime = ($("#" + bol1_no + "_" + bol1_order_no + "_time").val());
+                var checkTime = ($("#" + bol1_no + "_time").val());
                 var checkTimes = checkTime.split(":");
                 if (checkTimes.length>0) {
                     if (Number( checkTimes[0]) < 7) {
@@ -207,19 +240,19 @@
 
 
 
-        var data = { 'bol1_no': bol1_no, 'bol1_order_no':bol1_order_no};
+        var data = { 'bol1_no': bol1_no};
         //column
         data.column =column;
        
         if(column=="bol1_PkupDate")
         {
          
-         data[column] =  ($("#"+bol1_no+"_"+bol1_order_no+"_date").val());
+         data[column] =  ($("#"+bol1_no+"_date").val());
         }
         else if (column=="bol1_pkupTime")
         {
         console.log("time");
-        data[column] =  ($("#"+bol1_no+"_"+bol1_order_no+"_time").val());
+        data[column] =  ($("#"+bol1_no+"_time").val());
         }
         else
         {

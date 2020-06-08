@@ -30,19 +30,19 @@ namespace MySqlBasicCore.Controllers
             try
             {
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset("select bol_1.*,orders.name,orders.shipname,orders.shipaddress1,orders.shipaddress2,orders.shipaddress3,orders.clerk,bol2_PO from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No  and  bol_1.bol1_order_no = bol_2.bol2_order_no)  join orders on orders.ordernum = bol_1.bol1_order_no;");
+                DataSet ds = dbfunction.GetDataset("select count(*)Count, bol_1.bol1_no,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(shipaddress1)bol1_adrs1,max(shipaddress2)bol1_adrs2,max(shipaddress3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(clerk)bol1_ref, max(bol2_PO)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No ) left join orders on orders.ordernum = bol_2.bol2_order_no group by bol_1.bol1_no;");
 
                 bol_1_List = (from row in ds.Tables[0].AsEnumerable()
                               select new Bol_1_ViewModel
                               {
+                                  Count = Convert.ToInt32(row["count"]),
                                   bol1_no = Convert.ToString(row["bol1_no"]),
                                   bol1_date = Convert.ToString(row["bol1_date"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_date"]),
-                                  bol1_custnum = Convert.ToString(row["bol1_custnum"]),
+                                  bol2_custnum = Convert.ToString(row["bol2_custnum"]),
                                   bol1_name = Convert.ToString(row["name"]),
-                                  bol1_sname = Convert.ToString(row["shipname"]),
-                                  bol1_adrs1 = Convert.ToString(row["shipaddress1"]),
-                                  bol1_adrs2 = Convert.ToString(row["shipaddress2"]),
-                                  bol1_adrs3 = Convert.ToString(row["shipaddress3"]),
+                                  bol1_adrs1 = Convert.ToString(row["bol1_adrs1"]),
+                                  bol1_adrs2 = Convert.ToString(row["bol1_adrs2"]),
+                                  bol1_adrs3 = Convert.ToString(row["bol1_adrs3"]),
                                   bol1_city = Convert.ToString(row["bol1_city"]),
                                   bol1_state = Convert.ToString(row["bol1_state"]),
                                   bol1_zip = Convert.ToString(row["bol1_zip"]),
@@ -54,13 +54,15 @@ namespace MySqlBasicCore.Controllers
                                   bol1_ttl_weight = Convert.ToString(row["bol1_ttl_weight"]) == "" ? (Decimal?)null : Convert.ToDecimal(row["bol1_ttl_weight"]),
                                   bol1_ttlValue = Convert.ToString(row["bol1_ttlValue"]) == "" ? (Decimal?)null : Convert.ToDecimal(row["bol1_ttlValue"]),
                                   bol1_HE_WH = Convert.ToString(row["bol1_HE_WH"]),
-                                  bol1_order_no = Convert.ToString(row["bol1_order_no"]),
-                                  bol1_ref = Convert.ToString(row["clerk"]),
-                                  bol1_PO_No = Convert.ToString(row["bol2_PO"]),
+                                  bol2_order_no = Convert.ToString(row["bol2_order_no"]),
+                                  bol1_ref = Convert.ToString(row["bol1_ref"]),
+                                  bol1_PO_No = Convert.ToString(row["bol1_PO_No"]),
                                   bol1_carrierName = Convert.ToString(row["bol1_carrierName"]),
                                   bol1_carrierPhone = Convert.ToString(row["bol1_carrierPhone"]),
                                   bol1_PkupDate = Convert.ToString(row["bol1_PkupDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_PkupDate"]),
-                                  bol1_pkupTime = Convert.ToString(row["bol1_pkupTime"])
+                                  bol1_pkupTime = Convert.ToString(row["bol1_pkupTime"]),
+                                  Conformation = Convert.ToString(row["Conformation"])
+                                  
                               }).ToList();
             }
             catch (Exception Ex)
@@ -80,7 +82,7 @@ namespace MySqlBasicCore.Controllers
                 }
                 ViewBag.OrderNo = id;
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset("select * from bol_2 where bol2_No =" + id);
+                DataSet ds = dbfunction.GetDataset("select * from bol_2 left join orders on orders.ordernum = bol_2.bol2_order_no  where bol2_No =" + id);
 
                 bol_2_List = (from row in ds.Tables[0].AsEnumerable()
                               select new Bol_2_ViewModel
@@ -89,6 +91,9 @@ namespace MySqlBasicCore.Controllers
                                   bol2_pkgs = Convert.ToString(row["bol2_pkgs"]) == "" ? (int?)null : Convert.ToInt32(row["bol2_pkgs"]),
                                   bol2_weight = Convert.ToString(row["bol2_weight"]) == "" ? (Decimal?)null : Convert.ToDecimal(row["bol2_weight"]),
                                   bol2_value = Convert.ToString(row["bol2_value"]) == "" ? (Decimal?)null : Convert.ToDecimal(row["bol2_value"]),
+                                  bol2_custnum = Convert.ToString(row["bol2_custnum"]),
+                                  bol2_sname = Convert.ToString(row["shipname"]),
+
                               }).ToList();
             }
             catch (Exception ex)
@@ -157,7 +162,7 @@ namespace MySqlBasicCore.Controllers
                         long.TryParse(Convert.ToString(rows[12]), out TovBol_pro);
                         TovBol_Whse = Convert.ToString(rows[13]);
                         TovBol_freightTerms = Convert.ToString(rows[14]);
-
+                        
 
 
                         bolLists.Add(new TovBol
@@ -200,7 +205,7 @@ namespace MySqlBasicCore.Controllers
 
 
         [HttpPost]
-        public JsonResult UpdateBolDetail(string bol1_no, string bol1_order_no, string column, string bol1_carrierName, string bol1_carrierPhone, DateTime? bol1_PkupDate, DateTime? bol1_pkupTime)
+        public JsonResult UpdateBolDetail(string bol1_no, string column,string bol1_carrierName, string bol1_carrierPhone, DateTime ? bol1_PkupDate, DateTime ? bol1_pkupTime, string Conformation)
         {
             ResponseModel response = new ResponseModel();
             try
@@ -208,23 +213,27 @@ namespace MySqlBasicCore.Controllers
                 ItemclassViewModel model = new ItemclassViewModel();
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
                 var query = "";
-                if (column == "bol1_carrierName")
+                if (column== "bol1_carrierName")
                 {
-                    query = "Update bol_1 set bol1_carrierName='" + bol1_carrierName + "'  where bol1_no ='" + bol1_no + "' and  bol1_order_no='" + bol1_order_no + "' ";
+                    query = "Update bol_1 set bol1_carrierName='"+ bol1_carrierName + "'  where bol1_no ='" + bol1_no + "'  ";
                 }
                 else if (column == "bol1_carrierPhone")
                 {
-                    query = "Update bol_1 set bol1_carrierPhone='" + bol1_carrierPhone + "'  where bol1_no ='" + bol1_no + "' and  bol1_order_no='" + bol1_order_no + "' ";
+                    query = "Update bol_1 set bol1_carrierPhone='" + bol1_carrierPhone + "'  where bol1_no ='" + bol1_no + "'  ";
                 }
                 else if (column == "bol1_PkupDate")
                 {
-                    query = "Update bol_1 set bol1_PkupDate='" + bol1_PkupDate.Value.ToString("yyyy/MM/dd") + "'   where bol1_no ='" + bol1_no + "' and  bol1_order_no='" + bol1_order_no + "' ";
+                    query = "Update bol_1 set bol1_PkupDate='" + bol1_PkupDate.Value.ToString("yyyy/MM/dd") + "'   where bol1_no ='" + bol1_no + "' ";
                 }
-                else
+                else if (column == "Conformation")
                 {
-                    query = "Update bol_1 set bol1_pkupTime='" + bol1_pkupTime.Value.ToString("HH:mm") + "'  where bol1_no ='" + bol1_no + "' and  bol1_order_no='" + bol1_order_no + "' ";
+                    query = "Update bol_1 set Conformation='" + Conformation + "'  where bol1_no ='" + bol1_no + "'  ";
                 }
-
+                else  
+                {
+                    query = "Update bol_1 set bol1_pkupTime='" + bol1_pkupTime.Value.ToString("HH:mm") + "'  where bol1_no ='" + bol1_no + "'  ";
+                }
+                
                 DataSet ds = dbfunction.GetDataset(query);
                 response.Status = "1";
                 response.Message = "Detail updated successfully";

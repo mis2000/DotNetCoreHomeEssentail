@@ -9,7 +9,6 @@ namespace MySqlBasicCore.Models
     {
         public string bol1_no { get; set; }
         public DateTime? bol1_date { get; set; }
-        public string bol1_custnum { get; set; }
         public string bol1_name { get; set; }
         public string bol1_adrs1 { get; set; }
         public string bol1_adrs2 { get; set; }
@@ -27,7 +26,6 @@ namespace MySqlBasicCore.Models
         public DateTime? bol1_OrderDate { get; set; }
         public DateTime? bol1_CancelDate { get; set; }
         public Decimal? bol1_ttlValue { get; set; }
-        public string bol1_order_no { get; set; }
         public string bol1_ref { get; set; }
         public string bol1_PO_No { get; set; }
         public string bol1_sname { get; set; }
@@ -35,6 +33,10 @@ namespace MySqlBasicCore.Models
         public string bol1_carrierPhone { get; set; }
         public DateTime? bol1_PkupDate { get; set; }
         public string bol1_pkupTime { get; set; }
+        public string bol2_order_no { get; set; }
+        public string bol2_custnum { get; set; }
+        public string Conformation { get; set; }
+        public int Count { get; set; }
 
     }
 
@@ -45,7 +47,9 @@ namespace MySqlBasicCore.Models
         public decimal? bol2_weight { get; set; }
         public int? bol2_No { get; set; }
         public string bol2_PO { get; set; }
+        public string bol2_sname { get; set; }
         public decimal? bol2_value { get; set; }
+        public string bol2_custnum { get; set; }
     }
 
     public class LoginViewModel
