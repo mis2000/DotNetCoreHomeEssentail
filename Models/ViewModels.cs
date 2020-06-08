@@ -8,7 +8,6 @@ namespace MySqlBasicCore.Models
     public class Bol_1_ViewModel
     {
         public string bol1_no { get; set; }
-        public int ? bol1_order_no { get; set; }
         public DateTime? bol1_date { get; set; }
         public string bol1_custnum { get; set; }
         public string bol1_name { get; set; }
@@ -22,7 +21,7 @@ namespace MySqlBasicCore.Models
         public string bol1_pro_no { get; set; }
         public string bol1_scac { get; set; }
         public string bol1_frght_terms { get; set; }
-        public int ? bol1_ttl_pkgs { get; set; }
+        public int? bol1_ttl_pkgs { get; set; }
         public decimal? bol1_ttl_weight { get; set; }
         public string bol1_HE_WH { get; set; }
         public DateTime? bol1_OrderDate { get; set; }
@@ -314,7 +313,7 @@ namespace MySqlBasicCore.Models
         [SearchableString]
         [Sortable]
         public string D0 { get; set; }
-       
+
     }
 
     public class Order_DetailViewModel
@@ -531,13 +530,13 @@ namespace MySqlBasicCore.Models
 
     public class UserViewModel
     {
-          public int UserId { get; set; }
+        public int UserId { get; set; }
 
-      
+
         public string Username { get; set; }
 
         [Required(ErrorMessage = "Please enter user name")]
-        [EmailAddress(ErrorMessage ="Please enter valid email")]
+        [EmailAddress(ErrorMessage = "Please enter valid email")]
         [MaxLength(50, ErrorMessage = "Role name should be less or equal to 50 characters.")]
         public string Email { get; set; }
 
@@ -547,11 +546,11 @@ namespace MySqlBasicCore.Models
         public string Password { get; set; }
 
 
-       
+
         [Required(ErrorMessage = "Please enter confirm password")]
-        
-        [Display(Name ="Confirm Password")]
-        [Compare("Password", ErrorMessage ="Password and confirm password should me same")]
+
+        [Display(Name = "Confirm Password")]
+        [Compare("Password", ErrorMessage = "Password and confirm password should me same")]
         public string ConfirmPassword { get; set; }
 
         [Display(Name = "Role")]
@@ -564,7 +563,7 @@ namespace MySqlBasicCore.Models
         public DateTime? ModifiedDate { get; set; }
         public List<RoleViewModel> RoleList { get; set; }
         public string Rolename { get; set; }
-        public UserViewModel() 
+        public UserViewModel()
         {
             RoleList = new List<RoleViewModel>();
         }
@@ -572,9 +571,9 @@ namespace MySqlBasicCore.Models
 
     public class RoleViewModel
     {
-         public int RoleId { get; set; }
+        public int RoleId { get; set; }
 
-        [Display(Name ="Role Name")]
+        [Display(Name = "Role Name")]
         [Required(ErrorMessage = "Please enter role name")]
         [MaxLength(50, ErrorMessage = "Role name should be less or equal to 50 characters.")]
         public string Rolename { get; set; }
@@ -588,8 +587,8 @@ namespace MySqlBasicCore.Models
 
     public class MenuViewModel
     {
-         public int MenuId { get; set; }
-         public string Name { get; set; }
+        public int MenuId { get; set; }
+        public string Name { get; set; }
         public string Parent { get; set; }
         public string Action { get; set; }
         public string Controller { get; set; }
@@ -601,9 +600,9 @@ namespace MySqlBasicCore.Models
     }
     public class UserclaimViewModel
     {
-         
+
         public int ClaimId { get; set; }
-        [Display(Name ="Role")]
+        [Display(Name = "Role")]
         public string RoleName { get; set; }
         public int RoleId { get; set; }
         public int MenuId { get; set; }

@@ -64,7 +64,6 @@ public DbSet<TovBol> tbl_TovBol { get; set; }
         public DateTime? bol1_OrderDate { get; set; }
         public DateTime? bol1_CancelDate { get; set; }
         public Decimal? bol1_ttlValue { get; set; }
-        public string bol1_order_no { get; set; }
         public string bol1_carrierName { get; set; }
         public string bol1_carrierPhone { get; set; }
         public DateTime? bol1_PkupDate { get; set; }

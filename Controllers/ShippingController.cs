@@ -30,7 +30,7 @@ namespace MySqlBasicCore.Controllers
             try
             {
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset("select bol_1.*,orders.name,orders.shipname,orders.shipaddress1,orders.shipaddress2,orders.shipaddress3,orders.clerk,bol2_PO from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No  and  bol_1.bol1_order_no = bol_2.bol2_order_no) left join orders on orders.ordernum = bol_1.bol1_order_no;");
+                DataSet ds = dbfunction.GetDataset("select bol_1.*,orders.name,orders.shipname,orders.shipaddress1,orders.shipaddress2,orders.shipaddress3,orders.clerk,bol2_PO from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No  and  bol_1.bol1_order_no = bol_2.bol2_order_no)  join orders on orders.ordernum = bol_1.bol1_order_no;");
 
                 bol_1_List = (from row in ds.Tables[0].AsEnumerable()
                               select new Bol_1_ViewModel
@@ -157,7 +157,7 @@ namespace MySqlBasicCore.Controllers
                         long.TryParse(Convert.ToString(rows[12]), out TovBol_pro);
                         TovBol_Whse = Convert.ToString(rows[13]);
                         TovBol_freightTerms = Convert.ToString(rows[14]);
-                        
+
 
 
                         bolLists.Add(new TovBol
@@ -200,7 +200,7 @@ namespace MySqlBasicCore.Controllers
 
 
         [HttpPost]
-        public JsonResult UpdateBolDetail(string bol1_no, string bol1_order_no, string column,string bol1_carrierName, string bol1_carrierPhone, DateTime ? bol1_PkupDate, DateTime ? bol1_pkupTime)
+        public JsonResult UpdateBolDetail(string bol1_no, string bol1_order_no, string column, string bol1_carrierName, string bol1_carrierPhone, DateTime? bol1_PkupDate, DateTime? bol1_pkupTime)
         {
             ResponseModel response = new ResponseModel();
             try
@@ -208,9 +208,9 @@ namespace MySqlBasicCore.Controllers
                 ItemclassViewModel model = new ItemclassViewModel();
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
                 var query = "";
-                if (column== "bol1_carrierName")
+                if (column == "bol1_carrierName")
                 {
-                    query = "Update bol_1 set bol1_carrierName='"+ bol1_carrierName + "'  where bol1_no ='" + bol1_no + "' and  bol1_order_no='" + bol1_order_no + "' ";
+                    query = "Update bol_1 set bol1_carrierName='" + bol1_carrierName + "'  where bol1_no ='" + bol1_no + "' and  bol1_order_no='" + bol1_order_no + "' ";
                 }
                 else if (column == "bol1_carrierPhone")
                 {
@@ -220,11 +220,11 @@ namespace MySqlBasicCore.Controllers
                 {
                     query = "Update bol_1 set bol1_PkupDate='" + bol1_PkupDate.Value.ToString("yyyy/MM/dd") + "'   where bol1_no ='" + bol1_no + "' and  bol1_order_no='" + bol1_order_no + "' ";
                 }
-                else  
+                else
                 {
                     query = "Update bol_1 set bol1_pkupTime='" + bol1_pkupTime.Value.ToString("HH:mm") + "'  where bol1_no ='" + bol1_no + "' and  bol1_order_no='" + bol1_order_no + "' ";
                 }
-                
+
                 DataSet ds = dbfunction.GetDataset(query);
                 response.Status = "1";
                 response.Message = "Detail updated successfully";

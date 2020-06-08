@@ -83,14 +83,14 @@
                                             <input type="text" class="form-control" 
                                                    id="@(row.bol1_no+"_"+@row.bol1_order_no+"_date")"
                                                     onchange="updateBolDetail('@row.bol1_no','@row.bol1_order_no','bol1_PkupDate')"
-                                                   value="@row.bol1_PkupDate?.ToString("yyyy/MM/dd")">
+                                                   value="@row.bol1_PkupDate?.ToString("MM/dd/yyyy")">
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </span>
                                         </div>
 
                                     </td>
-                                    <td style="width:150px">
+                                    <td style="min-width:150px">
                                         <div class="input-group clockpicker" data-autoclose="true">
                                             <input type="text" class="form-control"  
                                                    id="@(row.bol1_no+"_"+@row.bol1_order_no+"_time")"
