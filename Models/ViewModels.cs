@@ -42,6 +42,8 @@ namespace MySqlBasicCore.Models
 
     public class Bol_2_ViewModel
     {
+        public string bol2_PO_No { get; set; }
+
         public int? bol2_order_no { get; set; }
         public int? bol2_pkgs { get; set; }
         public decimal? bol2_weight { get; set; }

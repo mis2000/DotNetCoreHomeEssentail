@@ -30,7 +30,7 @@ namespace MySqlBasicCore.Controllers
             try
             {
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset("select count(*)Count, bol_1.bol1_no,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(shipaddress1)bol1_adrs1,max(shipaddress2)bol1_adrs2,max(shipaddress3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(clerk)bol1_ref, max(bol2_PO)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No ) left join orders on orders.ordernum = bol_2.bol2_order_no group by bol_1.bol1_no;");
+                DataSet ds = dbfunction.GetDataset("select count(*)Count, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(shipaddress1)bol1_adrs1,max(shipaddress2)bol1_adrs2,max(shipaddress3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(clerk)bol1_ref, max(bol2_PO)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No )  join orders on orders.ordernum = bol_2.bol2_order_no group by bol_1.bol1_no;");
 
                 bol_1_List = (from row in ds.Tables[0].AsEnumerable()
                               select new Bol_1_ViewModel
@@ -60,6 +60,7 @@ namespace MySqlBasicCore.Controllers
                                   bol1_carrierName = Convert.ToString(row["bol1_carrierName"]),
                                   bol1_carrierPhone = Convert.ToString(row["bol1_carrierPhone"]),
                                   bol1_PkupDate = Convert.ToString(row["bol1_PkupDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_PkupDate"]),
+                                  bol1_CancelDate = Convert.ToString(row["bol1_CancelDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_CancelDate"]),
                                   bol1_pkupTime = Convert.ToString(row["bol1_pkupTime"]),
                                   Conformation = Convert.ToString(row["Conformation"])
                                   
@@ -82,12 +83,13 @@ namespace MySqlBasicCore.Controllers
                 }
                 ViewBag.OrderNo = id;
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset("select * from bol_2 left join orders on orders.ordernum = bol_2.bol2_order_no  where bol2_No =" + id);
+                DataSet ds = dbfunction.GetDataset("select * from bol_2  join orders on orders.ordernum = bol_2.bol2_order_no  where bol2_No =" + id);
 
                 bol_2_List = (from row in ds.Tables[0].AsEnumerable()
                               select new Bol_2_ViewModel
                               {
                                   bol2_order_no = Convert.ToString(row["bol2_order_no"]) == "" ? (int?)null : Convert.ToInt32(row["bol2_order_no"]),
+                                  bol2_PO_No = Convert.ToString(row["bol2_PO"]),
                                   bol2_pkgs = Convert.ToString(row["bol2_pkgs"]) == "" ? (int?)null : Convert.ToInt32(row["bol2_pkgs"]),
                                   bol2_weight = Convert.ToString(row["bol2_weight"]) == "" ? (Decimal?)null : Convert.ToDecimal(row["bol2_weight"]),
                                   bol2_value = Convert.ToString(row["bol2_value"]) == "" ? (Decimal?)null : Convert.ToDecimal(row["bol2_value"]),

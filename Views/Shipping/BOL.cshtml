@@ -15,7 +15,7 @@
                     <table class="table table-striped table-bordered table-hover dataTables-example" id="tbl">
                         <thead>
                             <tr>
-                                <th>Action</th>
+                                
                                 <th>HE_WH</th>
                                 <th>BOL_NO</th>
                                 <th>Order_No</th>
@@ -50,93 +50,93 @@
                         <tbody>
                             @foreach (var row in Model)
                             {
-                                <tr>
-                                    <th>
-                                        <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>   Detail</a>
-                                    </th>
-                                    <td>@row.bol1_HE_WH</td>
-                                    <td>@row.bol1_no</td>
-                                    <td>
-                                        @if (row.Count > 1)
-                                        {
-                                            <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
-                                        }
-                                        else
-                                        {
-                                            @row.bol2_order_no
-                                        }
+                            <tr>
 
-                                    </td>
-                                    <td>
-                                        @if (row.Count > 1)
-                                        {
-                                            <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
-                                        }
-                                        else
-                                        {
-                                            @row.bol1_PO_No
-                                        }
-                                        
-                                    </td>
-                                    <td>@row.bol1_date</td>
-                                    <td>@row.bol1_name</td>
-                                    <td>@row.bol1_adrs1</td>
-                                    <td>@row.bol1_adrs2</td>
-                                    <td>@row.bol1_adrs3</td>
-                                    <td>@row.bol1_Lctn</td>
+                                <td>@row.bol1_HE_WH</td>
+                                <td>@row.bol1_no</td>
+                                <td>
+                                    @if (row.Count > 1)
+                                    {
+                                        <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
+                                    }
+                                    else
+                                    {
+                                        <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol2_order_no</a>
 
-                                    <td>
+                                    }
 
-                                        <input type="text" class="form-control expandOnHover" value="@row.Conformation"
-                                               onchange="updateBolDetail('@row.bol1_no','Conformation')" />
+                                </td>
+                                <td>
+                                    @if (row.Count > 1)
+                                    {
+                                        <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
+                                    }
+                                    else
+                                    {
+                                        <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol1_PO_No</a>
 
+                                    }
 
-                                    </td>
-                                    <td>
+                                </td>
+                                <td>@row.bol1_date?.ToString("MM/dd/yyyy")</td>
+                                <td>@row.bol1_name</td>
+                                <td>@row.bol1_adrs1</td>
+                                <td>@row.bol1_adrs2</td>
+                                <td>@row.bol1_adrs3</td>
+                                <td>@row.bol1_Lctn</td>
 
-                                        <input  type="text" class="form-control" value="@row.bol1_carrierName" 
-                                               onchange="updateBolDetail('@row.bol1_no','bol1_carrierName')" />
+                                <td>
+
+                                    <input type="text" class="form-control expandOnHover" value="@row.Conformation"
+                                           onchange="updateBolDetail('@row.bol1_no','Conformation')" />
 
 
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control" value="@row.bol1_carrierPhone"
-                                               onchange="updateBolDetail('@row.bol1_no','@row.bol1_carrierPhone','bol1_carrierPhone')" />
-                                    </td>
-                                    <td>
-                                        <div class="input-group date" style="width:150px">
-                                            <input type="text" class="form-control" 
-                                                   id="@(row.bol1_no+"_date")"
-                                                    onchange="updateBolDetail('@row.bol1_no','bol1_PkupDate')"
-                                                   value="@row.bol1_PkupDate?.ToString("yyyy/MM/dd")">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
+                                </td>
+                                <td>
 
-                                    </td>
-                                    <td style="width:150px">
-                                        <div class="input-group clockpicker" data-autoclose="true">
-                                            <input type="text" class="form-control"  
-                                                   id="@(row.bol1_no+"_time")"
-                                                    onchange="updateBolDetail('@row.bol1_no','bol1_pkupTime')"
-                                                   value="@row.bol1_pkupTime">
-                                            <span class="input-group-addon">
-                                                <span class="fa fa-clock-o"></span>
-                                            </span>
-                                        </div>
+                                    <input type="text" class="form-control" value="@row.bol1_carrierName"
+                                           onchange="updateBolDetail('@row.bol1_no','bol1_carrierName')" />
 
-                                    </td>
 
-                                    <td></td>
-                                    <td>@row.bol1_scac</td>
-                                    <td>@row.bol1_frght_terms</td>
-                                    <td>@row.bol1_ttl_pkgs</td>
-                                    <td>@row.bol1_ttlValue</td>
-                                    <td>@row.bol1_ttl_weight</td>
-                                    <td>@row.bol1_pro_no</td>
-                                    <td>@row.bol1_ref</td>
-                                </tr>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" value="@row.bol1_carrierPhone"
+                                           onchange="updateBolDetail('@row.bol1_no','@row.bol1_carrierPhone','bol1_carrierPhone')" />
+                                </td>
+                                <td>
+                                    <div class="input-group date" style="width:150px">
+                                        <input type="text" class="form-control"
+                                               id="@(row.bol1_no+"_date")"
+                                               onchange="updateBolDetail('@row.bol1_no','bol1_PkupDate')"
+                                               value="@row.bol1_PkupDate?.ToString("yyyy/MM/dd")">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+
+                                </td>
+                                <td style="width:150px">
+                                    <div class="input-group clockpicker" data-autoclose="true">
+                                        <input type="text" class="form-control"
+                                               id="@(row.bol1_no+"_time")"
+                                               onchange="updateBolDetail('@row.bol1_no','bol1_pkupTime')"
+                                               value="@row.bol1_pkupTime">
+                                        <span class="input-group-addon">
+                                            <span class="fa fa-clock-o"></span>
+                                        </span>
+                                    </div>
+
+                                </td>
+
+                                <td>@row.bol1_CancelDate?.ToString("MM/dd/yyyy")</td>
+                                <td>@row.bol1_scac</td>
+                                <td>@row.bol1_frght_terms</td>
+                                <td>@row.bol1_ttl_pkgs</td>
+                                <td>@row.bol1_ttlValue</td>
+                                <td>@row.bol1_ttl_weight</td>
+                                <td>@row.bol1_pro_no</td>
+                                <td>@row.bol1_ref</td>
+                            </tr>
                             }
                         </tbody>
                     </table>
@@ -155,8 +155,8 @@
     </environment>
 <style>
     .expandOnHover:hover {
-     width:250px !important;
-     height:75px
+     /*width:250px !important;
+     height:75px*/
     }
    
 </style>
