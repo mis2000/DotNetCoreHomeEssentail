@@ -24,7 +24,9 @@ namespace MySqlBasicCore.Models
         public DbSet<Invoice> tbl_Invoice { get; set; }
         public DbSet<DeptProjection> tbl_DeptProjection { get; set; }
         public DbSet<TovBol> tbl_TovBol { get; set; }
-        
+        public DbSet<OrderNote> tbl_OrderNote { get; set; }
+        public DbSet<Tovordernote> tbl_Tovordernote { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +38,8 @@ namespace MySqlBasicCore.Models
             modelBuilder.Entity<Invoice>(eb => { eb.HasNoKey(); });
             modelBuilder.Entity<Invoiceline>(eb => { eb.HasNoKey(); });
             modelBuilder.Entity<DeptProjection>(eb => { eb.HasNoKey(); });
+            modelBuilder.Entity<OrderNote>(eb => { eb.HasNoKey(); });
+            
             
         }
     }
@@ -446,6 +450,28 @@ namespace MySqlBasicCore.Models
         public string TovBol_Whse { get; set; }
         public string TovBol_freightTerms { get; set; }
 
+    }
+
+    [Table("ordernotes")]
+    public class OrderNote
+    {
+        public string Ordernum { get; set; }
+        public string Year { get; set; }
+        public int Line { get; set; }
+        public string Note { get; set; }
+    }
+
+    [Table("tov_ordernotes")]
+    public class Tovordernote
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Tovordernote_id { get; set; }
+
+        public string Ordernum { get; set; }
+        public string Year { get; set; }
+        public int Line { get; set; }
+        public string Note { get; set; }
     }
 
 

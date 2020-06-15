@@ -7,6 +7,8 @@ namespace MySqlBasicCore.Models
 {
     public class Bol_1_ViewModel
     {
+        public bool ShowAll { get; set; }
+        public int Line { get; set; }
         public string bol1_no { get; set; }
         public DateTime? bol1_date { get; set; }
         public string bol1_name { get; set; }
@@ -680,5 +682,13 @@ namespace MySqlBasicCore.Models
         public decimal? TovBol_Value { get; set; }
 
 
+    }
+
+    public class OrderNoteViewModel
+    {
+        public string Ordernum { get; set; }
+        public string Year { get; set; }
+        public int Line { get; set; }
+        public string Note { get; set; }
     }
 }

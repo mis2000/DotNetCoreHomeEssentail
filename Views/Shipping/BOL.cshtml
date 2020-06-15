@@ -2,148 +2,206 @@
 @{
     ViewBag.Title = "Home Page";
 }
-
+@using Microsoft.Extensions.Options;
+@inject IOptions<Appsettings> Settings
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h3>Home</h3>
+            <form class="m-t" role="form" id="frm" method="post" action="@Settings.Value.WebBaseURL/Shipping/BOL">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h3>Home</h3>
+                        @if (Model.Count() > 0)
+                        {
+                            <div class="ibox-tools" style="width:120px">
+                                <div class="form-group">
+                                    <label class="control-label " style="margin-right:10px">
+                                        Show All
+                                    </label>
+                                    @Html.CheckBoxFor(m => m.First().ShowAll, new { style = "width:25px;height:25px;display:none", @class = "chk" })
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table table-striped table-bordered table-hover dataTables-example" id="tbl">
+                            <thead>
+                                <tr>
+
+                                    <th>HE_WH</th>
+                                    <th>BOL_NO</th>
+                                    <th>Order_No</th>
+                                    <th>PO_No</th>
+                                    <th>Ship Date</th>
+                                    <th>Name</th>
+                                    <th>Adrs1</th>
+                                    <th>Adrs2</th>
+                                    <th>Adrs3</th>
+                                    <th>Lctn</th>
+                                    <th>Conformation</th>
+                                    <th>CarrierName</th>
+                                    <th>CarrierPhone</th>
+                                    <th>PkupDate</th>
+                                    <th>PkupTime</th>
+                                    <th>Canceldate</th>
+                                    <th>Scac</th>
+                                    <th>Frght_terms</th>
+                                    <th>Ttl_pkgs</th>
+                                    <th>TtlValue</th>
+                                    <th>Ttl_weight</th>
+                                    <th>Pro_no</th>
+                                    <th>Ref</th>
+                                    <th>Notes</th>
+
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var row in Model)
+                                {
+                                    <tr>
+
+                                        <td>@row.bol1_HE_WH</td>
+                                        <td>@row.bol1_no</td>
+                                        <td>
+                                            @if (row.Count > 1)
+                                            {
+                                                <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
+                                            }
+                                            else
+                                            {
+                                                <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol2_order_no</a>
+
+                                            }
+
+                                        </td>
+                                        <td>
+                                            @if (row.Count > 1)
+                                            {
+                                                <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
+                                            }
+                                            else
+                                            {
+                                                <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol1_PO_No</a>
+
+                                            }
+
+                                        </td>
+                                        <td>@row.bol1_date?.ToString("MM/dd/yyyy")</td>
+                                        <td>@row.bol1_name</td>
+                                        <td>@row.bol1_adrs1</td>
+                                        <td>@row.bol1_adrs2</td>
+                                        <td>@row.bol1_adrs3</td>
+                                        <td>@row.bol1_Lctn</td>
+
+                                        <td>
+
+                                            <input type="text" class="form-control expandOnHover" value="@row.Conformation"
+                                                   onchange="updateBolDetail('@row.bol1_no','Conformation')" />
+
+
+                                        </td>
+                                        <td>
+
+                                            <input type="text" class="form-control" value="@row.bol1_carrierName"
+                                                   onchange="updateBolDetail('@row.bol1_no','bol1_carrierName')" />
+
+
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" value="@row.bol1_carrierPhone"
+                                                   onchange="updateBolDetail('@row.bol1_no','@row.bol1_carrierPhone','bol1_carrierPhone')" />
+                                        </td>
+                                        <td>
+                                            <div class="input-group date" style="width:150px">
+                                                <input type="text" class="form-control"
+                                                       id="@(row.bol1_no+"_date")"
+                                                       onchange="updateBolDetail('@row.bol1_no','bol1_PkupDate')"
+                                                       value="@row.bol1_PkupDate?.ToString("yyyy/MM/dd")">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+
+                                        </td>
+                                        <td style="width:150px">
+                                            <div class="input-group clockpicker" data-autoclose="true">
+                                                <input type="text" class="form-control"
+                                                       id="@(row.bol1_no+"_time")"
+                                                       onchange="updateBolDetail('@row.bol1_no','bol1_pkupTime')"
+                                                       value="@row.bol1_pkupTime">
+                                                <span class="input-group-addon">
+                                                    <span class="fa fa-clock-o"></span>
+                                                </span>
+                                            </div>
+
+                                        </td>
+
+                                        <td>@row.bol1_CancelDate?.ToString("MM/dd/yyyy")</td>
+                                        <td>@row.bol1_scac</td>
+                                        <td>@row.bol1_frght_terms</td>
+                                        <td>@row.bol1_ttl_pkgs</td>
+                                        <td>@row.bol1_ttlValue</td>
+                                        <td>@row.bol1_ttl_weight</td>
+                                        <td>@row.bol1_pro_no</td>
+                                        <td>@row.bol1_ref</td>
+                                        <td>
+                                            @if (row.Line > 0)
+                                            {
+                                                <a data-toggle="modal" data-target="#notes"
+                                                   onclick="openNote('@row.bol1_no')" href="#">View</a>
+                                            }
+                                            else
+                                            {
+
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="ibox-content">
-                    <table class="table table-striped table-bordered table-hover dataTables-example" id="tbl">
+
+                <button id="yes" type="submit" name="submit" value="yes" style="display:none"></button>
+                <button id="no" type="submit" name="submit" value="no" style="display:none"></button>
+            </form>
+                </div>
+    </div>
+
+    <div class="modal inmodal fade" id="notes" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Notes</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped table-bordered table-hover" id="tblNotes">
                         <thead>
                             <tr>
-                                
-                                <th>HE_WH</th>
-                                <th>BOL_NO</th>
-                                <th>Order_No</th>
-                                <th>PO_No</th>
-                                <th>Ship Date</th>
-                                <th>Name</th>
-                                <th>Adrs1</th>
-                                <th>Adrs2</th>
-                                <th>Adrs3</th>
-                                
-                                <th>Lctn</th>
-
-                                <th>Conformation</th>
-                                <th>CarrierName</th>
-                                <th>CarrierPhone</th>
-                                <th>PkupDate</th>
-                                <th>PkupTime</th>
-
-                                <th>Canceldate</th>
-                                <th>Scac</th>
-                                <th>Frght_terms</th>
-                                <th>Ttl_pkgs</th>
-                                <th>TtlValue</th>
-                                <th>Ttl_weight</th>
-                                <th>Pro_no</th>
-                                <th>Ref</th>
-
-
-
+                                <td>Order No</td>
+                                <td>Year</td>
+                                <td>Line</td>
+                                <td>Note</td>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var row in Model)
-                            {
-                            <tr>
-
-                                <td>@row.bol1_HE_WH</td>
-                                <td>@row.bol1_no</td>
-                                <td>
-                                    @if (row.Count > 1)
-                                    {
-                                        <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
-                                    }
-                                    else
-                                    {
-                                        <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol2_order_no</a>
-
-                                    }
-
-                                </td>
-                                <td>
-                                    @if (row.Count > 1)
-                                    {
-                                        <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
-                                    }
-                                    else
-                                    {
-                                        <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol1_PO_No</a>
-
-                                    }
-
-                                </td>
-                                <td>@row.bol1_date?.ToString("MM/dd/yyyy")</td>
-                                <td>@row.bol1_name</td>
-                                <td>@row.bol1_adrs1</td>
-                                <td>@row.bol1_adrs2</td>
-                                <td>@row.bol1_adrs3</td>
-                                <td>@row.bol1_Lctn</td>
-
-                                <td>
-
-                                    <input type="text" class="form-control expandOnHover" value="@row.Conformation"
-                                           onchange="updateBolDetail('@row.bol1_no','Conformation')" />
-
-
-                                </td>
-                                <td>
-
-                                    <input type="text" class="form-control" value="@row.bol1_carrierName"
-                                           onchange="updateBolDetail('@row.bol1_no','bol1_carrierName')" />
-
-
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" value="@row.bol1_carrierPhone"
-                                           onchange="updateBolDetail('@row.bol1_no','@row.bol1_carrierPhone','bol1_carrierPhone')" />
-                                </td>
-                                <td>
-                                    <div class="input-group date" style="width:150px">
-                                        <input type="text" class="form-control"
-                                               id="@(row.bol1_no+"_date")"
-                                               onchange="updateBolDetail('@row.bol1_no','bol1_PkupDate')"
-                                               value="@row.bol1_PkupDate?.ToString("yyyy/MM/dd")">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                    </div>
-
-                                </td>
-                                <td style="width:150px">
-                                    <div class="input-group clockpicker" data-autoclose="true">
-                                        <input type="text" class="form-control"
-                                               id="@(row.bol1_no+"_time")"
-                                               onchange="updateBolDetail('@row.bol1_no','bol1_pkupTime')"
-                                               value="@row.bol1_pkupTime">
-                                        <span class="input-group-addon">
-                                            <span class="fa fa-clock-o"></span>
-                                        </span>
-                                    </div>
-
-                                </td>
-
-                                <td>@row.bol1_CancelDate?.ToString("MM/dd/yyyy")</td>
-                                <td>@row.bol1_scac</td>
-                                <td>@row.bol1_frght_terms</td>
-                                <td>@row.bol1_ttl_pkgs</td>
-                                <td>@row.bol1_ttlValue</td>
-                                <td>@row.bol1_ttl_weight</td>
-                                <td>@row.bol1_pro_no</td>
-                                <td>@row.bol1_ref</td>
-                            </tr>
-                            }
                         </tbody>
                     </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+
                 </div>
             </div>
         </div>
     </div>
+
 
 </div>
 @section Styles {
@@ -153,13 +211,12 @@
         <link href="~/css/plugins/datapicker/datepicker3.css" rel="stylesheet" />
         <link href="~/css/plugins/clockpicker/clockpicker.css" rel="stylesheet" />
     </environment>
-<style>
-    .expandOnHover:hover {
-     /*width:250px !important;
-     height:75px*/
-    }
-   
-</style>
+    <style>
+        .expandOnHover:hover {
+            /*width:250px !important;
+        height:75px*/
+        }
+    </style>
 }
 
 @section Scripts {
@@ -175,22 +232,18 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-              var mem = $('.input-group.date').datepicker({
+            var mem = $('.input-group.date').datepicker({
                 todayBtn: "linked",
                 keyboardNavigation: false,
                 forceParse: false,
                 calendarWeeks: true,
                 autoclose: true,
                 startDate: new Date(),
-                endDate: (addDays(new Date(),60))
+                endDate: (addDays(new Date(), 60))
 
             });
-			
             $('.clockpicker').clockpicker();
-
-
-
-             $('#tbl').DataTable({
+            $('#tbl').DataTable({
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
                     { extend: 'copy' },
@@ -209,78 +262,115 @@
                                 .css('font-size', 'inherit');
                         }
                     }
-                 ],
+                ],
                 stateSave: true,
-                 "scrollY": "" + (window.outerHeight - 350) + "px",
-                 "scrollX": "" + (window.outerWidth - 300) + "px",
-          });
+                "scrollY": "" + (window.outerHeight - 350) + "px",
+                "scrollX": "" + (window.outerWidth - 300) + "px",
+            });
+            $(".chk").on('click', function () {
+
+                if ($(".chk").prop("checked")) {
+                    $("#yes").trigger('click');
+                }
+                else {
+                    $("#no").trigger('click');
+                }
+
+            })
+
+            var checkAllCheck = '@ViewBag.showAll';
+            if (checkAllCheck=='yes') {
+                $(".chk").prop('checked',true);
+            }
+            $(".chk").show();
+
         });
 
+ 
+
         function updateBolDetail(bol1_no, column) {
-            if (column=="bol1_pkupTime") {
+            if (column == "bol1_pkupTime") {
                 var checkTime = ($("#" + bol1_no + "_time").val());
                 var checkTimes = checkTime.split(":");
-                if (checkTimes.length>0) {
-                    if (Number( checkTimes[0]) < 7) {
+                if (checkTimes.length > 0) {
+                    if (Number(checkTimes[0]) < 7) {
                         swal("Time should be between 7AM(07:00) to 7PM(19:00)", "", "error");
                         return;
                     }
-                    if (Number( checkTimes[0]) > 19) {
+                    if (Number(checkTimes[0]) > 19) {
                         swal("Time should be between 7AM(07:00) to 7PM(19:00)", "", "error");
                         return;
                     }
 
-                    if (Number( checkTimes[0]) == 19 && Number( checkTimes[1]) > 0 ) {
+                    if (Number(checkTimes[0]) == 19 && Number(checkTimes[1]) > 0) {
                         swal("Time should be between 7AM(07:00) to 7PM(19:00)", "", "error");
                         return;
                     }
                 }
-                
+
             }
 
 
 
-        var data = { 'bol1_no': bol1_no};
-        //column
-        data.column =column;
-       
-        if(column=="bol1_PkupDate")
-        {
-         
-         data[column] =  ($("#"+bol1_no+"_date").val());
-        }
-        else if (column=="bol1_pkupTime")
-        {
-        console.log("time");
-        data[column] =  ($("#"+bol1_no+"_time").val());
-        }
-        else
-        {
-         data[column] = $(event.target).val();
-        }
-        
-        console.log(data);
-             $.ajax({
-                    url: "/Shipping/UpdateBolDetail",
-                    type: "POST",
-                    dataType: "json",
-                    data: data,
-                    success: function (data) {
-                        if (data.Status=="1") {
-                            swal(data.Message, "", "success")
-                        }
-                        else {
-                            swal(data.Message, "", "error")
-                        }
+            var data = { 'bol1_no': bol1_no };
+            //column
+            data.column = column;
+
+            if (column == "bol1_PkupDate") {
+
+                data[column] = ($("#" + bol1_no + "_date").val());
+            }
+            else if (column == "bol1_pkupTime") {
+                console.log("time");
+                data[column] = ($("#" + bol1_no + "_time").val());
+            }
+            else {
+                data[column] = $(event.target).val();
+            }
+
+            console.log(data);
+            $.ajax({
+                url: "/Shipping/UpdateBolDetail",
+                type: "POST",
+                dataType: "json",
+                data: data,
+                success: function (data) {
+                    if (data.Status == "1") {
+                        swal(data.Message, "", "success")
                     }
-                })
+                    else {
+                        swal(data.Message, "", "error")
+                    }
+                }
+            })
         }
 
         function addDays(date, days) {
-        var result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
-       }
+            var result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+
+        function openNote(bol_no) {
+
+            $("#tblNotes tbody").html('');
+
+            var data = { 'bol1_no': bol_no };
+               $.ajax({
+                url: "/Shipping/GetOrderNotes",
+                type: "POST",
+                dataType: "json",
+                data: data,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var row = data[i];
+                        $("#tblNotes tbody").append("<tr><td>"+row.Ordernum+"</td><td>20"+row.Year+"</td><td>"+row.Line+"</td><td>"+row.Note+"</td></tr>");
+                    }
+
+                }
+            })
+
+        }
 
     </script>
 }

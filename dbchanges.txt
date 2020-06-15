@@ -445,6 +445,106 @@ drop temporary table Temp_bol1;
 drop temporary table Temp_bol2;
 truncate table TovBol;
 END
+-------------------------------------------------------------------------------------------------------
+
+
+
+insert into menus (Name,Parent,Action,Controller,Childmenus,Icon,parenticon )
+values
+('Import BOL Notes','Shipping','Import_BOL_Notes','Shipping','Import_BOL_Notes','fa fa-truck','fa fa-truck' );
+
+
+
+insert into userclaims(MenuId,Columns,IsActive,CreatedBy,CreatedDate,RoleId)
+values
+(13,'',1,1,now(),1);
+
+
+
+ 
+Create table tov_ordernotes
+ (
+ Tovordernote_id int primary key auto_increment,
+ Ordernum varchar(100),
+ Year varchar(10),
+ Line tinyint,
+ Note varchar(1000)
+ );
+ Create table ordernotes
+ (
+ Ordernum varchar(100),
+ Year varchar(10),
+ Line tinyint,
+ Note varchar(1000)
+ );
+
+
+
+
+ --------------------------------------------------------------------------------------------
+
+  
+DELIMITER //
+ /*drop procedure import_Order_Notes;*/
+Create PROCEDURE import_Order_Notes ()
+BEGIN
+
+
+
+declare NoteCount_1 int ;
+declare Ordernum_1 varchar(100); 
+declare Year_1  varchar(100);
+declare Line_1 int;
+declare Note_1  varchar(1000) ;
+declare error_string varchar(1000);
+declare code varchar(1000);
+declare exit handler for sqlexception
+begin
+get diagnostics condition 1
+	code = returned_sqlstate, error_string = Message_text;
+    select code,error_string;
+rollback;
+end;
+
+CREATE temporary TABLE Temp_OrderNote (Ordernum varchar(100),Year varchar(10),Line tinyint,Note varchar(1000));
+  
+insert into Temp_OrderNote (Ordernum,Year,Line,Note) 
+select Ordernum,Year,Line,Note from tov_ordernotes ;
+
+select  count(*) into NoteCount_1 from Temp_OrderNote;
+while NoteCount_1 >0
+DO
+select    Ordernum,Year,Line,Note
+		  into 
+		  Ordernum_1,Year_1,Line_1,Note_1
+          from Temp_OrderNote limit 1;
+          
+
+if exists ( select * from ordernotes where Ordernum = Ordernum_1 and Line = Line_1  )
+then
+set sql_safe_updates= 0;
+delete from ordernotes   where Ordernum = Ordernum_1 and Line = Line_1 ; 
+insert into ordernotes (Ordernum,Year,Line,Note) values ( Ordernum_1,Year_1,Line_1,Note_1); 
+else 
+	insert into ordernotes (Ordernum,Year,Line,Note) values ( Ordernum_1,Year_1,Line_1,Note_1); 
+    set sql_safe_updates= 0;
+	end if;
+
+set NoteCount_1 = NoteCount_1-1;
+set sql_safe_updates= 0;
+delete from Temp_OrderNote where  Ordernum = Ordernum_1 and Line = Line_1;
+
+END WHILE ;
+
+drop temporary table Temp_OrderNote;
+truncate table tov_ordernotes;
+END
+
+
+
+
+
+
 
 
 
