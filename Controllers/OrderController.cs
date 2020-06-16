@@ -45,7 +45,7 @@ namespace MySqlBasicCore.Controllers
             {
                 HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset("Select * from orders order by Orderdate desc limit 50;");
+                DataSet ds = dbfunction.GetDataset("Select *,NoteCount from orders left join (select Ordernum,count(*)NoteCount from ordernotes group by Ordernum ) a on  orders.Ordernum = a.Ordernum order by Orderdate desc limit 50;");
                 OrderList = (from row in ds.Tables[0].AsEnumerable()
                              select new Order_MasterViewModel
                              {
@@ -88,6 +88,7 @@ namespace MySqlBasicCore.Controllers
                                  Ordertype = Convert.ToString(row["Ordertype"]),
                                  WeborderId = Convert.ToString(row["WeborderId"]),
                                  IsOpenOrder = Convert.ToString(row["IsOpenOrder"]),
+                                 NoteCount = Convert.ToString(row["NoteCount"]) == "" ?0 : Convert.ToInt32(row["NoteCount"]),
                              }).ToList();
 
                 return new JsonResult(new JqueryDataTablesResult<Order_MasterViewModel>
@@ -145,8 +146,8 @@ namespace MySqlBasicCore.Controllers
                 HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
                 List<Order_MasterViewModel> list = new List<Order_MasterViewModel>();
 
-                IQueryable<Order> query = _dbContext.tbl_Orders.FromSqlRaw("Select * from orders").AsNoTracking();
-                //var query = a;
+                IQueryable<Order> query = _dbContext.tbl_Orders.FromSqlRaw("Select Custnum,a.ordernum,Orderdate,Credit,Freight, Slnum, Slnum2, D0, Name, Address1, Address2, Address3, Shipname, Shipaddress1, Shipaddress2, Shipaddress3, Terms, Via, Backorder, Tax, Ponum,Shippeddate, Shipdate, Canceldate, Edidate, Terminal, Custnote, clerk, Poammount, Commission, Status, D1, D2, Creditmemo, Storenum, Dept, Ordertype, WeborderId, IsOpenOrder, NoteCount,'ass' as Action  from orders left join (select Ordernum,count(*)NoteCount from ordernotes group by Ordernum ) a on  orders.Ordernum = a.Ordernum").AsNoTracking();
+                
 
                 query = SearchOptionsProcessor<Order_MasterViewModel, Order>.Apply(query, param.Columns);
                 query = SortOptionsProcessor<Order_MasterViewModel, Order>.Apply(query, param);
@@ -210,6 +211,8 @@ namespace MySqlBasicCore.Controllers
                         column.Search.Value = orderNum;
                     }
                 }
+
+            
 
                 var items = await query
                     .AsNoTracking()
@@ -371,5 +374,39 @@ namespace MySqlBasicCore.Controllers
                 return new JsonResult(new { error = "Internal Server Error" });
             }
         }
+
+
+        [HttpPost]
+        public JsonResult GetOrderNotes(string ordernum)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                ItemclassViewModel model = new ItemclassViewModel();
+                DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
+                var query = "select * from ordernotes where ordernum ='" + ordernum + "'";
+                DataSet ds = dbfunction.GetDataset(query);
+                if (ds.Tables.Count > 0)
+                {
+                    var notes = (from row in ds.Tables[0].AsEnumerable()
+                                 select new OrderNoteViewModel
+                                 {
+                                     Line = Convert.ToString(row["Line"]) == "" ? 0 : Convert.ToInt32(row["Line"]),
+                                     Year = Convert.ToString(row["Year"]),
+                                     Ordernum = Convert.ToString(row["Ordernum"]),
+                                     Note = Convert.ToString(row["Note"]),
+                                 }).ToList();
+
+                    return Json(notes);
+                }
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return Json(response);
+        }
+
     }
 }

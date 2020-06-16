@@ -162,7 +162,13 @@ namespace MySqlBasicCore.Models
 
     public class Order_MasterViewModel
     {
+       
+
         public string Action { get; set; }
+
+        [Sortable]
+        [Display(Name="Note")]
+        public int NoteCount { get; set; }
 
         [Searchable]
         [Sortable]
@@ -321,6 +327,10 @@ namespace MySqlBasicCore.Models
         [SearchableString]
         [Sortable]
         public string D0 { get; set; }
+
+       
+
+        
 
     }
 

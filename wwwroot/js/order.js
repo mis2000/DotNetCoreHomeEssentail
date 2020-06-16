@@ -51,9 +51,28 @@ $(() => {
                     }
                 },
                 {
+                    orderable: false,
+                    data: "Notes",
+                    render: function (data, type, row) {
+                        if (row.NoteCount > 0) {
+                            return `<a data-toggle="modal" data-target="#notes"
+                                               onclick="openNote(`+ row.ordernum + `)" href="#">
+                                                <i class="fa fa-sticky-note-o"></i>
+                                            </a>`;
+                        }
+                        else {
+                            return ``;
+                        }
+
+
+                    }
+
+                },
+                {
                     data: "Shipdate",
                     render: function (data, type, row) {
                         if (data) {
+                            console.log(data);
                             var date1 = new window.moment(window.moment().format("MM/DD/YYYY"));
                             var date2 = new window.moment(data);
                             const diffTime = (date2 - date1);
@@ -307,6 +326,7 @@ $(() => {
                     searchable: false,
                     name: "co"
                 },
+                
                 
             ]
         });

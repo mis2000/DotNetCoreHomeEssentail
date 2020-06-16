@@ -172,6 +172,9 @@ namespace MySqlBasicCore.Models
         [NotMapped]
         public string Action { get; set; }
 
+       
+        public int NoteCount { get; set; }
+
         public string Custnum { get; set; }
 
         public string ordernum { get; set; }
