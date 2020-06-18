@@ -173,7 +173,7 @@ namespace MySqlBasicCore.Models
         public string Action { get; set; }
 
        
-        public int NoteCount { get; set; }
+        public int? NoteCount { get; set; }
 
         public string Custnum { get; set; }
 

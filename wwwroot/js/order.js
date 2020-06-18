@@ -2,7 +2,7 @@
 
 $(() => {
     if ($('#fingers10').length !== 0) {
- 
+
         var table = $('#fingers10').DataTable({
             "scrollY": "" + (window.outerHeight - 375) + "px",
             "scrollX": "" + (window.outerWidth - 300) + "px",
@@ -14,14 +14,14 @@ $(() => {
             processing: true,
             serverSide: true,
             orderCellsTop: true,
-            searching:true,
+            searching: true,
             autoWidth: true,
             deferRender: true,
             "pageLength": 10,
             "lengthChange": false,
             dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             buttons: [
-                
+
             ],
             ajax: {
                 type: "POST",
@@ -41,7 +41,7 @@ $(() => {
             columns: [
                 {
                     orderable: false,
-                  
+
                     data: "Action",
                     render: function (data, type, row) {
 
@@ -51,12 +51,12 @@ $(() => {
                     }
                 },
                 {
-                    orderable: false,
+                    orderable: true,
                     data: "Notes",
                     render: function (data, type, row) {
                         if (row.NoteCount > 0) {
                             return `<a data-toggle="modal" data-target="#notes"
-                                               onclick="openNote(`+ row.ordernum + `)" href="#">
+                                               onclick="openNote('`+ row.ordernum + `','` + row.Orderdate + `')" href="#">
                                                 <i class="fa fa-sticky-note-o"></i>
                                             </a>`;
                         }
@@ -121,7 +121,7 @@ $(() => {
                     data: "Custnum",
                     name: "co"
                 },
-                
+
                 {
                     data: "Orderdate",
                     searchable: false,
@@ -137,7 +137,7 @@ $(() => {
                     data: "Name",
                     name: "co"
                 },
-                
+
                 {
                     data: "Shipname",
                     searchable: false,
@@ -210,7 +210,7 @@ $(() => {
                     },
                     name: "eq"
                 },
-                
+
                 {
                     data: "Edidate",
                     render: function (data, type, row) {
@@ -298,7 +298,7 @@ $(() => {
                         else {
                             return `<span class="badge badge-danger">No</span>`;
                         }
-                     
+
                     }
                 },
                 {
@@ -326,8 +326,8 @@ $(() => {
                     searchable: false,
                     name: "co"
                 },
-                
-                
+
+
             ]
         });
 
@@ -349,10 +349,10 @@ $(() => {
             .off('click', '.btnEdit')
             .on('click', '.btnEdit', function () {
                 const id = $(this).attr('data-key');
-                window.location.href = window.baseUrl+"/Order/Detail/" + id;
-                 
+                window.location.href = window.baseUrl + "/Order/Detail/" + id;
+
             });
 
-      
+
     }
 });
