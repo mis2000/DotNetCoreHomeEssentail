@@ -33,7 +33,7 @@ namespace MySqlBasicCore.Controllers
                 DataSet ds = dbfunction.GetDataset(@"SELECT * FROM  (SELECT COUNT(*)Line,Ordernum FROM ordernotes GROUP BY Ordernum )b  JOIN 
                                                      (SELECT  COUNT(*)COUNT, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,MAX(NAME)NAME,MAX(bol1_date)bol1_date, MAX(bol2_custnum)bol2_custnum,MAX(bol1_name)bol1_name,MAX(shipaddress1)bol1_adrs1,MAX(shipaddress2)bol1_adrs2,MAX(shipaddress3)bol1_adrs3,MAX(bol1_city)bol1_city,MAX(bol1_state)bol1_state,
                                                      MAX(bol1_zip)bol1_zip,MAX(bol1_Lctn)bol1_Lctn,MAX(bol1_pro_no)bol1_pro_no,MAX(bol1_scac)bol1_scac,MAX(bol1_frght_terms)bol1_frght_terms,MAX(bol1_ttl_pkgs)bol1_ttl_pkgs,MAX(bol1_ttl_weight)bol1_ttl_weight,
-                                                     MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MAX(bol1_carrierName)bol1_carrierName,
+                                                     MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MIN(bol2_PO)bol1_PO_No1,MAX(bol1_carrierName)bol1_carrierName,
                                                      MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation
                                                      FROM bol_1 JOIN bol_2 ON (bol_1.bol1_no = bol_2.bol2_No )   JOIN orders ON orders.ordernum = bol_2.bol2_order_no 
                                                       WHERE bol1_ttl_weight  IS NULL   
@@ -66,6 +66,7 @@ namespace MySqlBasicCore.Controllers
                                   bol2_order_no = Convert.ToString(row["bol2_order_no"]),
                                   bol1_ref = Convert.ToString(row["bol1_ref"]),
                                   bol1_PO_No = Convert.ToString(row["bol1_PO_No"]),
+                                  bol1_PO_No1 = Convert.ToString(row["bol1_PO_No1"]),
                                   bol1_carrierName = Convert.ToString(row["bol1_carrierName"]),
                                   bol1_carrierPhone = Convert.ToString(row["bol1_carrierPhone"]),
                                   bol1_PkupDate = Convert.ToString(row["bol1_PkupDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_PkupDate"]),
@@ -94,7 +95,7 @@ namespace MySqlBasicCore.Controllers
                     query = @"SELECT * FROM  (SELECT COUNT(*)Line,Ordernum FROM ordernotes GROUP BY Ordernum )b  JOIN 
                                                      (SELECT  COUNT(*)COUNT, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,MAX(NAME)NAME,MAX(bol1_date)bol1_date, MAX(bol2_custnum)bol2_custnum,MAX(bol1_name)bol1_name,MAX(shipaddress1)bol1_adrs1,MAX(shipaddress2)bol1_adrs2,MAX(shipaddress3)bol1_adrs3,MAX(bol1_city)bol1_city,MAX(bol1_state)bol1_state,
                                                      MAX(bol1_zip)bol1_zip,MAX(bol1_Lctn)bol1_Lctn,MAX(bol1_pro_no)bol1_pro_no,MAX(bol1_scac)bol1_scac,MAX(bol1_frght_terms)bol1_frght_terms,MAX(bol1_ttl_pkgs)bol1_ttl_pkgs,MAX(bol1_ttl_weight)bol1_ttl_weight,
-                                                     MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MAX(bol1_carrierName)bol1_carrierName,
+                                                     MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MIN(bol2_PO)bol1_PO_No1,MAX(bol1_carrierName)bol1_carrierName,
                                                      MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation
                                                      FROM bol_1 JOIN bol_2 ON (bol_1.bol1_no = bol_2.bol2_No )   JOIN orders ON orders.ordernum = bol_2.bol2_order_no 
                                                      GROUP BY bol_1.bol1_no)a ON a.bol2_order_no = b.ordernum
@@ -105,7 +106,7 @@ namespace MySqlBasicCore.Controllers
                     query = @"SELECT * FROM  (SELECT COUNT(*)Line,Ordernum FROM ordernotes GROUP BY Ordernum )b  JOIN 
                                                      (SELECT  COUNT(*)COUNT, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,MAX(NAME)NAME,MAX(bol1_date)bol1_date, MAX(bol2_custnum)bol2_custnum,MAX(bol1_name)bol1_name,MAX(shipaddress1)bol1_adrs1,MAX(shipaddress2)bol1_adrs2,MAX(shipaddress3)bol1_adrs3,MAX(bol1_city)bol1_city,MAX(bol1_state)bol1_state,
                                                      MAX(bol1_zip)bol1_zip,MAX(bol1_Lctn)bol1_Lctn,MAX(bol1_pro_no)bol1_pro_no,MAX(bol1_scac)bol1_scac,MAX(bol1_frght_terms)bol1_frght_terms,MAX(bol1_ttl_pkgs)bol1_ttl_pkgs,MAX(bol1_ttl_weight)bol1_ttl_weight,
-                                                     MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MAX(bol1_carrierName)bol1_carrierName,
+                                                     MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MIN(bol2_PO)bol1_PO_No1,MAX(bol1_carrierName)bol1_carrierName,
                                                      MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation
                                                      FROM bol_1 JOIN bol_2 ON (bol_1.bol1_no = bol_2.bol2_No )   JOIN orders ON orders.ordernum = bol_2.bol2_order_no 
                                                       WHERE bol1_ttl_weight  IS NULL   
@@ -141,6 +142,7 @@ namespace MySqlBasicCore.Controllers
                                   bol2_order_no = Convert.ToString(row["bol2_order_no"]),
                                   bol1_ref = Convert.ToString(row["bol1_ref"]),
                                   bol1_PO_No = Convert.ToString(row["bol1_PO_No"]),
+                                  bol1_PO_No1 = Convert.ToString(row["bol1_PO_No1"]),
                                   bol1_carrierName = Convert.ToString(row["bol1_carrierName"]),
                                   bol1_carrierPhone = Convert.ToString(row["bol1_carrierPhone"]),
                                   bol1_PkupDate = Convert.ToString(row["bol1_PkupDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_PkupDate"]),

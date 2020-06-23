@@ -303,9 +303,7 @@ discount	decimal(6,5)
 Test commit from krishnpal
 
 --------------------------------------------------------------------------------------------------------------------------
-server path : \\njdcdhcp\inetpub$\wwwroot\SampleSam
-publish path : \\heandb.local\Home-Essentials\Private\igross\Desktop\SamSample_Live
-backup path : \\heandb.local\Home-Essentials\Private\igross\Desktop\SampleSBack
+
 
 
 
@@ -539,6 +537,11 @@ END WHILE ;
 drop temporary table Temp_OrderNote;
 truncate table tov_ordernotes;
 END
+
+
+
+-----------------------------------------------------------
+
 
 
 

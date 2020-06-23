@@ -68,13 +68,11 @@ namespace MySqlBasicCore.Controllers
                                  Terms = Convert.ToString(row["Terms"]),
                                  Via = Convert.ToString(row["Via"]),
                                  Backorder = Convert.ToString(row["Backorder"]),
-                                 Tax = Convert.ToString(row["Tax"]),
                                  Ponum = Convert.ToString(row["Ponum"]),
                                  Shippeddate = Convert.ToString(row["Shippeddate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["Shippeddate"]),
                                  Shipdate = Convert.ToDateTime(row["Shipdate"]),
                                  Canceldate = Convert.ToString(row["Canceldate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["Canceldate"]),
                                  Edidate = Convert.ToDateTime(row["Edidate"]),
-                                 Terminal = Convert.ToString(row["Terminal"]),
                                  Custnote = Convert.ToString(row["Custnote"]),
                                  clerk = Convert.ToString(row["clerk"]),
                                  Poammount = Convert.ToDecimal(row["Poammount"]),
@@ -146,11 +144,28 @@ namespace MySqlBasicCore.Controllers
                 HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
                 List<Order_MasterViewModel> list = new List<Order_MasterViewModel>();
 
-                IQueryable<Order> query = _dbContext.tbl_Orders.FromSqlRaw(@"SELECT Custnum,orders.ordernum,Orderdate,Credit,Freight, Slnum, Slnum2, D0, NAME, Address1, Address2, Address3, Shipname, Shipaddress1, Shipaddress2, Shipaddress3, Terms, Via,
-                                                                              Backorder, Tax, Ponum,Shippeddate, Shipdate, Canceldate, Edidate, Terminal, Custnote, clerk, Poammount, Commission, STATUS, D1, D2, Creditmemo, Storenum,
-                                                                              Dept, Ordertype, WeborderId, IsOpenOrder, NoteCount,'ass' AS ACTION  FROM orders LEFT JOIN (SELECT Ordernum,COUNT(*)NoteCount,YEAR FROM ordernotes
+                var showAll = param.AdditionalValues.Last();
+                string queryDef = "";
+                if (showAll=="true")
+                {
+                    queryDef = @"SELECT Custnum,orders.ordernum,Orderdate,Credit,Freight, Slnum, Slnum2, D0, NAME, Address1, Address2, Address3, Shipname, Shipaddress1, Shipaddress2, Shipaddress3, Terms, Via,
+                                                                              Backorder,Tax,Terminal, Ponum,Shippeddate, Shipdate, Canceldate, Edidate, Custnote, clerk, Poammount, Commission, STATUS, D1, D2, Creditmemo, Storenum,
+                                                                              Dept, Ordertype, WeborderId, IsOpenOrder, NoteCount,'a' AS ACTION  FROM orders LEFT JOIN (SELECT Ordernum,COUNT(*)NoteCount,YEAR FROM ordernotes
                                                                               GROUP BY Ordernum,YEAR  ) a ON  (SUBSTRING((orders.Ordernum ),1,6)= a.Ordernum AND  SUBSTRING((orders.Ordernum ),8,2)= a.Year)
-                                                                           ").AsNoTracking();
+                                                                           ";
+                }
+                else
+                {
+                    queryDef = @"SELECT Custnum,orders.ordernum,Orderdate,Credit,Freight, Slnum, Slnum2, D0, NAME, Address1, Address2, Address3, Shipname, Shipaddress1, Shipaddress2, Shipaddress3, Terms, Via,
+                                                                              Backorder,Tax,Terminal, Ponum,Shippeddate, Shipdate, Canceldate, Edidate, Custnote, clerk, Poammount, Commission, STATUS, D1, D2, Creditmemo, Storenum,
+                                                                              Dept, Ordertype, WeborderId, IsOpenOrder, NoteCount,'a' AS ACTION  FROM orders LEFT JOIN (SELECT Ordernum,COUNT(*)NoteCount,YEAR FROM ordernotes
+                                                                              GROUP BY Ordernum,YEAR  ) a ON  (SUBSTRING((orders.Ordernum ),1,6)= a.Ordernum AND  SUBSTRING((orders.Ordernum ),8,2)= a.Year)
+                                                                              WHERE IsOpenOrder =1                                                                          
+                                                                            ";
+                }
+
+              
+               IQueryable<Order> query = _dbContext.tbl_Orders.FromSqlRaw(queryDef).AsNoTracking();
                 
 
                 query = SearchOptionsProcessor<Order_MasterViewModel, Order>.Apply(query, param.Columns);
@@ -162,7 +177,8 @@ namespace MySqlBasicCore.Controllers
                 var Shipdate = "";
                 DateTime ShipDateD = DateTime.Now;
                 var i = 0;
-                foreach (var column in param.AdditionalValues)
+                var additionalValues = param.AdditionalValues.SkipLast(1);
+                foreach (var column in additionalValues)
                 {
                     if (i == 0)
                     {

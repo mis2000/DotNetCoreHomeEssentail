@@ -33,6 +33,7 @@ $(() => {
                     additionalValues[0] = $("#ordernum").val();
                     additionalValues[1] = $("#Name").val();
                     additionalValues[2] = $("#Shipdate").val();
+                    additionalValues[2] = $("#chkShowAll").prop('checked').toString();
                     data.AdditionalValues = additionalValues;
 
                     return JSON.stringify(data);
@@ -190,11 +191,6 @@ $(() => {
                     name: "co"
                 },
                 {
-                    data: "Tax",
-                    searchable: false,
-                    name: "co"
-                },
-                {
                     data: "Ponum",
                     searchable: false,
                     name: "co"
@@ -221,11 +217,6 @@ $(() => {
                     },
                     searchable: false,
                     name: "eq"
-                },
-                {
-                    data: "Terminal",
-                    searchable: false,
-                    name: "co"
                 },
                 {
                     data: "Custnote",
@@ -342,6 +333,10 @@ $(() => {
         });
 
         $("input").on("change", function (e) {
+            table.draw();
+        });
+
+        $("#chkShowAll").on("click", function (e) {
             table.draw();
         });
 
