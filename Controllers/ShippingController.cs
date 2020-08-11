@@ -285,6 +285,7 @@ namespace MySqlBasicCore.Controllers
 
             }
             catch (Exception ex)
+
             {
 
                 ViewBag.imported = 0;

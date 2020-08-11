@@ -46,7 +46,7 @@ namespace MySqlBasicCore.Controllers
                         var userMenus = commanUtility.GetUserMenus(Convert.ToString(ds.Tables[0].Rows[0]["RoleId"]));
                         HttpContext.Session.SetString("UserMenus", JsonConvert.SerializeObject(userMenus));
                         HttpContext.Session.SetString("UserId", Convert.ToString(ds.Tables[0].Rows[0]["Userid"]));
-                        HttpContext.Session.SetString("UserId", Convert.ToString(ds.Tables[0].Rows[0]["RoleId"]));
+                        HttpContext.Session.SetString("RoleId", Convert.ToString(ds.Tables[0].Rows[0]["RoleId"]));
                         HttpContext.Session.SetString("Username", model.Username);
                         return RedirectToAction("Dashboard", "Home");
                     }
