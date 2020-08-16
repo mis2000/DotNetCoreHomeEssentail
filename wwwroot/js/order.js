@@ -56,7 +56,7 @@ $(() => {
                     render: function (data, type, row) {
                         if (row.NoteCount > 0) {
                             return `<a data-toggle="modal" data-target="#notes"
-                                               onclick="openNote(`+ row.ordernum + `)" href="#">
+                                               onclick="openNote(`+ row.ordernum + `,'` + row.Orderdate+`')" href="#">
                                                 <i class="fa fa-sticky-note-o"></i>
                                             </a>`;
                         }

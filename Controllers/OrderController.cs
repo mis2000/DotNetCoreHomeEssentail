@@ -146,7 +146,7 @@ namespace MySqlBasicCore.Controllers
                 HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
                 List<Order_MasterViewModel> list = new List<Order_MasterViewModel>();
 
-                IQueryable<Order> query = _dbContext.tbl_Orders.FromSqlRaw("Select Custnum,a.ordernum,Orderdate,Credit,Freight, Slnum, Slnum2, D0, Name, Address1, Address2, Address3, Shipname, Shipaddress1, Shipaddress2, Shipaddress3, Terms, Via, Backorder, Tax, Ponum,Shippeddate, Shipdate, Canceldate, Edidate, Terminal, Custnote, clerk, Poammount, Commission, Status, D1, D2, Creditmemo, Storenum, Dept, Ordertype, WeborderId, IsOpenOrder, NoteCount,'ass' as Action  from orders left join (select Ordernum,count(*)NoteCount from ordernotes group by Ordernum ) a on  orders.Ordernum = a.Ordernum").AsNoTracking();
+                IQueryable<Order> query = _dbContext.tbl_Orders.FromSqlRaw("Select Custnum,a.ordernum,Orderdate,Credit,Freight, Slnum, Slnum2, D0, Name, Address1, Address2, Address3, Shipname, Shipaddress1, Shipaddress2, Shipaddress3, Terms, Via, Backorder, Tax, Ponum,Shippeddate, Shipdate, Canceldate, Edidate, Terminal, Custnote, clerk, Poammount, Commission, Status, D1, D2, Creditmemo, Storenum, Dept, Ordertype, WeborderId, IsOpenOrder, NoteCount,'ass' as Action  from orders left join (select Ordernum,count(*)NoteCount,Year from ordernotes group by Ordernum,year  ) a on  (orders.Ordernum = a.Ordernum and substring(Year(Orderdate),3,2) = a.Year)").AsNoTracking();
                 
 
                 query = SearchOptionsProcessor<Order_MasterViewModel, Order>.Apply(query, param.Columns);
@@ -377,14 +377,15 @@ namespace MySqlBasicCore.Controllers
 
 
         [HttpPost]
-        public JsonResult GetOrderNotes(string ordernum)
+        public JsonResult GetOrderNotes(string ordernum,DateTime orderDate)
         {
             ResponseModel response = new ResponseModel();
             try
             {
+                var year = orderDate.Year.ToString().Substring(2, 2);
                 ItemclassViewModel model = new ItemclassViewModel();
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                var query = "select * from ordernotes where ordernum ='" + ordernum + "'";
+                var query = "select * from ordernotes where ordernum ='" + ordernum + "' and Year='"+ year + "'";
                 DataSet ds = dbfunction.GetDataset(query);
                 if (ds.Tables.Count > 0)
                 {

@@ -34,7 +34,7 @@ namespace MySqlBasicCore.Controllers
                                                     max(Line)Line, count(*)Count, a.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(bol1_adrs1)bol1_adrs1,max(bol1_adrs2)bol1_adrs2,max(bol1_adrs3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(bol1_ref)bol1_ref, max(bol1_PO_No)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation
                                                     from  (select  count(*)Count, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(shipaddress1)bol1_adrs1,max(shipaddress2)bol1_adrs2,max(shipaddress3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(clerk)bol1_ref, max(bol2_PO)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation
                                                     from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No )  
-                                                    join orders on orders.ordernum = bol_2.bol2_order_no
+                                                    left join orders on orders.ordernum = bol_2.bol2_order_no
                                                     group by bol_1.bol1_no) a  left join ordernotes on a.bol2_order_no = ordernotes.ordernum
                                                     WHERE bol1_ttl_weight  IS NULL                                            
                                                     group by a.bol1_no");
@@ -90,12 +90,13 @@ namespace MySqlBasicCore.Controllers
                 string query = "";
                 if (submit=="yes")
                 {
-                    query =                          @"select 
+                    query = @"select 
                                                     max(Line)Line, count(*)Count, a.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(bol1_adrs1)bol1_adrs1,max(bol1_adrs2)bol1_adrs2,max(bol1_adrs3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(bol1_ref)bol1_ref, max(bol1_PO_No)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation
                                                     from  (select  count(*)Count, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(shipaddress1)bol1_adrs1,max(shipaddress2)bol1_adrs2,max(shipaddress3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(clerk)bol1_ref, max(bol2_PO)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation
                                                     from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No )  
                                                     join orders on orders.ordernum = bol_2.bol2_order_no
-                                                    group by bol_1.bol1_no) a  left join ordernotes on a.bol2_order_no = ordernotes.ordernum
+                                                    group by bol_1.bol1_no) a  left join ordernotes on 
+                                                    (a.bol2_order_no = ordernotes.ordernum and  substring(Year(a.bol1_date),3,2) = a.Year )
                                                     group by a.bol1_no";
                 }
                 else
@@ -407,7 +408,7 @@ namespace MySqlBasicCore.Controllers
             {
                 ItemclassViewModel model = new ItemclassViewModel();
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                var query = "select * from ordernotes where ordernum in (select bol2_order_no from bol_2 where bol2_no='" + bol1_no + "' )";
+                var query = "select ordernotes.* from ordernotes join orders on (orders.Ordernum = a.Ordernum and substring(Year(Orderdate),3,2) = a.Year  ) where orders.Ordernum in (select bol2_order_no from bol_2 where bol2_no='" + bol1_no + "')";
                 DataSet ds = dbfunction.GetDataset(query);
                 if (ds.Tables.Count > 0)
                 {

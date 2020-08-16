@@ -117,11 +117,11 @@
 
         });
 
-        function openNote(bol_no) {
-            debugger;
+        function openNote(bol_no,orderDate) {
+            debugger;   
             $("#tblNotes tbody").html('');
 
-            var data = { 'ordernum': bol_no };
+            var data = { 'ordernum': bol_no,'orderDate':orderDate };
                $.ajax({
                 url: "/Order/GetOrderNotes",
                 type: "POST",
