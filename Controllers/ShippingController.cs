@@ -30,13 +30,13 @@ namespace MySqlBasicCore.Controllers
             try
             {
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset(@"SELECT * FROM  (SELECT COUNT(*)Line,Ordernum FROM ordernotes GROUP BY Ordernum )b  JOIN 
+                DataSet ds = dbfunction.GetDataset(@"SELECT * FROM  (SELECT COUNT(*)Line,Ordernum FROM ordernotes GROUP BY Ordernum )b   JOIN 
                                                      (SELECT  COUNT(*)COUNT, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,MAX(NAME)NAME,MAX(bol1_date)bol1_date, MAX(bol2_custnum)bol2_custnum,MAX(bol1_name)bol1_name,MAX(shipaddress1)bol1_adrs1,MAX(shipaddress2)bol1_adrs2,MAX(shipaddress3)bol1_adrs3,MAX(bol1_city)bol1_city,MAX(bol1_state)bol1_state,
                                                      MAX(bol1_zip)bol1_zip,MAX(bol1_Lctn)bol1_Lctn,MAX(bol1_pro_no)bol1_pro_no,MAX(bol1_scac)bol1_scac,MAX(bol1_frght_terms)bol1_frght_terms,MAX(bol1_ttl_pkgs)bol1_ttl_pkgs,MAX(bol1_ttl_weight)bol1_ttl_weight,
                                                      MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MIN(bol2_PO)bol1_PO_No1,MAX(bol1_carrierName)bol1_carrierName,
-                                                     MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation
+                                                     MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation,MAX(bol1_pallet)bol1_pallet,MAX(bol1_pallet_type)bol1_pallet_type
                                                      FROM bol_1 JOIN bol_2 ON (bol_1.bol1_no = bol_2.bol2_No )   JOIN orders ON orders.ordernum = bol_2.bol2_order_no 
-                                                      WHERE bol1_ttl_weight  IS NULL   
+                                                     # WHERE bol1_ttl_weight  IS NULL   
                                                      GROUP BY bol_1.bol1_no)a ON a.bol2_order_no = b.ordernum
                                                      ");
 
@@ -72,7 +72,9 @@ namespace MySqlBasicCore.Controllers
                                   bol1_PkupDate = Convert.ToString(row["bol1_PkupDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_PkupDate"]),
                                   bol1_CancelDate = Convert.ToString(row["bol1_CancelDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_CancelDate"]),
                                   bol1_pkupTime = Convert.ToString(row["bol1_pkupTime"]),
-                                  Conformation = Convert.ToString(row["Conformation"])
+                                  Conformation = Convert.ToString(row["Conformation"]),
+                                  bol1_pallet = Convert.ToString(row["bol1_pallet"]) == "" ? (int?)null : Convert.ToInt32(row["bol1_pallet"]),
+                                  bol1_pallet_type = Convert.ToString(row["bol1_pallet_type"])
 
                               }).ToList();
             }
@@ -90,13 +92,13 @@ namespace MySqlBasicCore.Controllers
             {
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
                 string query = "";
-                if (submit=="yes")
+                if (submit == "yes")
                 {
-                    query = @"SELECT * FROM  (SELECT COUNT(*)Line,Ordernum FROM ordernotes GROUP BY Ordernum )b  JOIN 
+                    query = @"SELECT * FROM  (SELECT COUNT(*)Line,Ordernum FROM ordernotes GROUP BY Ordernum )b   JOIN 
                                                      (SELECT  COUNT(*)COUNT, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,MAX(NAME)NAME,MAX(bol1_date)bol1_date, MAX(bol2_custnum)bol2_custnum,MAX(bol1_name)bol1_name,MAX(shipaddress1)bol1_adrs1,MAX(shipaddress2)bol1_adrs2,MAX(shipaddress3)bol1_adrs3,MAX(bol1_city)bol1_city,MAX(bol1_state)bol1_state,
                                                      MAX(bol1_zip)bol1_zip,MAX(bol1_Lctn)bol1_Lctn,MAX(bol1_pro_no)bol1_pro_no,MAX(bol1_scac)bol1_scac,MAX(bol1_frght_terms)bol1_frght_terms,MAX(bol1_ttl_pkgs)bol1_ttl_pkgs,MAX(bol1_ttl_weight)bol1_ttl_weight,
                                                      MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MIN(bol2_PO)bol1_PO_No1,MAX(bol1_carrierName)bol1_carrierName,
-                                                     MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation
+                                                     MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation,MAX(bol1_pallet)bol1_pallet,MAX(bol1_pallet_type)bol1_pallet_type
                                                      FROM bol_1 JOIN bol_2 ON (bol_1.bol1_no = bol_2.bol2_No )   JOIN orders ON orders.ordernum = bol_2.bol2_order_no 
                                                      GROUP BY bol_1.bol1_no)a ON a.bol2_order_no = b.ordernum
                                                      ";
@@ -107,7 +109,7 @@ namespace MySqlBasicCore.Controllers
                                                      (SELECT  COUNT(*)COUNT, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,MAX(NAME)NAME,MAX(bol1_date)bol1_date, MAX(bol2_custnum)bol2_custnum,MAX(bol1_name)bol1_name,MAX(shipaddress1)bol1_adrs1,MAX(shipaddress2)bol1_adrs2,MAX(shipaddress3)bol1_adrs3,MAX(bol1_city)bol1_city,MAX(bol1_state)bol1_state,
                                                      MAX(bol1_zip)bol1_zip,MAX(bol1_Lctn)bol1_Lctn,MAX(bol1_pro_no)bol1_pro_no,MAX(bol1_scac)bol1_scac,MAX(bol1_frght_terms)bol1_frght_terms,MAX(bol1_ttl_pkgs)bol1_ttl_pkgs,MAX(bol1_ttl_weight)bol1_ttl_weight,
                                                      MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MIN(bol2_PO)bol1_PO_No1,MAX(bol1_carrierName)bol1_carrierName,
-                                                     MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation
+                                                     MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation,MAX(bol1_pallet)bol1_pallet,MAX(bol1_pallet_type)bol1_pallet_type
                                                      FROM bol_1 JOIN bol_2 ON (bol_1.bol1_no = bol_2.bol2_No )   JOIN orders ON orders.ordernum = bol_2.bol2_order_no 
                                                       WHERE bol1_ttl_weight  IS NULL   
                                                      GROUP BY bol_1.bol1_no)a ON a.bol2_order_no = b.ordernum
@@ -148,8 +150,9 @@ namespace MySqlBasicCore.Controllers
                                   bol1_PkupDate = Convert.ToString(row["bol1_PkupDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_PkupDate"]),
                                   bol1_CancelDate = Convert.ToString(row["bol1_CancelDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_CancelDate"]),
                                   bol1_pkupTime = Convert.ToString(row["bol1_pkupTime"]),
-                                  Conformation = Convert.ToString(row["Conformation"])
-
+                                  Conformation = Convert.ToString(row["Conformation"]),
+                                  bol1_pallet = Convert.ToString(row["bol1_pallet"]) == "" ? (int?)null : Convert.ToInt32(row["bol1_pallet"]),
+                                  bol1_pallet_type = Convert.ToString(row["bol1_pallet_type"])
                               }).ToList();
             }
             catch (Exception Ex)
@@ -363,8 +366,9 @@ namespace MySqlBasicCore.Controllers
         }
 
 
+
         [HttpPost]
-        public JsonResult UpdateBolDetail(string bol1_no, string column, string bol1_carrierName, string bol1_carrierPhone, DateTime? bol1_PkupDate, DateTime? bol1_pkupTime, string Conformation)
+        public JsonResult UpdateBolDetail(string bol1_no, string column, string bol1_carrierName, string bol1_carrierPhone, DateTime? bol1_PkupDate, DateTime? bol1_pkupTime, string Conformation, int pallet_no, string pallet_type)
         {
             ResponseModel response = new ResponseModel();
             try
@@ -388,6 +392,10 @@ namespace MySqlBasicCore.Controllers
                 {
                     query = "Update bol_1 set Conformation='" + Conformation + "'  where bol1_no ='" + bol1_no + "'  ";
                 }
+                else if (column == "pallet")
+                {
+                    query = "Update bol_1 set bol1_pallet=" + pallet_no + ",bol1_pallet_type='" + pallet_type + "'  where bol1_no ='" + bol1_no + "'  ";
+                }
                 else
                 {
                     query = "Update bol_1 set bol1_pkupTime='" + bol1_pkupTime.Value.ToString("HH:mm") + "'  where bol1_no ='" + bol1_no + "'  ";
@@ -403,6 +411,7 @@ namespace MySqlBasicCore.Controllers
 
             return Json(response);
         }
+
 
 
         [HttpPost]

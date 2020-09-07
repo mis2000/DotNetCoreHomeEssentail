@@ -71,6 +71,8 @@ namespace MySqlBasicCore.Models
         public DateTime? bol1_PkupDate { get; set; }
         public DateTime? bol1_pkupTime { get; set; }
         public string Conformation { get; set; }
+        public int? bol1_pallet { get; set; }
+        public string bol1_pallet_type { get; set; }
     }
 
     public class Bol_2

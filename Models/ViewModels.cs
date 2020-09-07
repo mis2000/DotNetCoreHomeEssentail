@@ -40,7 +40,8 @@ namespace MySqlBasicCore.Models
         public string bol2_custnum { get; set; }
         public string Conformation { get; set; }
         public int Count { get; set; }
-
+        public int? bol1_pallet { get; set; }
+        public string bol1_pallet_type { get; set; }
     }
 
     public class Bol_2_ViewModel

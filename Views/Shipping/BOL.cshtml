@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<MySqlBasicCore.Models.Bol_1_ViewModel>
 @{
     ViewBag.Title = "Home Page";
+    List<String> PalletTypeList = new List<string>();
+    List<String> HeWhList = Model.Select(s => s.bol1_HE_WH).Distinct().ToList();
+    PalletTypeList.Add("Actual");
+    PalletTypeList.Add("Estimated");
 }
 @using Microsoft.Extensions.Options;
 @inject IOptions<Appsettings> Settings
@@ -14,13 +18,29 @@
                         <h3>Home</h3>
 
 
-                        <div class="ibox-tools" style="width:120px">
-                            <div class="form-group">
-                                <label class="control-label " style="margin-right:10px">
-                                    Show All
-                                </label>
-                                <input type="checkbox" style="width:25px;height:25px;display:none" class="chk" />
+                        <div class="ibox-tools">
+                            <div class="row" style="width:335px">
+                                <div class="col-lg-6">
+                                    <label class="control-label " style="margin-right:10px">
+                                        Show All
+                                    </label>
+                                    <input type="checkbox" style="width:25px;height:25px;display:none" class="chk" />
+
+                                </div>
+                                <div class="col-lg-6">
+                                    @Html.DropDownList("filter", new SelectList(HeWhList.Select(x => new { Value = x, Text = x }), "Value", "Text"), "Select HE-WH",
+                                    new
+                                    {
+                                        @onchange = "filterDatatable()",
+                                        @class = "form-control",
+                                        @placeholder = "Select HE-WH",
+
+                                    })
+
+                                </div>
                             </div>
+
+
                         </div>
 
 
@@ -35,6 +55,7 @@
                                     <th>Order_No</th>
                                     <th>PO_No</th>
                                     <th style="min-width:75px;">Ship Date</th>
+                                    <th style="min-width:85px;">Cancel Date</th>
                                     <th>Name</th>
                                     <th>Adrs1</th>
                                     <th>Adrs2</th>
@@ -45,7 +66,7 @@
                                     <th>CarrierPhone</th>
                                     <th>PkupDate</th>
                                     <th style="min-width: 150px;">PkupTime</th>
-                                    <th>Canceldate</th>
+                                    <th style="min-width: 180px;">Pallets </th>
                                     <th>Scac</th>
                                     <th>Frght_terms</th>
                                     <th>Ttl_pkgs</th>
@@ -93,17 +114,18 @@
                                         <td>
                                             @if (row.Count > 1 && row.bol1_PO_No != row.bol1_PO_No1)
                                             {
-                                            <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
+                                                <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
 
 
                                             }
                                             else
                                             {
-                                            <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol1_PO_No</a>
+                                                <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol1_PO_No</a>
 
                                             }
 
                                         </td>
+                                        <td>@row.bol1_date?.ToString("MM/dd/yyyy")</td>
                                         <td></td>
                                         <td>@row.bol1_name</td>
                                         <td>@row.bol1_adrs1</td>
@@ -153,8 +175,22 @@
                                             </div>
 
                                         </td>
+                                        <td>
+                                            <input type="number" min="1"
+                                                   max="99"
+                                                   style="width:40%"
+                                                   class="form-control pull-left inp" value="@row.bol1_pallet"
+                                                   onchange="updateBolpalletDetail('@row.bol1_no','@row.bol1_pallet','@row.bol1_pallet_type')" />
+                                            @Html.DropDownListFor(model => row.bol1_pallet_type, new SelectList(PalletTypeList.Select(x => new { Value = x, Text = x }), "Value", "Text"), "Select",
+                                                new
+                                                     {
+                                                         @onchange = "updateBolpalletDetail('" + row.bol1_no + "','" + row.bol1_pallet + "','" + row.bol1_pallet_type + "')",
+                                                         @class = "form-control pull-left sel",
+                                                         @placeholder = "Select",
+                                                         style = "width:55%;height: 2.25rem;margin-left:5px;"
+                                                     })
 
-                                        <td>@row.bol1_CancelDate?.ToString("MM/dd/yyyy")</td>
+                                        </td>
                                         <td>@row.bol1_scac</td>
                                         <td>@row.bol1_frght_terms</td>
                                         <td>@row.bol1_ttl_pkgs</td>
@@ -162,7 +198,7 @@
                                         <td>@row.bol1_ttl_weight</td>
                                         <td>@row.bol1_pro_no</td>
                                         <td>@row.bol1_ref</td>
-                                        <td class="shipDate" style="display:none">@row.bol1_date</td>
+                                        <td class="shipDate" style="display:none">@row.bol1_CancelDate</td>
 
 
                                     </tr>
@@ -251,6 +287,7 @@
     </environment>
 
     <script type="text/javascript">
+
         $(document).ready(function () {
 
             var mem = $('.input-group.date').datepicker({
@@ -264,7 +301,7 @@
 
             });
             $('.clockpicker').clockpicker();
-            $('#tbl').DataTable({
+            window.table =  $('#tbl').DataTable({
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
                     { extend: 'copy' },
@@ -285,11 +322,14 @@
                     }
                 ],
                 stateSave: true,
-                "scrollY": "" + (window.outerHeight - 350) + "px",
+                "scrollY": "" + (window.outerHeight - 430) + "px",
                 "scrollX": "" + (window.outerWidth - 300) + "px",
             });
+            console.log('data table');
+            console.log(table);
+            console.log('data table');
 
-            $(".shipDate").each(function (index,element) {
+            $(".shipDate").each(function (index, element) {
                 var checkDate = $(element).html();
                 if (checkDate) {
 
@@ -300,22 +340,22 @@
 
                             var formattedDate = window.moment(checkDate).format("MM/DD/YYYY");
                             if (diffDays == 0) {
-                                 $(element).parent().children().eq(5).html( '<span class="label label-warning">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html('<span class="label label-warning">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 1 && diffDays < 3) {
-                                 $(element).parent().children().eq(5).html( '<span class="label label-success">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html( '<span class="label label-success">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 3 && diffDays < 7) {
-                                 $(element).parent().children().eq(5).html('<span class="label label-primary">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html('<span class="label label-primary">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 7) {
-                                $(element).parent().children().eq(5).html('<span class="label label-info">' + formattedDate + '</span>');
+                                $(element).parent().children().eq(6).html('<span class="label label-info">' + formattedDate + '</span>');
                             }
                             else if (diffDays < 0) {
-                               $(element).parent().children().eq(5).html('<span class="label label-danger">' + formattedDate + '</span>');
+                               $(element).parent().children().eq(6).html('<span class="label label-danger">' + formattedDate + '</span>');
                           }
                             else {
-                               $(element).parent().children().eq(5).html(formattedDate) ;
+                               $(element).parent().children().eq(6).html(formattedDate) ;
                             }
 
                 }
@@ -326,7 +366,7 @@
                  $(".shipDate").each(function (index,element) {
                 var checkDate = $(element).html();
                 if (checkDate) {
-                    
+
                             var date1 = new window.moment(window.moment().format("MM/DD/YYYY"));
                             var date2 = new window.moment(checkDate);
                             const diffTime = (date2 - date1);
@@ -334,31 +374,28 @@
 
                             var formattedDate = window.moment(checkDate).format("MM/DD/YYYY");
                             if (diffDays == 0) {
-                                 $(element).parent().children().eq(5).html( '<span class="label label-warning">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html('<span class="label label-warning">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 1 && diffDays < 3) {
-                                 $(element).parent().children().eq(5).html( '<span class="label label-success">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html( '<span class="label label-success">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 3 && diffDays < 7) {
-                                 $(element).parent().children().eq(5).html('<span class="label label-primary">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html('<span class="label label-primary">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 7) {
-                                $(element).parent().children().eq(5).html('<span class="label label-info">' + formattedDate + '</span>');
+                                $(element).parent().children().eq(6).html('<span class="label label-info">' + formattedDate + '</span>');
                             }
                             else if (diffDays < 0) {
-                               $(element).parent().children().eq(5).html('<span class="label label-danger">' + formattedDate + '</span>');
+                               $(element).parent().children().eq(6).html('<span class="label label-danger">' + formattedDate + '</span>');
                           }
                             else {
-                               $(element).parent().children().eq(5).html(formattedDate) ;
+                               $(element).parent().children().eq(6).html(formattedDate) ;
                             }
 
                 }
 
             })
            });
-
-
-
             $(".chk").on('click', function () {
 
                 if ($(".chk").prop("checked")) {
@@ -369,7 +406,6 @@
                 }
 
             })
-
             var checkAllCheck = '@ViewBag.showAll';
             if (checkAllCheck=='yes') {
                 $(".chk").prop('checked',true);
@@ -427,7 +463,43 @@
                 data: data,
                 success: function (data) {
                     if (data.Status == "1") {
-                        swal(data.Message, "", "success")
+                       // swal(data.Message, "", "success")
+                    }
+                    else {
+                        swal(data.Message, "", "error")
+                    }
+                }
+            })
+        }
+
+        function updateBolpalletDetail(bol1_no, pallet_no, pallet_type) {
+
+              if ($(event.target).hasClass('inp')) {
+
+                  pallet_no = $(event.target).val();
+                  pallet_type = $(event.target).next().val();
+                  $(event.target).next().val('')
+            }
+              else {
+                  pallet_no = $(event.target).prev().val();
+                  pallet_type = $(event.target).val();
+
+              }
+
+            if (!pallet_no || !pallet_type) {
+                // swal("select both value", "", "warning")
+                return;
+            }
+            var data = { 'bol1_no': bol1_no,column :'pallet','pallet_no' : pallet_no, 'pallet_type' : pallet_type };
+            console.log(data);
+            $.ajax({
+                url: "/Shipping/UpdateBolDetail",
+                type: "POST",
+                dataType: "json",
+                data: data,
+                success: function (data) {
+                    if (data.Status == "1") {
+                       // swal(data.Message, "", "success")
                     }
                     else {
                         swal(data.Message, "", "error")
@@ -463,6 +535,23 @@
 
         }
 
+        function filterDatatable() {
+            if ($(event.target).val()) {
+                 window.table
+                    .column(1)
+                    .search( $(event.target).val() )
+                    .draw();
+
+            }
+            else {
+
+                //$('#tbl').data.reload();
+                $('#tbl').DataTable().columns().search("").draw();
+
+                //alert("ss")
+                //$('#tbl').dataTable().fnDraw();
+            }
+        }
 
 
     </script>
