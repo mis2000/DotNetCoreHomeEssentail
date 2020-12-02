@@ -2,10 +2,9 @@
 
 $(() => {
     if ($('#fingers10').length !== 0) {
- 
+
         var table = $('#fingers10').DataTable({
             "scrollY": "" + (window.outerHeight - 375) + "px",
-            "scrollX": "" + (window.outerWidth - 300) + "px",
             "scrollCollapse": true,
             language: {
                 processing: "Loading Data...",
@@ -14,14 +13,14 @@ $(() => {
             processing: true,
             serverSide: true,
             orderCellsTop: true,
-            searching:true,
+            searching: true,
             autoWidth: true,
             deferRender: true,
             "pageLength": 10,
             "lengthChange": false,
             dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             buttons: [
-                
+
             ],
             ajax: {
                 type: "POST",
@@ -33,6 +32,7 @@ $(() => {
                     additionalValues[0] = $("#ordernum").val();
                     additionalValues[1] = $("#Name").val();
                     additionalValues[2] = $("#Shipdate").val();
+                    additionalValues[2] = $("#chkShowAll").prop('checked').toString();
                     data.AdditionalValues = additionalValues;
 
                     return JSON.stringify(data);
@@ -41,7 +41,7 @@ $(() => {
             columns: [
                 {
                     orderable: false,
-                  
+
                     data: "Action",
                     render: function (data, type, row) {
 
@@ -51,12 +51,12 @@ $(() => {
                     }
                 },
                 {
-                    orderable: false,
+                    orderable: true,
                     data: "Notes",
                     render: function (data, type, row) {
                         if (row.NoteCount > 0) {
                             return `<a data-toggle="modal" data-target="#notes"
-                                               onclick="openNote(`+ row.ordernum + `,'` + row.Orderdate+`')" href="#">
+                                               onclick="openNote('`+ row.ordernum + `','` + row.Orderdate + `')" href="#">
                                                 <i class="fa fa-sticky-note-o"></i>
                                             </a>`;
                         }
@@ -121,7 +121,7 @@ $(() => {
                     data: "Custnum",
                     name: "co"
                 },
-                
+
                 {
                     data: "Orderdate",
                     searchable: false,
@@ -137,7 +137,7 @@ $(() => {
                     data: "Name",
                     name: "co"
                 },
-                
+
                 {
                     data: "Shipname",
                     searchable: false,
@@ -190,11 +190,6 @@ $(() => {
                     name: "co"
                 },
                 {
-                    data: "Tax",
-                    searchable: false,
-                    name: "co"
-                },
-                {
                     data: "Ponum",
                     searchable: false,
                     name: "co"
@@ -210,7 +205,7 @@ $(() => {
                     },
                     name: "eq"
                 },
-                
+
                 {
                     data: "Edidate",
                     render: function (data, type, row) {
@@ -221,11 +216,6 @@ $(() => {
                     },
                     searchable: false,
                     name: "eq"
-                },
-                {
-                    data: "Terminal",
-                    searchable: false,
-                    name: "co"
                 },
                 {
                     data: "Custnote",
@@ -298,7 +288,7 @@ $(() => {
                         else {
                             return `<span class="badge badge-danger">No</span>`;
                         }
-                     
+
                     }
                 },
                 {
@@ -326,8 +316,8 @@ $(() => {
                     searchable: false,
                     name: "co"
                 },
-                
-                
+
+
             ]
         });
 
@@ -345,14 +335,18 @@ $(() => {
             table.draw();
         });
 
+        $("#chkShowAll").on("click", function (e) {
+            table.draw();
+        });
+
         $(document)
             .off('click', '.btnEdit')
             .on('click', '.btnEdit', function () {
                 const id = $(this).attr('data-key');
-                window.location.href = window.baseUrl+"/Order/Detail/" + id;
-                 
+                window.location.href = window.baseUrl + "/Order/Detail/" + id;
+
             });
 
-      
+
     }
 });

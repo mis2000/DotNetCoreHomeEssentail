@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<MySqlBasicCore.Models.Bol_1_ViewModel>
 @{
     ViewBag.Title = "Home Page";
+    List<String> PalletTypeList = new List<string>();
+    List<String> HeWhList = Model.Select(s => s.bol1_HE_WH).Distinct().ToList();
+    PalletTypeList.Add("Actual");
+    PalletTypeList.Add("Estimated");
 }
 @using Microsoft.Extensions.Options;
 @inject IOptions<Appsettings> Settings
@@ -12,17 +16,31 @@
                 <div class="ibox ">
                     <div class="ibox-title">
                         <h3>Home</h3>
-                        
-                        
-                            <div class="ibox-tools" style="width:120px">
-                                <div class="form-group">
+                        <div class="ibox-tools">
+                            <div class="row" style="width:335px">
+                                <div class="col-lg-6">
                                     <label class="control-label " style="margin-right:10px">
                                         Show All
                                     </label>
                                     <input type="checkbox" style="width:25px;height:25px;display:none" class="chk" />
+
+                                </div>
+                                <div class="col-lg-6">
+                                    @Html.DropDownList("filter", new SelectList(HeWhList.Select(x => new { Value = x, Text = x }), "Value", "Text"), "Select HE-WH",
+                                    new
+                                    {
+                                        @onchange = "filterDatatable()",
+                                        @class = "form-control",
+                                        @placeholder = "Select HE-WH",
+
+                                    })
+
                                 </div>
                             </div>
-                        
+
+
+                        </div>
+
 
                     </div>
                     <div class="ibox-content">
@@ -34,7 +52,8 @@
                                     <th>BOL_NO</th>
                                     <th>Order_No</th>
                                     <th>PO_No</th>
-                                    <th width="75px;">Ship Date</th>
+                                    <th style="min-width:75px;">Ship Date</th>
+                                    <th style="min-width:85px;">Cancel Date</th>
                                     <th>Name</th>
                                     <th>Adrs1</th>
                                     <th>Adrs2</th>
@@ -45,7 +64,7 @@
                                     <th>CarrierPhone</th>
                                     <th>PkupDate</th>
                                     <th style="min-width: 150px;">PkupTime</th>
-                                    <th>Canceldate</th>
+                                    <th style="min-width: 180px;">Pallets </th>
                                     <th>Scac</th>
                                     <th>Frght_terms</th>
                                     <th>Ttl_pkgs</th>
@@ -53,7 +72,7 @@
                                     <th>Ttl_weight</th>
                                     <th>Pro_no</th>
                                     <th>Ref</th>
-
+                                    <th style="display:none"></th>
 
 
 
@@ -62,106 +81,125 @@
                             <tbody>
                                 @foreach (var row in Model)
                                 {
-                                <tr>
-                                    <td>
-                                        @if (row.Line > 0)
-                                        {
-                                            <a data-toggle="modal" data-target="#notes"
-                                               onclick="openNote('@row.bol1_no')" href="#">
-                                                <i class="fa fa-sticky-note-o"></i>
-                                            </a>
-                                        }
-                                        else
-                                        {
+                                    <tr>
+                                        <td>
+                                            @if (row.Line > 0)
+                                            {
+                                                <a data-toggle="modal" data-target="#notes"
+                                                   onclick="openNote('@row.bol1_no')" href="#">
+                                                    <i class="fa fa-sticky-note-o"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
 
-                                        }
-                                    </td>
-                                    <td>@row.bol1_HE_WH</td>
-                                    <td>@row.bol1_no</td>
-                                    <td>
-                                        @if (row.Count > 1)
-                                        {
-                                            <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
-                                        }
-                                        else
-                                        {
-                                            <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol2_order_no</a>
+                                            }
+                                        </td>
+                                        <td>@row.bol1_HE_WH</td>
+                                        <td>@row.bol1_no</td>
+                                        <td>
+                                            @if (row.Count > 1)
+                                            {
+                                                <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
+                                            }
+                                            else
+                                            {
+                                                <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol2_order_no</a>
 
-                                        }
+                                            }
 
-                                    </td>
-                                    <td>
-                                        @if (row.Count > 1)
-                                        {
-                                            <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
-                                        }
-                                        else
-                                        {
-                                            <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol1_PO_No</a>
-
-                                        }
-
-                                    </td>
-                                    <td class="shipDate">@row.bol1_date</td>@*?.ToString("MM/dd/yyyy")*@
-                                    <td>@row.bol1_name</td>
-                                    <td>@row.bol1_adrs1</td>
-                                    <td>@row.bol1_adrs2</td>
-                                    <td>@row.bol1_adrs3</td>
-                                    <td>@row.bol1_Lctn</td>
-
-                                    <td>
-
-                                        <input type="text" class="form-control expandOnHover" value="@row.Conformation"
-                                               onchange="updateBolDetail('@row.bol1_no','Conformation')" />
+                                        </td>
+                                        <td>
+                                            @if (row.Count > 1 && row.bol1_PO_No != row.bol1_PO_No1)
+                                            {
+                                                <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'>View</a>
 
 
-                                    </td>
-                                    <td>
+                                            }
+                                            else
+                                            {
+                                                <a href='@Url.Action("BOLDetail", "Shipping", new { id = row.bol1_no })'> @row.bol1_PO_No</a>
 
-                                        <input type="text" class="form-control" value="@row.bol1_carrierName"
-                                               onchange="updateBolDetail('@row.bol1_no','bol1_carrierName')" />
+                                            }
+
+                                        </td>
+                                        <td>@row.bol1_date?.ToString("MM/dd/yyyy")</td>
+                                        <td></td>
+                                        <td>@row.bol1_name</td>
+                                        <td>@row.bol1_adrs1</td>
+                                        <td>@row.bol1_adrs2</td>
+                                        <td>@row.bol1_adrs3</td>
+                                        <td>@row.bol1_Lctn</td>
+
+                                        <td>
+
+                                            <input type="text" class="form-control expandOnHover" value="@row.Conformation"
+                                                   onchange="updateBolDetail('@row.bol1_no','Conformation')" />
 
 
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control" value="@row.bol1_carrierPhone"
-                                               onchange="updateBolDetail('@row.bol1_no','@row.bol1_carrierPhone','bol1_carrierPhone')" />
-                                    </td>
-                                    <td>
-                                        <div class="input-group date" style="width:150px">
-                                            <input type="text" class="form-control"
-                                                   id="@(row.bol1_no+"_date")"
-                                                   onchange="updateBolDetail('@row.bol1_no','bol1_PkupDate')"
-                                                   value="@row.bol1_PkupDate?.ToString("yyyy/MM/dd")">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
+                                        </td>
+                                        <td>
 
-                                    </td>
-                                    <td style="min-width: 150px;">
-                                        <div class="input-group clockpicker" data-autoclose="true">
-                                            <input type="text" class="form-control"
-                                                   id="@(row.bol1_no+"_time")"
-                                                   onchange="updateBolDetail('@row.bol1_no','bol1_pkupTime')"
-                                                   value="@row.bol1_pkupTime">
-                                            <span class="input-group-addon">
-                                                <span class="fa fa-clock-o"></span>
-                                            </span>
-                                        </div>
+                                            <input type="text" class="form-control" value="@row.bol1_carrierName"
+                                                   onchange="updateBolDetail('@row.bol1_no','bol1_carrierName')" />
 
-                                    </td>
 
-                                    <td>@row.bol1_CancelDate?.ToString("MM/dd/yyyy")</td>
-                                    <td>@row.bol1_scac</td>
-                                    <td>@row.bol1_frght_terms</td>
-                                    <td>@row.bol1_ttl_pkgs</td>
-                                    <td>@row.bol1_ttlValue</td>
-                                    <td>@row.bol1_ttl_weight</td>
-                                    <td>@row.bol1_pro_no</td>
-                                    <td>@row.bol1_ref</td>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" value="@row.bol1_carrierPhone"
+                                                   onchange="updateBolDetail('@row.bol1_no','@row.bol1_carrierPhone','bol1_carrierPhone')" />
+                                        </td>
+                                        <td>
+                                            <div class="input-group date" style="width:150px">
+                                                <input type="text" class="form-control"
+                                                       id="@(row.bol1_no+"_date")"
+                                                       onchange="updateBolDetail('@row.bol1_no','bol1_PkupDate')"
+                                                       value="@row.bol1_PkupDate?.ToString("yyyy/MM/dd")">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
 
-                                </tr>
+                                        </td>
+                                        <td style="min-width: 150px;">
+                                            <div class="input-group clockpicker" data-autoclose="true">
+                                                <input type="text" class="form-control"
+                                                       id="@(row.bol1_no+"_time")"
+                                                       onchange="updateBolDetail('@row.bol1_no','bol1_pkupTime')"
+                                                       value="@row.bol1_pkupTime">
+                                                <span class="input-group-addon">
+                                                    <span class="fa fa-clock-o"></span>
+                                                </span>
+                                            </div>
+
+                                        </td>
+                                        <td>
+                                            <input type="number" min="1"
+                                                   max="99"
+                                                   style="width:40%"
+                                                   class="form-control pull-left inp" value="@row.bol1_pallet"
+                                                   onchange="updateBolpalletDetail('@row.bol1_no','@row.bol1_pallet','@row.bol1_pallet_type')" />
+                                            @Html.DropDownListFor(model => row.bol1_pallet_type, new SelectList(PalletTypeList.Select(x => new { Value = x, Text = x }), "Value", "Text"), "Select",
+                                                new
+                                                     {
+                                                         @onchange = "updateBolpalletDetail('" + row.bol1_no + "','" + row.bol1_pallet + "','" + row.bol1_pallet_type + "')",
+                                                         @class = "form-control pull-left sel",
+                                                         @placeholder = "Select",
+                                                         style = "width:55%;height: 2.25rem;margin-left:5px;"
+                                                     })
+
+                                        </td>
+                                        <td>@row.bol1_scac</td>
+                                        <td>@row.bol1_frght_terms</td>
+                                        <td>@row.bol1_ttl_pkgs</td>
+                                        <td>@row.bol1_ttlValue</td>
+                                        <td>@row.bol1_ttl_weight</td>
+                                        <td>@row.bol1_pro_no</td>
+                                        <td>@row.bol1_ref</td>
+                                        <td class="shipDate" style="display:none">@row.bol1_CancelDate</td>
+
+
+                                    </tr>
                                 }
                             </tbody>
                         </table>
@@ -171,7 +209,7 @@
                 <button id="yes" type="submit" name="submit" value="yes" style="display:none"></button>
                 <button id="no" type="submit" name="submit" value="no" style="display:none"></button>
             </form>
-                </div>
+        </div>
     </div>
 
     <div class="modal inmodal fade" id="notes" tabindex="-1" role="dialog" aria-hidden="true">
@@ -215,19 +253,19 @@
     </environment>
     <style>
         table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:after {
-        right: 50% !important;
-         top: 54%;
+            right: 50% !important;
+            top: 54%;
         }
 
         .shipDate:after {
-        right:30% !important;
+            right: 30% !important;
         }
 
         table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > td.sorting_asc, table.dataTable thead > tr > td.sorting_desc, table.dataTable thead > tr > td.sorting {
-        padding:8px;
-        height:40px;
-         
+            padding: 8px;
+            height: 40px;
         }
+
         .expandOnHover:hover {
             /*width:250px !important;
         height:75px*/
@@ -247,6 +285,7 @@
     </environment>
 
     <script type="text/javascript">
+
         $(document).ready(function () {
 
             var mem = $('.input-group.date').datepicker({
@@ -260,7 +299,7 @@
 
             });
             $('.clockpicker').clockpicker();
-            $('#tbl').DataTable({
+            window.table =  $('#tbl').DataTable({
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
                     { extend: 'copy' },
@@ -281,79 +320,80 @@
                     }
                 ],
                 stateSave: true,
-                "scrollY": "" + (window.outerHeight - 350) + "px",
+                "scrollY": "" + (window.outerHeight - 380) + "px",
                 "scrollX": "" + (window.outerWidth - 300) + "px",
             });
+            console.log('data table');
+            console.log(table);
+            console.log('data table');
 
-            $(".shipDate").each(function (index,element) {
+            $(".shipDate").each(function (index, element) {
                 var checkDate = $(element).html();
                 if (checkDate) {
-                    
+
                             var date1 = new window.moment(window.moment().format("MM/DD/YYYY"));
                             var date2 = new window.moment(checkDate);
                             const diffTime = (date2 - date1);
                             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                           
+
                             var formattedDate = window.moment(checkDate).format("MM/DD/YYYY");
                             if (diffDays == 0) {
-                                 $(element).html( '<span class="label label-warning">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html('<span class="label label-warning">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 1 && diffDays < 3) {
-                                 $(element).html( '<span class="label label-success">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html( '<span class="label label-success">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 3 && diffDays < 7) {
-                                 $(element).html('<span class="label label-primary">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html('<span class="label label-primary">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 7) {
-                                $(element).html('<span class="label label-info">' + formattedDate + '</span>');
+                                $(element).parent().children().eq(6).html('<span class="label label-info">' + formattedDate + '</span>');
                             }
                             else if (diffDays < 0) {
-                                $(element).html('<span class="label label-danger">' + formattedDate + '</span>');
-                    }
+                               $(element).parent().children().eq(6).html('<span class="label label-danger">' + formattedDate + '</span>');
+                          }
                             else {
-                                $(element).html(formattedDate) ;
+                               $(element).parent().children().eq(6).html(formattedDate) ;
                             }
-                             
+
                 }
 
             })
 
-           $('#tbl').on( 'draw.dt', function () {
+            $('#tbl').on('draw.dt', function () {
                  $(".shipDate").each(function (index,element) {
                 var checkDate = $(element).html();
                 if (checkDate) {
-                    
+
                             var date1 = new window.moment(window.moment().format("MM/DD/YYYY"));
                             var date2 = new window.moment(checkDate);
                             const diffTime = (date2 - date1);
                             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                           
+
                             var formattedDate = window.moment(checkDate).format("MM/DD/YYYY");
                             if (diffDays == 0) {
-                                 $(element).html( '<span class="label label-warning">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(5).html( '<span class="label label-warning">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 1 && diffDays < 3) {
-                                 $(element).html( '<span class="label label-success">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(5).html( '<span class="label label-success">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 3 && diffDays < 7) {
-                                 $(element).html('<span class="label label-primary">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(5).html('<span class="label label-primary">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 7) {
-                                $(element).html('<span class="label label-info">' + formattedDate + '</span>');
+                                $(element).parent().children().eq(5).html('<span class="label label-info">' + formattedDate + '</span>');
                             }
                             else if (diffDays < 0) {
-                                $(element).html('<span class="label label-danger">' + formattedDate + '</span>');
-                    }
+                               $(element).parent().children().eq(5).html('<span class="label label-danger">' + formattedDate + '</span>');
+                          }
                             else {
-                                $(element).html(formattedDate) ;
+                               $(element).parent().children().eq(5).html(formattedDate) ;
                             }
-                             
+
                 }
 
             })
            });
-
-
             $(".chk").on('click', function () {
 
                 if ($(".chk").prop("checked")) {
@@ -364,7 +404,6 @@
                 }
 
             })
-
             var checkAllCheck = '@ViewBag.showAll';
             if (checkAllCheck=='yes') {
                 $(".chk").prop('checked',true);
@@ -373,7 +412,7 @@
 
         });
 
- 
+
         function updateBolDetail(bol1_no, column) {
             if (column == "bol1_pkupTime") {
                 var checkTime = ($("#" + bol1_no + "_time").val());
@@ -431,6 +470,41 @@
             })
         }
 
+        function updateBolpalletDetail(bol1_no, pallet_no, pallet_type) {
+
+              if ($(event.target).hasClass('inp')) {
+
+                  pallet_no = $(event.target).val();
+                  pallet_type = $(event.target).next().val();
+            }
+              else {
+                  pallet_no = $(event.target).prev().val();
+                  pallet_type = $(event.target).val();
+
+              }
+
+            if (!pallet_no || !pallet_type) {
+                 swal("select both value", "", "warning")
+                return;
+            }
+            var data = { 'bol1_no': bol1_no,column :'pallet','pallet_no' : pallet_no, 'pallet_type' : pallet_type };
+            console.log(data);
+            $.ajax({
+                url: "/Shipping/UpdateBolDetail",
+                type: "POST",
+                dataType: "json",
+                data: data,
+                success: function (data) {
+                    if (data.Status == "1") {
+                        swal(data.Message, "", "success")
+                    }
+                    else {
+                        swal(data.Message, "", "error")
+                    }
+                }
+            })
+        }
+
         function addDays(date, days) {
             var result = new Date(date);
             result.setDate(result.getDate() + days);
@@ -458,7 +532,21 @@
 
         }
 
-        
+        function filterDatatable() {
+            if ($(event.target).val()) {
+                 window.table
+                    .column(1)
+                    .search( $(event.target).val() )
+                    .draw();
+
+            }
+            else {
+               
+                $('#tbl').DataTable().search('').draw();
+
+            }
+        }
+
 
     </script>
 }

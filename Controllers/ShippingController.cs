@@ -15,6 +15,7 @@ namespace MySqlBasicCore.Controllers
     [Authentication]
     public class ShippingController : Controller
     {
+   
         private readonly IOptions<Appsettings> _appSettings;
         private readonly DBContext _dbContext;
 
@@ -30,14 +31,15 @@ namespace MySqlBasicCore.Controllers
             try
             {
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset(@"select 
-                                                    max(Line)Line, count(*)Count, a.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(bol1_adrs1)bol1_adrs1,max(bol1_adrs2)bol1_adrs2,max(bol1_adrs3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(bol1_ref)bol1_ref, max(bol1_PO_No)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation
-                                                    from  (select  count(*)Count, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(shipaddress1)bol1_adrs1,max(shipaddress2)bol1_adrs2,max(shipaddress3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(clerk)bol1_ref, max(bol2_PO)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation
-                                                    from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No )  
-                                                    left join orders on orders.ordernum = bol_2.bol2_order_no
-                                                    group by bol_1.bol1_no) a  left join ordernotes on a.bol2_order_no = ordernotes.ordernum
-                                                    WHERE bol1_ttl_weight  IS NULL                                            
-                                                    group by a.bol1_no");
+                DataSet ds = dbfunction.GetDataset(@"SELECT * FROM  (SELECT COUNT(*)Line,Ordernum FROM ordernotes GROUP BY Ordernum )b   JOIN 
+                                                     (SELECT  COUNT(*)COUNT, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,MAX(NAME)NAME,MAX(bol1_date)bol1_date, MAX(bol2_custnum)bol2_custnum,MAX(bol1_name)bol1_name,MAX(shipaddress1)bol1_adrs1,MAX(shipaddress2)bol1_adrs2,MAX(shipaddress3)bol1_adrs3,MAX(bol1_city)bol1_city,MAX(bol1_state)bol1_state,
+                                                     MAX(bol1_zip)bol1_zip,MAX(bol1_Lctn)bol1_Lctn,MAX(bol1_pro_no)bol1_pro_no,MAX(bol1_scac)bol1_scac,MAX(bol1_frght_terms)bol1_frght_terms,MAX(bol1_ttl_pkgs)bol1_ttl_pkgs,MAX(bol1_ttl_weight)bol1_ttl_weight,
+                                                     MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MIN(bol2_PO)bol1_PO_No1,MAX(bol1_carrierName)bol1_carrierName,
+                                                     MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation,MAX(bol1_pallet)bol1_pallet,MAX(bol1_pallet_type)bol1_pallet_type
+                                                     FROM bol_1 JOIN bol_2 ON (bol_1.bol1_no = bol_2.bol2_No )   JOIN orders ON orders.ordernum = bol_2.bol2_order_no 
+                                                     # WHERE bol1_ttl_weight  IS NULL   
+                                                     GROUP BY bol_1.bol1_no)a ON a.bol2_order_no = b.ordernum
+                                                     ");
 
                 bol_1_List = (from row in ds.Tables[0].AsEnumerable()
                               select new Bol_1_ViewModel
@@ -65,12 +67,15 @@ namespace MySqlBasicCore.Controllers
                                   bol2_order_no = Convert.ToString(row["bol2_order_no"]),
                                   bol1_ref = Convert.ToString(row["bol1_ref"]),
                                   bol1_PO_No = Convert.ToString(row["bol1_PO_No"]),
+                                  bol1_PO_No1 = Convert.ToString(row["bol1_PO_No1"]),
                                   bol1_carrierName = Convert.ToString(row["bol1_carrierName"]),
                                   bol1_carrierPhone = Convert.ToString(row["bol1_carrierPhone"]),
                                   bol1_PkupDate = Convert.ToString(row["bol1_PkupDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_PkupDate"]),
                                   bol1_CancelDate = Convert.ToString(row["bol1_CancelDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_CancelDate"]),
                                   bol1_pkupTime = Convert.ToString(row["bol1_pkupTime"]),
-                                  Conformation = Convert.ToString(row["Conformation"])
+                                  Conformation = Convert.ToString(row["Conformation"]),
+                                  bol1_pallet = Convert.ToString(row["bol1_pallet"]) == "" ? (int?)null : Convert.ToInt32(row["bol1_pallet"]),
+                                  bol1_pallet_type = Convert.ToString(row["bol1_pallet_type"])
 
                               }).ToList();
             }
@@ -88,27 +93,28 @@ namespace MySqlBasicCore.Controllers
             {
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
                 string query = "";
-                if (submit=="yes")
+                if (submit == "yes")
                 {
-                    query = @"select 
-                                                    max(Line)Line, count(*)Count, a.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(bol1_adrs1)bol1_adrs1,max(bol1_adrs2)bol1_adrs2,max(bol1_adrs3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(bol1_ref)bol1_ref, max(bol1_PO_No)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation
-                                                    from  (select  count(*)Count, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(shipaddress1)bol1_adrs1,max(shipaddress2)bol1_adrs2,max(shipaddress3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(clerk)bol1_ref, max(bol2_PO)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation
-                                                    from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No )  
-                                                    join orders on orders.ordernum = bol_2.bol2_order_no
-                                                    group by bol_1.bol1_no) a  left join ordernotes on 
-                                                    (a.bol2_order_no = ordernotes.ordernum and  substring(Year(a.bol1_date),3,2) = a.Year )
-                                                    group by a.bol1_no";
+                    query = @"SELECT * FROM  (SELECT COUNT(*)Line,Ordernum FROM ordernotes GROUP BY Ordernum )b   JOIN 
+                                                     (SELECT  COUNT(*)COUNT, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,MAX(NAME)NAME,MAX(bol1_date)bol1_date, MAX(bol2_custnum)bol2_custnum,MAX(bol1_name)bol1_name,MAX(shipaddress1)bol1_adrs1,MAX(shipaddress2)bol1_adrs2,MAX(shipaddress3)bol1_adrs3,MAX(bol1_city)bol1_city,MAX(bol1_state)bol1_state,
+                                                     MAX(bol1_zip)bol1_zip,MAX(bol1_Lctn)bol1_Lctn,MAX(bol1_pro_no)bol1_pro_no,MAX(bol1_scac)bol1_scac,MAX(bol1_frght_terms)bol1_frght_terms,MAX(bol1_ttl_pkgs)bol1_ttl_pkgs,MAX(bol1_ttl_weight)bol1_ttl_weight,
+                                                     MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MIN(bol2_PO)bol1_PO_No1,MAX(bol1_carrierName)bol1_carrierName,
+                                                     MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation,MAX(bol1_pallet)bol1_pallet,MAX(bol1_pallet_type)bol1_pallet_type
+                                                     FROM bol_1 JOIN bol_2 ON (bol_1.bol1_no = bol_2.bol2_No )   JOIN orders ON orders.ordernum = bol_2.bol2_order_no 
+                                                     GROUP BY bol_1.bol1_no)a ON a.bol2_order_no = b.ordernum
+                                                     ";
                 }
                 else
                 {
-                    query =                         @"select 
-                                                    max(Line)Line, count(*)Count, a.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(bol1_adrs1)bol1_adrs1,max(bol1_adrs2)bol1_adrs2,max(bol1_adrs3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(bol1_ref)bol1_ref, max(bol1_PO_No)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation
-                                                    from  (select  count(*)Count, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,max(name)name,max(bol1_date)bol1_date, max(bol2_custnum)bol2_custnum,max(bol1_name)bol1_name,max(shipaddress1)bol1_adrs1,max(shipaddress2)bol1_adrs2,max(shipaddress3)bol1_adrs3,max(bol1_city)bol1_city,max(bol1_state)bol1_state,max(bol1_zip)bol1_zip,max(bol1_Lctn)bol1_Lctn,max(bol1_pro_no)bol1_pro_no,max(bol1_scac)bol1_scac,max(bol1_frght_terms)bol1_frght_terms,max(bol1_ttl_pkgs)bol1_ttl_pkgs,max(bol1_ttl_weight)bol1_ttl_weight,max(bol1_ttlValue)bol1_ttlValue,max(bol1_HE_WH)bol1_HE_WH,max(bol2_order_no)bol2_order_no,max(clerk)bol1_ref, max(bol2_PO)bol1_PO_No,max(bol1_carrierName)bol1_carrierName,max(bol1_carrierPhone)bol1_carrierPhone,max(bol1_PkupDate)bol1_PkupDate,max(bol1_pkupTime)bol1_pkupTime,max(Conformation)Conformation
-                                                    from bol_1 join bol_2 on (bol_1.bol1_no = bol_2.bol2_No )  
-                                                    join orders on orders.ordernum = bol_2.bol2_order_no
-                                                    group by bol_1.bol1_no) a  left join ordernotes on a.bol2_order_no = ordernotes.ordernum
-                                                    WHERE bol1_ttl_weight  IS NULL                                            
-                                                    group by a.bol1_no";
+                    query = @"SELECT * FROM  (SELECT COUNT(*)Line,Ordernum FROM ordernotes GROUP BY Ordernum )b  JOIN 
+                                                     (SELECT  COUNT(*)COUNT, bol_1.bol1_no,MAX(bol1_CancelDate)bol1_CancelDate,MAX(NAME)NAME,MAX(bol1_date)bol1_date, MAX(bol2_custnum)bol2_custnum,MAX(bol1_name)bol1_name,MAX(shipaddress1)bol1_adrs1,MAX(shipaddress2)bol1_adrs2,MAX(shipaddress3)bol1_adrs3,MAX(bol1_city)bol1_city,MAX(bol1_state)bol1_state,
+                                                     MAX(bol1_zip)bol1_zip,MAX(bol1_Lctn)bol1_Lctn,MAX(bol1_pro_no)bol1_pro_no,MAX(bol1_scac)bol1_scac,MAX(bol1_frght_terms)bol1_frght_terms,MAX(bol1_ttl_pkgs)bol1_ttl_pkgs,MAX(bol1_ttl_weight)bol1_ttl_weight,
+                                                     MAX(bol1_ttlValue)bol1_ttlValue,MAX(bol1_HE_WH)bol1_HE_WH,MAX(bol2_order_no)bol2_order_no,MAX(clerk)bol1_ref, MAX(bol2_PO)bol1_PO_No,MIN(bol2_PO)bol1_PO_No1,MAX(bol1_carrierName)bol1_carrierName,
+                                                     MAX(bol1_carrierPhone)bol1_carrierPhone,MAX(bol1_PkupDate)bol1_PkupDate,MAX(bol1_pkupTime)bol1_pkupTime,MAX(Conformation)Conformation,MAX(bol1_pallet)bol1_pallet,MAX(bol1_pallet_type)bol1_pallet_type
+                                                     FROM bol_1 JOIN bol_2 ON (bol_1.bol1_no = bol_2.bol2_No )   JOIN orders ON orders.ordernum = bol_2.bol2_order_no 
+                                                      WHERE bol1_ttl_weight  IS NULL   
+                                                     GROUP BY bol_1.bol1_no)a ON a.bol2_order_no = b.ordernum
+                                                     ";
 
                 }
                 DataSet ds = dbfunction.GetDataset(query);
@@ -139,13 +145,15 @@ namespace MySqlBasicCore.Controllers
                                   bol2_order_no = Convert.ToString(row["bol2_order_no"]),
                                   bol1_ref = Convert.ToString(row["bol1_ref"]),
                                   bol1_PO_No = Convert.ToString(row["bol1_PO_No"]),
+                                  bol1_PO_No1 = Convert.ToString(row["bol1_PO_No1"]),
                                   bol1_carrierName = Convert.ToString(row["bol1_carrierName"]),
                                   bol1_carrierPhone = Convert.ToString(row["bol1_carrierPhone"]),
                                   bol1_PkupDate = Convert.ToString(row["bol1_PkupDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_PkupDate"]),
                                   bol1_CancelDate = Convert.ToString(row["bol1_CancelDate"]) == "" ? (DateTime?)null : Convert.ToDateTime(row["bol1_CancelDate"]),
                                   bol1_pkupTime = Convert.ToString(row["bol1_pkupTime"]),
-                                  Conformation = Convert.ToString(row["Conformation"])
-
+                                  Conformation = Convert.ToString(row["Conformation"]),
+                                  bol1_pallet = Convert.ToString(row["bol1_pallet"]) == "" ? (int?)null : Convert.ToInt32(row["bol1_pallet"]),
+                                  bol1_pallet_type = Convert.ToString(row["bol1_pallet_type"])
                               }).ToList();
             }
             catch (Exception Ex)
@@ -248,8 +256,6 @@ namespace MySqlBasicCore.Controllers
                         TovBol_Whse = Convert.ToString(rows[13]);
                         TovBol_freightTerms = Convert.ToString(rows[14]);
 
-
-
                         bolLists.Add(new TovBol
                         {
                             TovBol_custnum = TovBol_custnum,
@@ -281,6 +287,7 @@ namespace MySqlBasicCore.Controllers
 
             }
             catch (Exception ex)
+
             {
 
                 ViewBag.imported = 0;
@@ -288,13 +295,12 @@ namespace MySqlBasicCore.Controllers
             return View();
         }
 
-
         public ActionResult Import_BOL_Notes()
         {
 
             return View();
         }
-        
+
         [HttpPost]
         public ActionResult Import_BOL_Notes(IFormFile file)
         {
@@ -357,9 +363,8 @@ namespace MySqlBasicCore.Controllers
             return View();
         }
 
-
         [HttpPost]
-        public JsonResult UpdateBolDetail(string bol1_no, string column, string bol1_carrierName, string bol1_carrierPhone, DateTime? bol1_PkupDate, DateTime? bol1_pkupTime, string Conformation)
+        public JsonResult UpdateBolDetail(string bol1_no, string column, string bol1_carrierName, string bol1_carrierPhone, DateTime? bol1_PkupDate, DateTime? bol1_pkupTime, string Conformation, int pallet_no, string pallet_type)
         {
             ResponseModel response = new ResponseModel();
             try
@@ -383,6 +388,10 @@ namespace MySqlBasicCore.Controllers
                 {
                     query = "Update bol_1 set Conformation='" + Conformation + "'  where bol1_no ='" + bol1_no + "'  ";
                 }
+                else if (column == "pallet")
+                {
+                    query = "Update bol_1 set bol1_pallet=" + pallet_no + ",bol1_pallet_type='" + pallet_type + "'  where bol1_no ='" + bol1_no + "'  ";
+                }
                 else
                 {
                     query = "Update bol_1 set bol1_pkupTime='" + bol1_pkupTime.Value.ToString("HH:mm") + "'  where bol1_no ='" + bol1_no + "'  ";
@@ -399,7 +408,6 @@ namespace MySqlBasicCore.Controllers
             return Json(response);
         }
 
-
         [HttpPost]
         public JsonResult GetOrderNotes(string bol1_no)
         {
@@ -408,7 +416,7 @@ namespace MySqlBasicCore.Controllers
             {
                 ItemclassViewModel model = new ItemclassViewModel();
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                var query = "select ordernotes.* from ordernotes join orders on (orders.Ordernum = a.Ordernum and substring(Year(Orderdate),3,2) = a.Year  ) where orders.Ordernum in (select bol2_order_no from bol_2 where bol2_no='" + bol1_no + "')";
+                var query = "select * from ordernotes where ordernum in (select bol2_order_no from bol_2 where bol2_no='" + bol1_no + "' )";
                 DataSet ds = dbfunction.GetDataset(query);
                 if (ds.Tables.Count > 0)
                 {
@@ -431,7 +439,6 @@ namespace MySqlBasicCore.Controllers
 
             return Json(response);
         }
-
 
         protected override void Dispose(bool disposing)
         {

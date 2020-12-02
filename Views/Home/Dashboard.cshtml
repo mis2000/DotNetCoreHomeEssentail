@@ -1,313 +1,344 @@
-﻿@model MySqlBasicCore.Models.DashboardViewModel
+﻿@using Microsoft.AspNetCore.Http
+@model MySqlBasicCore.Models.DashboardViewModel
 @{
     ViewData["Title"] = "Home";
 }
 @using Microsoft.Extensions.Options;
 @inject IOptions<Appsettings> Settings
-<div class="wrapper wrapper-content">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox">
-                <div class="ibox-content">
-                    <div class="row" style="margin-top:0px;margin-bottom:-6px">
-                        <div class="col-lg-3" style="text-align:center">
-                            <button class="btn btn-info btn-outline" id="btnorders" onclick="setBoxes('orders')">ORDERS</button>
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    String RoleId = Convert.ToString(@HttpContextAccessor.HttpContext.Session.GetString("RoleId"));
+
+
+}
+    <div class="wrapper wrapper-content">
+
+        @if (RoleId.ToString() == "3")
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div class="row" >
+                                <div class="col-lg-12" style="text-align:center">
+                                   <h3>Dashboard Page</h3>
+                                </div>
+                               
+                            </div>
                         </div>
-                        <div class="col-lg-3" style="text-align:center">
-                            <button class="btn btn-success btn-outline" id="btnsales" onclick="setBoxes('sales')">SALES</button>
+                    </div>
+                </div>
+            </div>
+
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div class="row" style="margin-top:0px;margin-bottom:-6px">
+                                <div class="col-lg-3" style="text-align:center">
+                                    <button class="btn btn-info btn-outline" id="btnorders" onclick="setBoxes('orders')">ORDERS</button>
+                                </div>
+                                <div class="col-lg-3" style="text-align:center">
+                                    <button class="btn btn-success btn-outline" id="btnsales" onclick="setBoxes('sales')">SALES</button>
+                                </div>
+                                <div class="col-lg-3" style="text-align:center">
+                                    <button class="btn btn-warning btn-outline" id="btnboxes" onclick="setBoxes('boxes')">BOXES</button>
+                                </div>
+                                <div class="col-lg-3" style="text-align:center">
+                                    <button class="btn btn-primary btn-outline" id="btncredits" onclick="setBoxes('credits')">CREDITS</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-lg-3" style="text-align:center">
-                            <button class="btn btn-warning btn-outline" id="btnboxes" onclick="setBoxes('boxes')">BOXES</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row" id="orders">
+                <div class="col-lg-4">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-info ">Today</span>
+                            </div>
+                            <h5>Order Amount</h5>
                         </div>
-                        <div class="col-lg-3" style="text-align:center">
-                            <button class="btn btn-primary btn-outline" id="btncredits" onclick="setBoxes('credits')">CREDITS</button>
+                        <div class="ibox-content">
+
+                            <h1 class="no-margins"><span id="ordersTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
+                            <h1 class="no-margins text-info"></h1>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <div class="row" id="orders">
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-info ">Today</span>
-                    </div>
-                    <h5>Order Amount</h5>
-                </div>
-                <div class="ibox-content">
-
-                    <h1 class="no-margins"><span id="ordersTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
-                    <h1 class="no-margins text-info"></h1>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-success float-right">YTD</span>
-                    </div>
-                    <h5>Order Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="ordersYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-primary float-right">Last Year</span>
-                    </div>
-                    <h5>Order Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="ordersLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row" id="sales" style="display:none">
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-info float-right">Today</span>
-                    </div>
-                    <h5>Sales Amount</h5>
-                </div>
-                <div class="ibox-content">
-
-                    <h1 class="no-margins"><span id="salesTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
-                    <h1 class="no-margins text-info"></h1>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-success float-right">YTD</span>
-                    </div>
-                    <h5>Sales Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="salesYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-warning float-right">LYTD</span>
-                    </div>
-                    <h5>Sales Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="salesLYTDAmount">0</span><i class="fa fa-dollar text-warning pull-right"></i></h1>
-
-
-
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-primary float-right">Last Year</span>
-                    </div>
-                    <h5>Sales Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="salesLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row" id="boxes" style="display:none">
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-info float-right">Today</span>
-                    </div>
-                    <h5>Boxes Amount</h5>
-                </div>
-                <div class="ibox-content">
-
-                    <h1 class="no-margins"><span id="boxesTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
-                    <h1 class="no-margins text-info"></h1>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-success float-right">YTD</span>
-                    </div>
-                    <h5>Boxes Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="boxesYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-warning float-right">LYTD</span>
-                    </div>
-                    <h5>Boxes Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="boxesLYTDAmount">0</span><i class="fa fa-dollar text-warning pull-right"></i></h1>
-
-
-
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-primary float-right">Last Year</span>
-                    </div>
-                    <h5>Boxes Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="boxesLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row" id="credits" style="display:none">
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-info float-right">Today</span>
-                    </div>
-                    <h5>Credits Amount</h5>
-                </div>
-                <div class="ibox-content">
-
-                    <h1 class="no-margins"><span id="creditsTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
-                    <h1 class="no-margins text-info"></h1>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-success float-right">YTD</span>
-                    </div>
-                    <h5>Credits Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="creditsYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-warning float-right">LYTD</span>
-                    </div>
-                    <h5>Credits Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="creditsLYTDAmount">0</span><i class="fa fa-dollar text-warning pull-right"></i></h1>
-
-
-
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <span class="label label-primary float-right">Last Year</span>
-                    </div>
-                    <h5>Credits Amount</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="creditsLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5><span id="spnBoxName"></span></h5>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-9">
-                            <canvas id="lineChart" height="85"></canvas>
+                <div class="col-lg-4">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-success float-right">YTD</span>
+                            </div>
+                            <h5>Order Amount</h5>
                         </div>
-                        <div class="col-lg-3">
-                            <ul class="stat-list" style="margin-top:20%">
-                                <li>
-                                    <h2 class="no-margins" id="ytd"> 0</h2>
-                                    <small>Total YTD No </small>
-                                    <div class="stat-percent"></div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 100%;" class="progress-bar"></div>
-                                    </div>
-                                </li>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="ordersYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
 
-                                <li>
-                                    <h2 class="no-margins " id="lytd">  </h2>
-                                    <small>Total LYTD No</small>
-                                    <div class="stat-percent"></div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 100%;" class="progress-bar"></div>
-                                    </div>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>
 
+                <div class="col-lg-4">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-primary float-right">Last Year</span>
+                            </div>
+                            <h5>Order Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="ordersLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
+
+
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            <div class="row" id="sales" style="display:none">
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-info float-right">Today</span>
+                            </div>
+                            <h5>Sales Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+
+                            <h1 class="no-margins"><span id="salesTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
+                            <h1 class="no-margins text-info"></h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-success float-right">YTD</span>
+                            </div>
+                            <h5>Sales Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="salesYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-warning float-right">LYTD</span>
+                            </div>
+                            <h5>Sales Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="salesLYTDAmount">0</span><i class="fa fa-dollar text-warning pull-right"></i></h1>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-primary float-right">Last Year</span>
+                            </div>
+                            <h5>Sales Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="salesLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="boxes" style="display:none">
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-info float-right">Today</span>
+                            </div>
+                            <h5>Boxes Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+
+                            <h1 class="no-margins"><span id="boxesTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
+                            <h1 class="no-margins text-info"></h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-success float-right">YTD</span>
+                            </div>
+                            <h5>Boxes Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="boxesYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-warning float-right">LYTD</span>
+                            </div>
+                            <h5>Boxes Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="boxesLYTDAmount">0</span><i class="fa fa-dollar text-warning pull-right"></i></h1>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-primary float-right">Last Year</span>
+                            </div>
+                            <h5>Boxes Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="boxesLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="credits" style="display:none">
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-info float-right">Today</span>
+                            </div>
+                            <h5>Credits Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+
+                            <h1 class="no-margins"><span id="creditsTodayAmount">0</span><i class="fa fa-dollar text-info pull-right"></i></h1>
+                            <h1 class="no-margins text-info"></h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-success float-right">YTD</span>
+                            </div>
+                            <h5>Credits Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="creditsYTDAmount">0</span><i class="fa fa-dollar text-success pull-right"></i></h1>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-warning float-right">LYTD</span>
+                            </div>
+                            <h5>Credits Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="creditsLYTDAmount">0</span><i class="fa fa-dollar text-warning pull-right"></i></h1>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <span class="label label-primary float-right">Last Year</span>
+                            </div>
+                            <h5>Credits Amount</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins"><span id="creditsLastYearAmount">0</span><i class="fa fa-dollar text-primary pull-right"></i></h1>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5><span id="spnBoxName"></span></h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-lg-9">
+                                    <canvas id="lineChart" height="85"></canvas>
+                                </div>
+                                <div class="col-lg-3">
+                                    <ul class="stat-list" style="margin-top:20%">
+                                        <li>
+                                            <h2 class="no-margins" id="ytd"> 0</h2>
+                                            <small>Total YTD No </small>
+                                            <div class="stat-percent"></div>
+                                            <div class="progress progress-mini">
+                                                <div style="width: 100%;" class="progress-bar"></div>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <h2 class="no-margins " id="lytd">  </h2>
+                                            <small>Total LYTD No</small>
+                                            <div class="stat-percent"></div>
+                                            <div class="progress progress-mini">
+                                                <div style="width: 100%;" class="progress-bar"></div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+
+
+
+
+
     </div>
-
-
-
-</div>
 
 
 

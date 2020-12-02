@@ -30,6 +30,7 @@ namespace MySqlBasicCore.Models
         public Decimal? bol1_ttlValue { get; set; }
         public string bol1_ref { get; set; }
         public string bol1_PO_No { get; set; }
+        public string bol1_PO_No1 { get; set; }
         public string bol1_sname { get; set; }
         public string bol1_carrierName { get; set; }
         public string bol1_carrierPhone { get; set; }
@@ -39,6 +40,8 @@ namespace MySqlBasicCore.Models
         public string bol2_custnum { get; set; }
         public string Conformation { get; set; }
         public int Count { get; set; }
+        public int? bol1_pallet { get; set; }
+        public string bol1_pallet_type { get; set; }
 
     }
 
@@ -168,7 +171,7 @@ namespace MySqlBasicCore.Models
 
         [Sortable]
         [Display(Name="Note")]
-        public int NoteCount { get; set; }
+        public int? NoteCount { get; set; }
 
         [Searchable]
         [Sortable]
@@ -235,10 +238,7 @@ namespace MySqlBasicCore.Models
         [Sortable]
         public string Backorder { get; set; }
 
-        [SearchableString]
-        [Sortable]
-        public string Tax { get; set; }
-
+         
         [SearchableString]
         [Sortable]
         public string Ponum { get; set; }
@@ -252,11 +252,7 @@ namespace MySqlBasicCore.Models
         [Searchable]
         [Sortable]
         public DateTime Edidate { get; set; }
-
-        [SearchableString]
-        [Sortable]
-        public string Terminal { get; set; }
-
+         
         [SearchableString]
         [Sortable]
         public string Custnote { get; set; }
