@@ -15,7 +15,6 @@ namespace MySqlBasicCore.Controllers
     [Authentication]
     public class ShippingController : Controller
     {
-   
         private readonly IOptions<Appsettings> _appSettings;
         private readonly DBContext _dbContext;
 
@@ -256,6 +255,8 @@ namespace MySqlBasicCore.Controllers
                         TovBol_Whse = Convert.ToString(rows[13]);
                         TovBol_freightTerms = Convert.ToString(rows[14]);
 
+
+
                         bolLists.Add(new TovBol
                         {
                             TovBol_custnum = TovBol_custnum,
@@ -295,12 +296,13 @@ namespace MySqlBasicCore.Controllers
             return View();
         }
 
+
         public ActionResult Import_BOL_Notes()
         {
 
             return View();
         }
-
+        
         [HttpPost]
         public ActionResult Import_BOL_Notes(IFormFile file)
         {
@@ -363,6 +365,8 @@ namespace MySqlBasicCore.Controllers
             return View();
         }
 
+
+
         [HttpPost]
         public JsonResult UpdateBolDetail(string bol1_no, string column, string bol1_carrierName, string bol1_carrierPhone, DateTime? bol1_PkupDate, DateTime? bol1_pkupTime, string Conformation, int pallet_no, string pallet_type)
         {
@@ -408,6 +412,8 @@ namespace MySqlBasicCore.Controllers
             return Json(response);
         }
 
+
+
         [HttpPost]
         public JsonResult GetOrderNotes(string bol1_no)
         {
@@ -439,6 +445,7 @@ namespace MySqlBasicCore.Controllers
 
             return Json(response);
         }
+
 
         protected override void Dispose(bool disposing)
         {

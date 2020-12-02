@@ -16,6 +16,8 @@
                 <div class="ibox ">
                     <div class="ibox-title">
                         <h3>Home</h3>
+
+
                         <div class="ibox-tools">
                             <div class="row" style="width:335px">
                                 <div class="col-lg-6">
@@ -320,7 +322,7 @@
                     }
                 ],
                 stateSave: true,
-                "scrollY": "" + (window.outerHeight - 380) + "px",
+                "scrollY": "" + (window.outerHeight - 430) + "px",
                 "scrollX": "" + (window.outerWidth - 300) + "px",
             });
             console.log('data table');
@@ -372,22 +374,22 @@
 
                             var formattedDate = window.moment(checkDate).format("MM/DD/YYYY");
                             if (diffDays == 0) {
-                                 $(element).parent().children().eq(5).html( '<span class="label label-warning">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html('<span class="label label-warning">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 1 && diffDays < 3) {
-                                 $(element).parent().children().eq(5).html( '<span class="label label-success">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html( '<span class="label label-success">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 3 && diffDays < 7) {
-                                 $(element).parent().children().eq(5).html('<span class="label label-primary">' + formattedDate + '</span>');
+                                 $(element).parent().children().eq(6).html('<span class="label label-primary">' + formattedDate + '</span>');
                             }
                             else if (diffDays >= 7) {
-                                $(element).parent().children().eq(5).html('<span class="label label-info">' + formattedDate + '</span>');
+                                $(element).parent().children().eq(6).html('<span class="label label-info">' + formattedDate + '</span>');
                             }
                             else if (diffDays < 0) {
-                               $(element).parent().children().eq(5).html('<span class="label label-danger">' + formattedDate + '</span>');
+                               $(element).parent().children().eq(6).html('<span class="label label-danger">' + formattedDate + '</span>');
                           }
                             else {
-                               $(element).parent().children().eq(5).html(formattedDate) ;
+                               $(element).parent().children().eq(6).html(formattedDate) ;
                             }
 
                 }
@@ -461,7 +463,7 @@
                 data: data,
                 success: function (data) {
                     if (data.Status == "1") {
-                        swal(data.Message, "", "success")
+                       // swal(data.Message, "", "success")
                     }
                     else {
                         swal(data.Message, "", "error")
@@ -476,6 +478,7 @@
 
                   pallet_no = $(event.target).val();
                   pallet_type = $(event.target).next().val();
+                  $(event.target).next().val('')
             }
               else {
                   pallet_no = $(event.target).prev().val();
@@ -484,7 +487,7 @@
               }
 
             if (!pallet_no || !pallet_type) {
-                 swal("select both value", "", "warning")
+                // swal("select both value", "", "warning")
                 return;
             }
             var data = { 'bol1_no': bol1_no,column :'pallet','pallet_no' : pallet_no, 'pallet_type' : pallet_type };
@@ -496,7 +499,7 @@
                 data: data,
                 success: function (data) {
                     if (data.Status == "1") {
-                        swal(data.Message, "", "success")
+                       // swal(data.Message, "", "success")
                     }
                     else {
                         swal(data.Message, "", "error")
@@ -541,9 +544,12 @@
 
             }
             else {
-               
-                $('#tbl').DataTable().search('').draw();
 
+                //$('#tbl').data.reload();
+                $('#tbl').DataTable().columns().search("").draw();
+
+                //alert("ss")
+                //$('#tbl').dataTable().fnDraw();
             }
         }
 

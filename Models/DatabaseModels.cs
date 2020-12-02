@@ -73,7 +73,6 @@ namespace MySqlBasicCore.Models
         public string Conformation { get; set; }
         public int? bol1_pallet { get; set; }
         public string bol1_pallet_type { get; set; }
-
     }
 
     public class Bol_2

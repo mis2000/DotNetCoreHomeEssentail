@@ -150,7 +150,7 @@ namespace MySqlBasicCore.Controllers
                 DataSet ds = new DataSet();
                 if (boxName == "orders")
                 {
-                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(h.poammount),2) AS Total FROM orders h WHERE (YEAR(h.orderdate) = YEAR(CURDATE())  AND MONTH(h.orderdate) = MONTH(CURDATE()) AND DAY(h.orderdate) = DAY(CURDATE()))  GROUP BY YEAR(h.orderdate);");
+                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(h.poammount),2) AS Total FROM orders h WHERE (YEAR(h.orderdate) = YEAR(CURDATE())  AND MONTH(h.orderdate) = MONTH(CURDATE()) AND CASE WHEN  MONTH(h.orderdate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.orderdate) <= DAY(CURDATE())   )  END)  GROUP BY YEAR(h.orderdate);");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.TodayAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
@@ -160,7 +160,7 @@ namespace MySqlBasicCore.Controllers
                         model.TodayAmount = "0";
                     }
 
-                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(h.poammount),2) AS Total FROM orders h WHERE YEAR(h.orderdate) = YEAR(CURDATE())  AND MONTH(h.orderdate) <= MONTH(CURDATE()) AND DAY(h.orderdate) <= DAY(CURDATE())   GROUP BY YEAR(h.orderdate);");
+                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(h.poammount),2) AS Total FROM orders h WHERE YEAR(h.orderdate) = YEAR(CURDATE())  AND MONTH(h.orderdate) <= MONTH(CURDATE()) AND CASE WHEN  MONTH(h.orderdate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.orderdate) <= DAY(CURDATE())   )  END   GROUP BY YEAR(h.orderdate);");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.YTDAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
@@ -183,7 +183,7 @@ namespace MySqlBasicCore.Controllers
                 }
                 if (boxName == "sales")
                 {
-                    ds = dbfunction.GetDataset(" SELECT  FORMAT(SUM(h.netTotal),2) AS Total FROM v_Invoice h WHERE  (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) = MONTH(CURDATE()) AND DAY(h.invoiceDate) = DAY(CURDATE()))  AND isCreditMemo != 1 GROUP BY YEAR(h.invoiceDate);");
+                    ds = dbfunction.GetDataset(" SELECT  FORMAT(SUM(h.netTotal),2) AS Total FROM v_Invoice h WHERE  (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) = MONTH(CURDATE()) AND  CASE WHEN  MONTH(h.invoiceDate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.invoiceDate) <= DAY(CURDATE())   )  END  )  AND isCreditMemo != 1 GROUP BY YEAR(h.invoiceDate);");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.TodayAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
@@ -194,7 +194,7 @@ namespace MySqlBasicCore.Controllers
                     }
 
 
-                    ds = dbfunction.GetDataset(" SELECT   FORMAT(SUM(h.netTotal),2) AS Total FROM v_Invoice h WHERE  (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND DAY(h.invoiceDate) <= DAY(CURDATE()))  AND isCreditMemo != 1 GROUP BY YEAR(h.invoiceDate);");
+                    ds = dbfunction.GetDataset(" SELECT   FORMAT(SUM(h.netTotal),2) AS Total FROM v_Invoice h WHERE  (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND  CASE WHEN  MONTH(h.invoiceDate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.invoiceDate) <= DAY(CURDATE())   )  END)  AND isCreditMemo != 1 GROUP BY YEAR(h.invoiceDate);");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.YTDAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
@@ -204,7 +204,7 @@ namespace MySqlBasicCore.Controllers
                         model.YTDAmount = "0";
                     }
 
-                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(h.netTotal),2) AS Total FROM v_Invoice h WHERE  (YEAR(h.invoiceDate) = (YEAR(CURDATE())-1)  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND DAY(h.invoiceDate) <= DAY(CURDATE()))  AND isCreditMemo != 1 GROUP BY YEAR(h.invoiceDate);");
+                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(h.netTotal),2) AS Total FROM v_Invoice h WHERE  (YEAR(h.invoiceDate) = (YEAR(CURDATE())-1)  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND CASE WHEN  MONTH(h.invoiceDate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.invoiceDate) <= DAY(CURDATE())   )  END)  AND isCreditMemo != 1 GROUP BY YEAR(h.invoiceDate);");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.LYTDAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
@@ -227,7 +227,7 @@ namespace MySqlBasicCore.Controllers
                 }
                 if (boxName == "credits")
                 {
-                    ds = dbfunction.GetDataset("SELECT    FORMAT(SUM(h.netTotal),2)Total  FROM v_Invoice h WHERE (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) = MONTH(CURDATE()) AND DAY(h.invoiceDate) = DAY(CURDATE())) AND    isCreditMemo = 1 GROUP BY YEAR(h.invoiceDate);");
+                    ds = dbfunction.GetDataset("SELECT    FORMAT(SUM(h.netTotal),2)Total  FROM v_Invoice h WHERE (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) = MONTH(CURDATE()) AND CASE WHEN  MONTH(h.invoiceDate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.invoiceDate) <= DAY(CURDATE())   )  END) AND    isCreditMemo = 1 GROUP BY YEAR(h.invoiceDate);");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.TodayAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
@@ -238,7 +238,7 @@ namespace MySqlBasicCore.Controllers
                     }
 
 
-                    ds = dbfunction.GetDataset("SELECT  FORMAT(SUM(h.netTotal),2)Total FROM v_Invoice h WHERE (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND DAY(h.invoiceDate) <= DAY(CURDATE())) AND    isCreditMemo = 1 GROUP BY YEAR(h.invoiceDate);");
+                    ds = dbfunction.GetDataset("SELECT  FORMAT(SUM(h.netTotal),2)Total FROM v_Invoice h WHERE (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND CASE WHEN  MONTH(h.invoiceDate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.invoiceDate) <= DAY(CURDATE())   )  END) AND    isCreditMemo = 1 GROUP BY YEAR(h.invoiceDate);");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.YTDAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
@@ -248,7 +248,7 @@ namespace MySqlBasicCore.Controllers
                         model.YTDAmount = "0";
                     }
 
-                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(h.netTotal),2)Total FROM v_Invoice h WHERE (YEAR(h.invoiceDate) = (YEAR(CURDATE())-1)  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND DAY(h.invoiceDate) <= DAY(CURDATE())) AND    isCreditMemo = 1 GROUP BY YEAR(h.invoiceDate);");
+                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(h.netTotal),2)Total FROM v_Invoice h WHERE (YEAR(h.invoiceDate) = (YEAR(CURDATE())-1)  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND CASE WHEN  MONTH(h.invoiceDate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.invoiceDate) <= DAY(CURDATE())   )  END) AND    isCreditMemo = 1 GROUP BY YEAR(h.invoiceDate);");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.LYTDAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
@@ -270,7 +270,7 @@ namespace MySqlBasicCore.Controllers
                 }
                 if (boxName == "boxes")
                 {
-                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(qtyshipped),0) AS Total FROM v_Invoice h, v_Invoicelines d WHERE d.invoicenum = h.invoicenum AND (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) = MONTH(CURDATE()) AND DAY(h.invoiceDate) = DAY(CURDATE())) AND isCreditMemo != 1;");
+                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(qtyshipped),0) AS Total FROM v_Invoice h, v_Invoicelines d WHERE d.invoicenum = h.invoicenum AND (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) = MONTH(CURDATE()) AND CASE WHEN  MONTH(h.invoiceDate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.invoiceDate) <= DAY(CURDATE())   )  END) AND isCreditMemo != 1;");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.TodayAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
@@ -282,7 +282,7 @@ namespace MySqlBasicCore.Controllers
                     }
 
 
-                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(qtyshipped),0) AS Total FROM v_Invoice h, v_Invoicelines d WHERE d.invoicenum = h.invoicenum AND (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND DAY(h.invoiceDate) <= DAY(CURDATE())) AND isCreditMemo != 1; ");
+                    ds = dbfunction.GetDataset("SELECT   FORMAT(SUM(qtyshipped),0) AS Total FROM v_Invoice h, v_Invoicelines d WHERE d.invoicenum = h.invoicenum AND (YEAR(h.invoiceDate) = YEAR(CURDATE())  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND CASE WHEN  MONTH(h.invoiceDate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.invoiceDate) <= DAY(CURDATE())   )  END) AND isCreditMemo != 1; ");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.YTDAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
@@ -293,7 +293,7 @@ namespace MySqlBasicCore.Controllers
                         model.YTDAmount = "0";
                     }
 
-                    ds = dbfunction.GetDataset("SELECT  FORMAT(SUM(qtyshipped),0) AS Total FROM v_Invoice h, v_Invoicelines d WHERE d.invoicenum = h.invoicenum AND (YEAR(h.invoiceDate) = (YEAR(CURDATE())-1)  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND DAY(h.invoiceDate) <= DAY(CURDATE())) AND isCreditMemo != 1;");
+                    ds = dbfunction.GetDataset("SELECT  FORMAT(SUM(qtyshipped),0) AS Total FROM v_Invoice h, v_Invoicelines d WHERE d.invoicenum = h.invoicenum AND (YEAR(h.invoiceDate) = (YEAR(CURDATE())-1)  AND MONTH(h.invoiceDate) <= MONTH(CURDATE()) AND CASE WHEN  MONTH(h.invoiceDate) < MONTH(CURDATE()) THEN TRUE  ELSE ( DAY(h.invoiceDate) <= DAY(CURDATE())   )  END ) AND isCreditMemo != 1;");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.LYTDAmount = Convert.ToString(ds.Tables[0].Rows[0][0]);
