@@ -1,11 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MySqlBasicCore.Filters;
 using MySqlBasicCore.Models;
 using MySqlBasicCore.Utility;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace MySqlBasicCore.Controllers
 {
@@ -13,10 +20,14 @@ namespace MySqlBasicCore.Controllers
     public class InventoryController : Controller
     {
         private readonly IOptions<Appsettings> _appSettings;
+        private readonly IConfigurationProvider _mappingConfiguration;
+        private readonly DBContext _dbContext;
 
-        public InventoryController(IOptions<Appsettings> appSettings)
+        public InventoryController(IOptions<Appsettings> appSettings, IConfigurationProvider mappingConfiguration, DBContext dbContext)
         {
             _appSettings = appSettings;
+            _dbContext = dbContext;
+            _mappingConfiguration = mappingConfiguration;
         }
 
         public ActionResult Items()
@@ -38,8 +49,6 @@ namespace MySqlBasicCore.Controllers
             return View(model);
 
         }
-
-
 
         [HttpPost]
         public ActionResult Items(ItemViewModel model, string submit)
@@ -160,6 +169,173 @@ namespace MySqlBasicCore.Controllers
             itemList = itemutility.GetItemNameDescriptionByItemNumOrDescription(SearchItemnum ?? "", SearchDescription ?? "", OperationType);
 
             return Json(itemList);
+        }
+
+        public ActionResult ItemComponentList()
+        {
+            return View(new IndsellCompoViewModel_Datatable());
+        }
+
+        public ActionResult EditItemComponent(string id)
+        {
+            EditIndsellCompoViewModel model = new EditIndsellCompoViewModel();
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
+                    DataSet ds = dbfunction.GetDataset("select * from indSell_Compo where indSell_ItemMaster= " + id + "");
+
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        model.ItemComponentList = (from row in ds.Tables[0].AsEnumerable()
+                                             select new IndsellCompoViewModel
+                                             {
+                                                 indSell_ItemMaster = Convert.ToString(row["indSell_ItemMaster"]),
+                                                 indSell_ItemComponent = Convert.ToString(row["indSell_ItemComponent"]),
+                                                 indSell_Allowed_Bool = Convert.ToInt16(row["indSell_Allowed"]) ==1 ? true : false
+                                             }).ToList();
+
+                        if (model.ItemComponentList.Count()>0)
+                        {
+                            model.indSell_ItemMaster = model.ItemComponentList[0].indSell_ItemMaster;
+                        }
+                    }
+                    else
+                    {
+                        return RedirectToAction("ItemComponentList", "Inventory");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return View(model);
+            
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        {
+            try
+            {
+                //return new JsonResult(new { error = "Internal Server Error" });
+
+                HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), System.Text.Json.JsonSerializer.Serialize(param));
+                
+                DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
+                DataSet ds = dbfunction.GetDataset("Select * from indSell_Compo");
+
+                IQueryable<IndsellCompoViewModel> itemComponentList = (from row in ds.Tables[0].AsEnumerable()
+                                     select new IndsellCompoViewModel
+                                     {
+                                         indSell_ItemMaster = Convert.ToString(row["indSell_ItemMaster"]),
+                                         indSell_ItemComponent = Convert.ToString(row["indSell_ItemComponent"]),
+                                         indSell_Allowed = Convert.ToInt16(row["indSell_Allowed"])
+                                     }).AsQueryable();
+
+
+                var size = itemComponentList.Count();
+
+
+                if (Convert.ToString(param.Search?.Value) != "")
+                {
+                    var serchValue = param.Search?.Value.ToLower();
+                    itemComponentList = itemComponentList.Where(w =>
+                                  ((w.indSell_ItemMaster ?? "").ToLower().Contains(serchValue) ? true :
+                                  ((w.indSell_ItemComponent ?? "").ToLower().Contains(serchValue) ? true :
+                                  (w.indSell_Allowed).ToString().ToLower().Contains(serchValue) ? true : false)));
+
+                }
+
+
+                if (param.Length == -1)
+                {
+                    var items = itemComponentList
+                                      .ProjectTo<IndsellCompoViewModel_Datatable>(_mappingConfiguration)
+                                      .ToArray();
+
+
+                    var result = new JqueryDataTablesPagedResults<IndsellCompoViewModel_Datatable>
+                    {
+                        Items = items,
+                        TotalSize = size
+                    };
+
+                    return new JsonResult(new JqueryDataTablesResult<IndsellCompoViewModel_Datatable>
+                    {
+                        Draw = param.Draw,
+                        Data = result.Items,
+                        RecordsFiltered = result.TotalSize,
+                        RecordsTotal = result.TotalSize
+                    });
+                }
+                else
+                {
+                    var items = itemComponentList
+                                      .ProjectTo<IndsellCompoViewModel_Datatable>(_mappingConfiguration)
+                                      .ToArray();
+
+
+                    var result = new JqueryDataTablesPagedResults<IndsellCompoViewModel_Datatable>
+                    {
+                        Items = items,
+                        TotalSize = size
+                    };
+
+                    return new JsonResult(new JqueryDataTablesResult<IndsellCompoViewModel_Datatable>
+                    {
+                        Draw = param.Draw,
+                        Data = result.Items,
+                        RecordsFiltered = result.TotalSize,
+                        RecordsTotal = result.TotalSize
+                    });
+
+                }
+
+
+
+            }
+            catch (Exception e)
+            {
+                Console.Write(e.Message);
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditItemComponent(EditIndsellCompoViewModel model)
+        {
+          
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
+                    
+                    foreach (var item in model.ItemComponentList)
+                    {
+                        var allowed = (item.indSell_Allowed_Bool ? 1 : 0);
+                        dbfunction.GetDataset("Update indSell_Compo set indSell_Allowed = " + allowed + "  where trim(indSell_ItemMaster)='"+model.indSell_ItemMaster.Trim()+ "' and trim(indSell_ItemComponent)= '"+item.indSell_ItemComponent.Trim() + "' ");
+                    }
+
+                    ViewBag.SuccessMessage = "Detail added successfully";
+                    return View(model);
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Please enter valid values";
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            ViewBag.ErrorMessage = "Error occurred";
+
+            return View(model);
+
         }
 
         protected override void Dispose(bool disposing)

@@ -1,0 +1,52 @@
+﻿@model MySqlBasicCore.Models.IndsellCompoViewModel_Datatable
+
+@{
+    ViewData["Title"] = "Item Component List";
+}
+@using Microsoft.Extensions.Options;
+@inject IOptions<Appsettings> Settings
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">   
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h3>Item Component List</h3>
+
+                </div>
+                <div class="ibox-content">
+                    <jquery-datatables id="fingers10"
+                                       class="table table-sm table-striped table-bordered table-hover"
+                                       model="@Model"
+                                       enable-searching="false"
+                                       search-row-th-class="p-0"
+                                       search-input-class="form-control form-control-sm"
+                                       search-input-style="width:100%"
+                                       thead-class="text-center">
+                    </jquery-datatables>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
+        <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/dataTables/datatables.min.js"></script>
+        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
+        <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="~/js/itemComponent.js" asp-append-version="true"></script>
+    </environment>
+
+    <script type="text/javascript">
+           window.baseUrl = '@Settings.Value.WebBaseURL';
+    </script>
+}

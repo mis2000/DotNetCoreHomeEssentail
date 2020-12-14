@@ -234,12 +234,12 @@ namespace MySqlBasicCore.Controllers
 
             
 
-                var items = await query
-                    .AsNoTracking()
+                var items =  query
+                    //.AsNoTracking()
                     .Skip((param.Start / param.Length) * param.Length)
                     .Take(param.Length)
                     .ProjectTo<Order_MasterViewModel>(_mappingConfiguration)
-                    .ToArrayAsync();
+                    .ToArray();
 
 
                 var result = new JqueryDataTablesPagedResults<Order_MasterViewModel>

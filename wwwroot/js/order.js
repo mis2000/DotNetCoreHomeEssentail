@@ -5,7 +5,6 @@ $(() => {
 
         var table = $('#fingers10').DataTable({
             "scrollY": "" + (window.outerHeight - 375) + "px",
-            "scrollX": "" + (window.outerWidth - 300) + "px",
             "scrollCollapse": true,
             language: {
                 processing: "Loading Data...",

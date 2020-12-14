@@ -26,8 +26,7 @@ namespace MySqlBasicCore.Models
         public DbSet<TovBol> tbl_TovBol { get; set; }
         public DbSet<OrderNote> tbl_OrderNote { get; set; }
         public DbSet<Tovordernote> tbl_Tovordernote { get; set; }
-
-
+        public DbSet<IndsellCompo> tbl_IndsellCompo { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Bol_2>(eb => { eb.HasNoKey(); });
@@ -39,8 +38,9 @@ namespace MySqlBasicCore.Models
             modelBuilder.Entity<Invoiceline>(eb => { eb.HasNoKey(); });
             modelBuilder.Entity<DeptProjection>(eb => { eb.HasNoKey(); });
             modelBuilder.Entity<OrderNote>(eb => { eb.HasNoKey(); });
-            
-            
+            modelBuilder.Entity<IndsellCompo>(eb => { eb.HasNoKey(); });
+
+
         }
     }
 
@@ -477,6 +477,18 @@ namespace MySqlBasicCore.Models
         public string Year { get; set; }
         public int Line { get; set; }
         public string Note { get; set; }
+    }
+
+    [Table("indsell_compo")]
+    public class IndsellCompo
+    {
+        [Column(Order = 0)]
+        public string indSell_ItemMaster { get; set; }
+        
+        [Column(Order = 1)]
+        public string indSell_ItemComponent { get; set; }
+        public int indSell_Allowed { get; set; }
+      
     }
 
 
