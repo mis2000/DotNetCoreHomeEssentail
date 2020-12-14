@@ -164,12 +164,12 @@ namespace MySqlBasicCore.Models
 
     public class Order_MasterViewModel
     {
-       
+
 
         public string Action { get; set; }
 
         [Sortable]
-        [Display(Name="Note")]
+        [Display(Name = "Note")]
         public int? NoteCount { get; set; }
 
         [Searchable]
@@ -237,7 +237,7 @@ namespace MySqlBasicCore.Models
         [Sortable]
         public string Backorder { get; set; }
 
-         
+
         [SearchableString]
         [Sortable]
         public string Ponum { get; set; }
@@ -251,7 +251,7 @@ namespace MySqlBasicCore.Models
         [Searchable]
         [Sortable]
         public DateTime Edidate { get; set; }
-         
+
         [SearchableString]
         [Sortable]
         public string Custnote { get; set; }
@@ -323,9 +323,9 @@ namespace MySqlBasicCore.Models
         [Sortable]
         public string D0 { get; set; }
 
-       
 
-        
+
+
 
     }
 
@@ -696,4 +696,53 @@ namespace MySqlBasicCore.Models
         public int Line { get; set; }
         public string Note { get; set; }
     }
+
+
+    public class IndsellCompoViewModel
+    {
+        public string indSell_ItemMaster { get; set; }
+        public string indSell_ItemComponent { get; set; }
+        public Int16 indSell_Allowed { get; set; }
+        public bool indSell_Allowed_Bool { get; set; }
+
+    }
+
+    public class IndsellCompoViewModel_Datatable
+    {
+        [Searchable]
+        [Sortable]
+        [Display(Name = "Item")]
+        public string indSell_ItemMaster { get; set; }
+
+        [Searchable]
+        [Sortable]
+        [Display(Name = "Component")]
+        public string indSell_ItemComponent { get; set; }
+
+        [Searchable]
+        [Sortable]
+        [Display(Name = "Allowed")]
+        public Int16 indSell_Allowed { get; set; }
+
+        public string Action { get; set; }
+    }
+
+
+
+    public class EditIndsellCompoViewModel
+    {
+        public EditIndsellCompoViewModel()
+        {
+            ItemComponentList = new List<IndsellCompoViewModel>();
+        }
+        public string indSell_ItemMaster { get; set; }
+        public string indSell_ItemComponent { get; set; }
+        public Int16 indSell_Allowed { get; set; }
+        public List<IndsellCompoViewModel> ItemComponentList { get; set; }
+
+    }
+
+
+
+
 }

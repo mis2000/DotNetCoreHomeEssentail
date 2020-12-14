@@ -11,6 +11,8 @@ namespace MySqlBasicCore.Infrastructure
                 .ReverseMap();
             CreateMap<InvoiceViewModel, Invoice>()
               .ReverseMap();
+            CreateMap<IndsellCompoViewModel_Datatable, IndsellCompoViewModel>()
+            .ReverseMap();
 
         }
     }
