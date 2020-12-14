@@ -1,0 +1,4 @@
+
+server path : \\njdcdhcp\inetpub$\wwwroot\SampleSam
+publish path : \\heandb.local\Home-Essentials\Private\igross\Desktop\SamSample_Live
+backup path : \\heandb.local\Home-Essentials\Private\igross\Desktop\SampleSBack
