@@ -29,17 +29,36 @@ $(() => {
                 contentType: "application/json; charset=utf-8",
                 async: true,
                 data: function (data) {
+                    let additionalValues = [];
+                    additionalValues[0] = $("#searchd").val();
+                    data.AdditionalValues = additionalValues;
                     return JSON.stringify(data);
-                }
+                },
+                beforeSend: function () {
+                    // Here, manually add the loading message.
+                    $('#fingers10 > tbody').html(
+                        '<tr class="odd">' +
+                        '<td valign="top" colspan="10" class="dataTables_empty">Loading&hellip;</td>' +
+                        '</tr>'
+                    );
+                },
             },
             columns: [
                 {
                     data: "indSell_ItemMaster",
-                    name: "co"
+                    name: "co",
+                    render: function (data, type, row) {
+                        return row.indSell_ItemMaster + '(' + row.Item_master +')';
+
+                    } 
                 },
                 {
                     data: "indSell_ItemComponent",
-                    name: "co"
+                    name: "co",
+                    render: function (data, type, row) {
+                        return row.indSell_ItemComponent + '(' + row.Item_component + ')';
+
+                    } 
                 },
                 {
                     data: "Allowed",
@@ -65,10 +84,35 @@ $(() => {
                                     <a   href="#" class="btnEdit" data-key="${row.indSell_ItemMaster}">Edit</button>
                                  </div>`;
                     }
+                },
+                {
+                    data: "Item_master",
+                    visible: false
+                }
+                ,
+                {
+                    data: "Item_component",
+                    visible: false
                 }
 
-            ]
+            ],
+            rowsGroup: [0],
+            "drawCallback": function (settings) {
+               
+                //try {
+                //    if (table) {
+                    
+                //        table.rowGroup().enable().draw();
+                //    }
+                //} catch (e) {
+
+                //}
+                
+               
+            }
         });
+
+
 
         table.columns().every(function (index) {
             $('#fingers10 thead tr:last th:eq(' + index + ') input')
@@ -80,13 +124,14 @@ $(() => {
                     });
         });
 
-
+        $("input").on("change", function (e) {
+            table.draw();
+        });
 
         $(document)
             .off('click', '.btnEdit')
             .on('click', '.btnEdit', function () {
                 const id = $(this).attr('data-key');
-                debugger;
                 window.location.href = window.baseUrl + "/Inventory/EditItemComponent/" + id;
 
             });

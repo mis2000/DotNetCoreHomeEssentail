@@ -704,6 +704,8 @@ namespace MySqlBasicCore.Models
         public string indSell_ItemComponent { get; set; }
         public Int16 indSell_Allowed { get; set; }
         public bool indSell_Allowed_Bool { get; set; }
+        public string Item_master { get; set; }
+        public string Item_component { get; set; }
 
     }
 
@@ -725,6 +727,12 @@ namespace MySqlBasicCore.Models
         public Int16 indSell_Allowed { get; set; }
 
         public string Action { get; set; }
+
+       
+        public string Item_master { get; set; }
+        public string Item_component { get; set; }
+
+
     }
 
 
@@ -738,6 +746,8 @@ namespace MySqlBasicCore.Models
         public string indSell_ItemMaster { get; set; }
         public string indSell_ItemComponent { get; set; }
         public Int16 indSell_Allowed { get; set; }
+        public string Item_master { get; set; }
+        public string Item_component { get; set; }
         public List<IndsellCompoViewModel> ItemComponentList { get; set; }
 
     }

@@ -53,7 +53,7 @@ namespace MySqlBasicCore.Controllers
         [HttpPost]
         public ActionResult Items(ItemViewModel model, string submit)
         {
-           
+
             ItemUtility itemutility = new ItemUtility(_appSettings);
             if (submit != "submit")
             {
@@ -184,21 +184,27 @@ namespace MySqlBasicCore.Controllers
                 if (ModelState.IsValid)
                 {
                     DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                    DataSet ds = dbfunction.GetDataset("select * from indSell_Compo where indSell_ItemMaster= " + id + "");
+                    DataSet ds = dbfunction.GetDataset(@"select indSell_Compo.*,itemmaster.Description as Item_master,itemcomponent.Description as Item_component
+                                                    from indSell_Compo 
+                                                    join items as itemmaster on trim(indSell_ItemMaster) = itemmaster.Itemnum
+                                                    join items as itemcomponent on trim(indSell_Compo.indSell_ItemComponent) = itemcomponent.Itemnum where indSell_ItemMaster= " + id + "");
 
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         model.ItemComponentList = (from row in ds.Tables[0].AsEnumerable()
-                                             select new IndsellCompoViewModel
-                                             {
-                                                 indSell_ItemMaster = Convert.ToString(row["indSell_ItemMaster"]),
-                                                 indSell_ItemComponent = Convert.ToString(row["indSell_ItemComponent"]),
-                                                 indSell_Allowed_Bool = Convert.ToInt16(row["indSell_Allowed"]) ==1 ? true : false
-                                             }).ToList();
+                                                   select new IndsellCompoViewModel
+                                                   {
+                                                       indSell_ItemMaster = Convert.ToString(row["indSell_ItemMaster"]),
+                                                       indSell_ItemComponent = Convert.ToString(row["indSell_ItemComponent"]),
+                                                       indSell_Allowed_Bool = Convert.ToInt16(row["indSell_Allowed"]) == 1 ? true : false,
+                                                       Item_master = Convert.ToString(row["Item_master"]),
+                                                       Item_component = Convert.ToString(row["Item_component"]),
+                                                   }).ToList();
 
-                        if (model.ItemComponentList.Count()>0)
+                        if (model.ItemComponentList.Count() > 0)
                         {
                             model.indSell_ItemMaster = model.ItemComponentList[0].indSell_ItemMaster;
+                            model.Item_master = model.ItemComponentList[0].Item_master;
                         }
                     }
                     else
@@ -212,7 +218,7 @@ namespace MySqlBasicCore.Controllers
             }
 
             return View(model);
-            
+
         }
 
         [HttpPost]
@@ -223,29 +229,36 @@ namespace MySqlBasicCore.Controllers
                 //return new JsonResult(new { error = "Internal Server Error" });
 
                 HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), System.Text.Json.JsonSerializer.Serialize(param));
-                
+
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                DataSet ds = dbfunction.GetDataset("Select * from indSell_Compo");
+                DataSet ds = dbfunction.GetDataset(@"select indSell_Compo.*,itemmaster.Description as Item_master,itemcomponent.Description as Item_component
+                                                    from indSell_Compo 
+                                                    join items as itemmaster on trim(indSell_ItemMaster) = itemmaster.Itemnum
+                                                    join items as itemcomponent on trim(indSell_Compo.indSell_ItemComponent) = itemcomponent.Itemnum");
 
                 IQueryable<IndsellCompoViewModel> itemComponentList = (from row in ds.Tables[0].AsEnumerable()
-                                     select new IndsellCompoViewModel
-                                     {
-                                         indSell_ItemMaster = Convert.ToString(row["indSell_ItemMaster"]),
-                                         indSell_ItemComponent = Convert.ToString(row["indSell_ItemComponent"]),
-                                         indSell_Allowed = Convert.ToInt16(row["indSell_Allowed"])
-                                     }).AsQueryable();
+                                                                       select new IndsellCompoViewModel
+                                                                       {
+                                                                           indSell_ItemMaster = Convert.ToString(row["indSell_ItemMaster"]),
+                                                                           indSell_ItemComponent = Convert.ToString(row["indSell_ItemComponent"]),
+                                                                           indSell_Allowed = Convert.ToInt16(row["indSell_Allowed"]),
+                                                                           Item_master = Convert.ToString(row["Item_master"]),
+                                                                           Item_component = Convert.ToString(row["Item_component"]),
+                                                                       }).AsQueryable();
 
 
                 var size = itemComponentList.Count();
 
 
-                if (Convert.ToString(param.Search?.Value) != "")
+                if (Convert.ToString(param.AdditionalValues.FirstOrDefault()) != "")
                 {
-                    var serchValue = param.Search?.Value.ToLower();
+                    var serchValue = Convert.ToString(param.AdditionalValues.FirstOrDefault()).ToLower();
                     itemComponentList = itemComponentList.Where(w =>
                                   ((w.indSell_ItemMaster ?? "").ToLower().Contains(serchValue) ? true :
                                   ((w.indSell_ItemComponent ?? "").ToLower().Contains(serchValue) ? true :
-                                  (w.indSell_Allowed).ToString().ToLower().Contains(serchValue) ? true : false)));
+                                  (w.indSell_Allowed).ToString().ToLower().Contains(serchValue) ? true :
+                                  (w.Item_master).ToString().ToLower().Contains(serchValue) ? true :
+                                  (w.Item_component).ToString().ToLower().Contains(serchValue) ? true : false)));
 
                 }
 
@@ -274,6 +287,8 @@ namespace MySqlBasicCore.Controllers
                 else
                 {
                     var items = itemComponentList
+                        .Skip((param.Start / param.Length) * param.Length)
+                  .Take(param.Length)
                                       .ProjectTo<IndsellCompoViewModel_Datatable>(_mappingConfiguration)
                                       .ToArray();
 
@@ -307,17 +322,17 @@ namespace MySqlBasicCore.Controllers
         [HttpPost]
         public ActionResult EditItemComponent(EditIndsellCompoViewModel model)
         {
-          
+
             try
             {
                 if (ModelState.IsValid)
                 {
                     DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
-                    
+
                     foreach (var item in model.ItemComponentList)
                     {
                         var allowed = (item.indSell_Allowed_Bool ? 1 : 0);
-                        dbfunction.GetDataset("Update indSell_Compo set indSell_Allowed = " + allowed + "  where trim(indSell_ItemMaster)='"+model.indSell_ItemMaster.Trim()+ "' and trim(indSell_ItemComponent)= '"+item.indSell_ItemComponent.Trim() + "' ");
+                        dbfunction.GetDataset("Update indSell_Compo set indSell_Allowed = " + allowed + "  where trim(indSell_ItemMaster)='" + model.indSell_ItemMaster.Trim() + "' and trim(indSell_ItemComponent)= '" + item.indSell_ItemComponent.Trim() + "' ");
                     }
 
                     ViewBag.SuccessMessage = "Detail added successfully";
@@ -333,6 +348,37 @@ namespace MySqlBasicCore.Controllers
             }
 
             ViewBag.ErrorMessage = "Error occurred";
+
+            return View(model);
+
+        }
+
+        public ActionResult NextEditItemComponent(string id)
+        {
+            EditIndsellCompoViewModel model = new EditIndsellCompoViewModel();
+            try
+            {
+
+
+                var masterItems = _dbContext.tbl_IndsellCompo.Select(s => s.indSell_ItemMaster).Distinct().ToList();
+                var nextItem = "";
+                for (int i = 0; i < masterItems.Count(); i++)
+                {
+                    if (Convert.ToString(masterItems[i]).Trim() == id.Trim())
+                    {
+                        nextItem = masterItems[i + 1];
+                        i = masterItems.Count() + 1;
+                        break;
+                    }
+                }
+
+                return RedirectToAction("EditItemComponent", new { id = nextItem });
+
+
+            }
+            catch (Exception ex)
+            {
+            }
 
             return View(model);
 

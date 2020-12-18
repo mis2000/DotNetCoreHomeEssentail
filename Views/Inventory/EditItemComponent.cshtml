@@ -24,42 +24,49 @@
                             </div>
 
                             <div class="col-md-2">
-                                <input asp-for="indSell_ItemMaster"  class="form-control" placeholder="Item"
-                                       readonly="readonly"
-                                       />
-                                <span asp-validation-for="indSell_ItemMaster" class="text-danger"></span>
+                                <input asp-for="indSell_ItemMaster" class="form-control" placeholder="Item"
+                                       readonly="readonly" />
+                                
+                            </div>
+                            <div class="col-md-2">
+                                <input asp-for="Item_master" class="form-control" placeholder="Item"
+                                       readonly="readonly" />
+
                             </div>
 
                         </div>
 
                         <hr />
-                        
+
                         @for (int i = 0; i < Model.ItemComponentList.Count(); i++)
                         {
-                        <div class="row form-group">
-                            <div class="col-lg-1">
-                                <label class="col-form-label">
-                                    Component
-                                </label>
-                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-1">
+                                    <label class="col-form-label">
+                                        Component
+                                    </label>
+                                </div>
 
-                            <div class="col-md-2">
-                                <input asp-for="ItemComponentList[i].indSell_ItemComponent" class="form-control" placeholder="Component"   />
-                                <span asp-validation-for="ItemComponentList[i].indSell_ItemComponent" class="text-danger"></span>
-                            </div>
+                                <div class="col-md-2">
+                                    <input asp-for="ItemComponentList[i].Item_component" class="form-control" readonly="readonly" placeholder="Component" />
 
-                            <div class="col-lg-1">
-                                <label class="col-form-label">
-                                    Allowed
-                                </label>
-                            </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input asp-for="ItemComponentList[i].indSell_ItemComponent" readonly="readonly" class="form-control" placeholder="Component" />
+                                </div>
 
-                            <div class="col-md-2">
-                                <input asp-for="ItemComponentList[i].indSell_Allowed_Bool" style="width:25px;height:25px" class="form-control" placeholder="Allowed" />
-                                <span asp-validation-for="ItemComponentList[i].indSell_Allowed_Bool" class="text-danger"></span>
-                            </div>
+                                <div class="col-lg-1">
+                                    <label class="col-form-label">
+                                        Allowed
+                                    </label>
+                                </div>
 
-                        </div>
+                                <div class="col-md-2">
+                                    <input asp-for="ItemComponentList[i].indSell_Allowed_Bool" style="width:25px;height:25px" class="form-control" placeholder="Allowed" />
+                                    <span asp-validation-for="ItemComponentList[i].indSell_Allowed_Bool" class="text-danger"></span>
+                                </div>
+
+                            </div>
                         }
 
 
@@ -77,6 +84,7 @@
                             <div class="col-sm-4 col-sm-offset-2">
                                 <a class="btn btn-white btn-sm" asp-action="ItemComponentList">Cancel</a>
                                 <button class="btn btn-primary btn-sm" type="submit">Update</button>
+                                <a class="btn btn-white btn-sm" onclick="nextItemComponet('@Model.indSell_ItemMaster')" >Next</a>
                             </div>
                         </div>
                     </form>
@@ -97,7 +105,7 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
     <script type="text/javascript">
-
+          window.baseUrl = '@Settings.Value.WebBaseURL';
         $(document).ready(function () {
 
         var SuccessMessage = '@ViewBag.SuccessMessage';
@@ -111,6 +119,10 @@
             swal(ErrorMessage, "", "error");
         }
         });
+
+        function nextItemComponet(id) {
+              window.location.href = window.baseUrl + "/Inventory/NextEditItemComponent/" + id;
+        }
+
     </script>
 }
- 
