@@ -186,8 +186,8 @@ namespace MySqlBasicCore.Controllers
                     DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
                     DataSet ds = dbfunction.GetDataset(@"select indSell_Compo.*,itemmaster.Description as Item_master,itemcomponent.Description as Item_component
                                                     from indSell_Compo 
-                                                    join items as itemmaster on trim(indSell_ItemMaster) = itemmaster.Itemnum
-                                                    join items as itemcomponent on trim(indSell_Compo.indSell_ItemComponent) = itemcomponent.Itemnum where indSell_ItemMaster= " + id + "");
+                                                    left join items as itemmaster on trim(indSell_ItemMaster) = itemmaster.Itemnum
+                                                    left join items as itemcomponent on trim(indSell_Compo.indSell_ItemComponent) = itemcomponent.Itemnum where indSell_ItemMaster= " + id + "");
 
                     if (ds.Tables[0].Rows.Count > 0)
                     {
@@ -200,6 +200,19 @@ namespace MySqlBasicCore.Controllers
                                                        Item_master = Convert.ToString(row["Item_master"]),
                                                        Item_component = Convert.ToString(row["Item_component"]),
                                                    }).ToList();
+
+                        var totalCount = model.ItemComponentList.Count();
+                        var checkCount = model.ItemComponentList.Where(w=>w.indSell_Allowed_Bool==true).Count();
+
+                        if (totalCount == checkCount)
+                        {
+                            ViewBag.showAll = 1;
+                        }
+                        else
+                        {
+                            ViewBag.showAll = 0;
+                        }
+
 
                         if (model.ItemComponentList.Count() > 0)
                         {
@@ -233,8 +246,8 @@ namespace MySqlBasicCore.Controllers
                 DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
                 DataSet ds = dbfunction.GetDataset(@"select indSell_Compo.*,itemmaster.Description as Item_master,itemcomponent.Description as Item_component
                                                     from indSell_Compo 
-                                                    join items as itemmaster on trim(indSell_ItemMaster) = itemmaster.Itemnum
-                                                    join items as itemcomponent on trim(indSell_Compo.indSell_ItemComponent) = itemcomponent.Itemnum");
+                                                    left join items as itemmaster on trim(indSell_ItemMaster) = itemmaster.Itemnum
+                                                    left join items as itemcomponent on trim(indSell_Compo.indSell_ItemComponent) = itemcomponent.Itemnum");
 
                 IQueryable<IndsellCompoViewModel> itemComponentList = (from row in ds.Tables[0].AsEnumerable()
                                                                        select new IndsellCompoViewModel
@@ -366,13 +379,68 @@ namespace MySqlBasicCore.Controllers
                 {
                     if (Convert.ToString(masterItems[i]).Trim() == id.Trim())
                     {
-                        nextItem = masterItems[i + 1];
+                        if (i == masterItems.Count())
+                        {
+                            nextItem = id;
+                        }
+                        else
+                        {
+                            nextItem = masterItems[i + 1];
+                        }
+                        
                         i = masterItems.Count() + 1;
                         break;
                     }
                 }
 
                 return RedirectToAction("EditItemComponent", new { id = nextItem });
+
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return View(model);
+
+        }
+
+        public ActionResult PreviousEditItemComponent(string id)
+        {
+            EditIndsellCompoViewModel model = new EditIndsellCompoViewModel();
+            try
+            {
+
+
+                var masterItems = _dbContext.tbl_IndsellCompo.Select(s => s.indSell_ItemMaster).Distinct().ToList();
+                var nextItem = "";
+                for (int i = 0; i < masterItems.Count(); i++)
+                {
+                    if (Convert.ToString(masterItems[i]).Trim() == id.Trim())
+                    {
+                        if (i == 0)
+                        {
+                            nextItem = id;
+                        }
+                        else
+                        {
+                            nextItem = masterItems[i -1];
+                        }
+
+                        
+                        i = masterItems.Count() + 1;
+                        break;
+                    }
+                }
+                if (nextItem == "")
+                {
+                    return RedirectToAction("EditItemComponent", new { id = id });
+                }
+                else
+                {
+                    return RedirectToAction("EditItemComponent", new { id = nextItem });
+                }
+                
 
 
             }

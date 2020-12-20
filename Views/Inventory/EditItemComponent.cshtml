@@ -33,6 +33,9 @@
                                        readonly="readonly" />
 
                             </div>
+                            <div class="col-md-2">
+                                <input type="checkbox" id="masterChk" onclick="checkMasterChkFun()" style="width:25px;height:25px" class="form-control" placeholder="Allowed" />
+                            </div>
 
                         </div>
 
@@ -40,7 +43,7 @@
 
                         @for (int i = 0; i < Model.ItemComponentList.Count(); i++)
                         {
-                            <div class="row form-group">
+                            <div class="row form-group component" >
                                 <div class="col-lg-1">
                                     <label class="col-form-label">
                                         Component
@@ -84,7 +87,8 @@
                             <div class="col-sm-4 col-sm-offset-2">
                                 <a class="btn btn-white btn-sm" asp-action="ItemComponentList">Cancel</a>
                                 <button class="btn btn-primary btn-sm" type="submit">Update</button>
-                                <a class="btn btn-white btn-sm" onclick="nextItemComponet('@Model.indSell_ItemMaster')" >Next</a>
+                                <a class="btn btn-primary btn-sm" style="color:white" onclick="nextItemComponet('@Model.indSell_ItemMaster')">Next</a>
+                                <a class="btn btn-primary btn-sm" style="color:white" onclick="previousItemComponet('@Model.indSell_ItemMaster')">Previous</a>
                             </div>
                         </div>
                     </form>
@@ -105,8 +109,17 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
     <script type="text/javascript">
-          window.baseUrl = '@Settings.Value.WebBaseURL';
+        window.baseUrl = '@Settings.Value.WebBaseURL';
+
+        var checkAll = '@ViewBag.showAll';
+
+        if (checkAll=='1') {
+            $("#masterChk").prop('checked',true);
+        }
+
         $(document).ready(function () {
+
+
 
         var SuccessMessage = '@ViewBag.SuccessMessage';
         var ErrorMessage = '@ViewBag.ErrorMessage';
@@ -123,6 +136,25 @@
         function nextItemComponet(id) {
               window.location.href = window.baseUrl + "/Inventory/NextEditItemComponent/" + id;
         }
+
+        function previousItemComponet(id) {
+              window.location.href = window.baseUrl + "/Inventory/PreviousEditItemComponent/" + id;
+        }
+
+        function checkMasterChkFun() {
+            if ($("#masterChk").prop("checked")) {
+                $(".component input[type='checkbox']").each(function (ele, index) {
+                    $(index).prop('checked', true);
+                });
+                
+            }
+            else {
+                $(".component input[type='checkbox']").each(function (ele, index) {
+                    $(index).prop('checked', false);
+                });
+            }
+        }
+        
 
     </script>
 }
