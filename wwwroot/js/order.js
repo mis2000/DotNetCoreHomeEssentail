@@ -2,6 +2,7 @@
 
 $(() => {
     if ($('#fingers10').length !== 0) {
+        setTimeout(function () { 
 
         var table = $('#fingers10').DataTable({
             "scrollY": "" + (window.outerHeight - 375) + "px",
@@ -347,6 +348,7 @@ $(() => {
 
             });
 
+        }, 100);
 
     }
 });

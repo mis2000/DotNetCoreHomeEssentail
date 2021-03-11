@@ -479,7 +479,7 @@ namespace MySqlBasicCore.Models
         public string Note { get; set; }
     }
 
-    [Table("indsell_compo")]
+    [Table("indSell_Compo")]
     public class IndsellCompo
     {
         [Column(Order = 0)]

@@ -90,7 +90,7 @@ var RowsGroup = function ( dt, columnsForGrouping )
 
 	dt.on('page.dt', function (e, settings) {
 		self.mergeCellsNeeded = true;
-		setTimeout(function () { self._mergeCells(); }, 50);
+		setTimeout(function () { self._mergeCells(); }, 500);
 		
 	})
 
