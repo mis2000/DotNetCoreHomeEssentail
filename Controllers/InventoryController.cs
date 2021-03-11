@@ -176,13 +176,70 @@ namespace MySqlBasicCore.Controllers
             return View(new IndsellCompoViewModel_Datatable());
         }
 
-        public ActionResult EditItemComponent(string id)
+        public ActionResult EditItemComponent(string id, string status="")
         {
             EditIndsellCompoViewModel model = new EditIndsellCompoViewModel();
             try
             {
-                if (ModelState.IsValid)
+               
                 {
+
+                    if (status!="")
+                    {
+                        if (status=="Next")
+                        {
+                            var masterItems = _dbContext.tbl_IndsellCompo.Select(s => s.indSell_ItemMaster).Distinct().ToList();
+                            var nextItem = "";
+                            for (int i = 0; i < masterItems.Count(); i++)
+                            {
+                                if (Convert.ToString(masterItems[i]).Trim() == id.Trim())
+                                {
+                                    if (i == masterItems.Count())
+                                    {
+                                        nextItem = id;
+                                    }
+                                    else
+                                    {
+                                        nextItem = masterItems[i + 1];
+                                    }
+
+                                    i = masterItems.Count() + 1;
+                                    break;
+                                }
+                            }
+
+                            id = nextItem;
+
+                        }
+                        else
+                        {
+                            var masterItems = _dbContext.tbl_IndsellCompo.Select(s => s.indSell_ItemMaster).Distinct().ToList();
+                            var nextItem = "";
+                            for (int i = 0; i < masterItems.Count(); i++)
+                            {
+                                if (Convert.ToString(masterItems[i]).Trim() == id.Trim())
+                                {
+                                    if (i == 0)
+                                    {
+                                        nextItem = id;
+                                    }
+                                    else
+                                    {
+                                        nextItem = masterItems[i - 1];
+                                    }
+
+
+                                    i = masterItems.Count() + 1;
+                                    break;
+                                }
+                            }
+
+                            id = nextItem;
+                        }
+                    }
+
+
+
                     DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
                     DataSet ds = dbfunction.GetDataset(@"select indSell_Compo.*,itemmaster.Description as Item_master,itemcomponent.Description as Item_component
                                                     from indSell_Compo 
@@ -346,6 +403,18 @@ namespace MySqlBasicCore.Controllers
                     {
                         var allowed = (item.indSell_Allowed_Bool ? 1 : 0);
                         dbfunction.GetDataset("Update indSell_Compo set indSell_Allowed = " + allowed + "  where trim(indSell_ItemMaster)='" + model.indSell_ItemMaster.Trim() + "' and trim(indSell_ItemComponent)= '" + item.indSell_ItemComponent.Trim() + "' ");
+                    }
+
+                    var totalCount = model.ItemComponentList.Count();
+                    var checkCount = model.ItemComponentList.Where(w => w.indSell_Allowed_Bool == true).Count();
+
+                    if (totalCount == checkCount)
+                    {
+                        ViewBag.showAll = 1;
+                    }
+                    else
+                    {
+                        ViewBag.showAll = 0;
                     }
 
                     ViewBag.SuccessMessage = "Detail added successfully";

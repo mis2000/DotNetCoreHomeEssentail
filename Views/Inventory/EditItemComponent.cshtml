@@ -26,12 +26,17 @@
                             <div class="col-md-2">
                                 <input asp-for="indSell_ItemMaster" class="form-control" placeholder="Item"
                                        readonly="readonly" />
-                                
+
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-4">
                                 <input asp-for="Item_master" class="form-control" placeholder="Item"
                                        readonly="readonly" />
 
+                            </div>
+                            <div class="col-lg-1">
+                                <label class="col-form-label">
+                                    Allowed
+                                </label>
                             </div>
                             <div class="col-md-2">
                                 <input type="checkbox" id="masterChk" onclick="checkMasterChkFun()" style="width:25px;height:25px" class="form-control" placeholder="Allowed" />
@@ -49,15 +54,14 @@
                                         Component
                                     </label>
                                 </div>
-
-                                <div class="col-md-2">
-                                    <input asp-for="ItemComponentList[i].Item_component" class="form-control" readonly="readonly" placeholder="Component" />
-
-                                </div>
                                 <div class="col-md-2">
                                     <input asp-for="ItemComponentList[i].indSell_ItemComponent" readonly="readonly" class="form-control" placeholder="Component" />
                                 </div>
 
+                                <div class="col-md-4">
+                                    <input asp-for="ItemComponentList[i].Item_component" class="form-control" readonly="readonly" placeholder="Component" />
+
+                                </div>
                                 <div class="col-lg-1">
                                     <label class="col-form-label">
                                         Allowed
@@ -87,8 +91,12 @@
                             <div class="col-sm-4 col-sm-offset-2">
                                 <a class="btn btn-white btn-sm" asp-action="ItemComponentList">Cancel</a>
                                 <button class="btn btn-primary btn-sm" type="submit">Update</button>
-                                <a class="btn btn-primary btn-sm" style="color:white" onclick="nextItemComponet('@Model.indSell_ItemMaster')">Next</a>
-                                <a class="btn btn-primary btn-sm" style="color:white" onclick="previousItemComponet('@Model.indSell_ItemMaster')">Previous</a>
+                                <a class="btn btn-primary btn-sm" style="color:white"
+                                   href="@Url.Action("EditItemComponent","Inventory",new { id = Model.indSell_ItemMaster ,status = "Next"})"
+                                   >Next</a>
+                                <a class="btn btn-primary btn-sm" style="color:white"
+                                   href="@Url.Action("EditItemComponent","Inventory",new { id = Model.indSell_ItemMaster ,status = "Previous"})"
+                                   >Previous</a>
                             </div>
                         </div>
                     </form>
@@ -125,7 +133,7 @@
         var ErrorMessage = '@ViewBag.ErrorMessage';
         if (SuccessMessage) {
             swal(SuccessMessage, "", "success");
-           setTimeout(function () { window.location.href = "@Settings.Value.WebBaseURL/Inventory/ItemComponentList"; }, 750);
+          /// setTimeout(function () { window.location.href = "@Settings.Value.WebBaseURL/Inventory/ItemComponentList"; }, 750);
 
         }
           if (ErrorMessage) {
