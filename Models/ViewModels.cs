@@ -393,6 +393,24 @@ namespace MySqlBasicCore.Models
 
     }
 
+    public class DeptAmountViewModel
+    {
+       
+        public int deptamount_id { get; set; }
+
+        [Required(ErrorMessage = "Please enter department name")]
+        [MaxLength(50, ErrorMessage = "Class should be less or equal to 20 characters.")]
+        [Display(Name = "Department Name")]
+        public string Dept { get; set; }
+
+        [Required(ErrorMessage = "Please enter amount")]
+        [Display(Name = "Amount")]
+        public decimal Amount { get; set; }
+      
+
+    }
+    
+
     public class InvoiceViewModel
     {
         public string Action { get; set; }

@@ -1,0 +1,89 @@
+﻿@model MySqlBasicCore.Models.DeptAmountViewModel
+
+@{
+    ViewData["Title"] = "Department Amount";
+}
+@using Microsoft.Extensions.Options;
+@inject IOptions<Appsettings> Settings
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h3>@ViewData["Title"]</h3>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" asp-action="AddDeptAmount">
+
+
+                        <div class="row form-group">
+                            <div class="col-lg-2">
+                                <label asp-for="Dept" class="col-form-label"></label>
+                            </div>
+                            <div class="col-md-4">
+                                <input asp-for="Dept" class="form-control" placeholder="Department Name" maxlength="50" />
+                                <span asp-validation-for="Dept" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-1">
+                                <label asp-for="Amount" class="col-form-label"></label>
+                            </div>
+                            <div class="col-md-4">
+                                <input asp-for="Amount" class="form-control" placeholder="Amount" maxlength="8" />
+                                <span asp-validation-for="Amount" class="text-danger"></span>
+                            </div>
+                        </div>
+
+ 
+
+                        @if (ViewBag.SuccessMessage != null)
+                        {
+                            <p class="text-primary">@ViewBag.SuccessMessage</p>
+                        }
+                        @if (ViewBag.ErrorMessage != null)
+                        {
+                            <p class="text-error">@ViewBag.ErrorMessage</p>
+                        }
+
+
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group row">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <a class="btn btn-white btn-sm" asp-action="DeptAmountList">Cancel</a>
+                                <button class="btn btn-primary btn-sm" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles
+{
+    <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+}
+@section Scripts {
+    <script src="~/lib/sweetalert/dist/sweetalert.min.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $(".topNavBar li").removeClass("active");
+            $("#liDataEntry").addClass("active");
+            var SuccessMessage = '@ViewBag.SuccessMessage';
+        var ErrorMessage = '@ViewBag.ErrorMessage';
+        if (SuccessMessage) {
+            swal(SuccessMessage, "", "success");
+           setTimeout(function () { window.location.href = "@Settings.Value.WebBaseURL/DataEntry/DeptAmountList"; }, 1000);
+
+        }
+          if (ErrorMessage) {
+            swal(ErrorMessage, "", "error");
+        }
+        });
+    </script>
+}
