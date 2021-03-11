@@ -491,5 +491,17 @@ namespace MySqlBasicCore.Models
       
     }
 
+    [Table("deptamount")]
+    public class deptamount
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int deptamount_id { get; set; }
+
+        public string Dept { get; set; }
+        public decimal Amount { get; set; }
+       
+    }
+
 
 }

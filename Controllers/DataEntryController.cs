@@ -306,5 +306,166 @@ namespace MySqlBasicCore.Controllers
 
             return Json(response);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public ActionResult DeptAmountList()
+        {
+            List<DeptAmountViewModel> deptAmountList = new List<DeptAmountViewModel>();
+            try
+            {
+                DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
+                DataSet ds = dbfunction.GetDataset("Select * from deptamount");
+
+                deptAmountList = (from row in ds.Tables[0].AsEnumerable()
+                                  select new DeptAmountViewModel
+                                  {
+                                      deptamount_id = Convert.ToInt32(row["deptamount_id"]),
+                                      Dept = Convert.ToString(row["Dept"]),
+                                      Amount = Convert.ToDecimal(row["Amount"])
+                                  
+                                  }).ToList();
+
+            }
+            catch (Exception Ex)
+            {
+            }
+            return View(deptAmountList);
+        }
+
+        public ActionResult AddDeptAmount()
+        {
+            return View();
+        }
+
+        public ActionResult EditDeptAmount(string id)
+        {
+            DeptAmountViewModel model = new DeptAmountViewModel();
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
+                    DataSet ds = dbfunction.GetDataset("select * from deptamount where deptamount_id= " + id + ";");
+
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        model.Dept = Convert.ToString(ds.Tables[0].Rows[0]["Dept"]);
+                        model.Amount = Convert.ToDecimal(ds.Tables[0].Rows[0]["Amount"]);
+                        model.deptamount_id = Convert.ToInt32(id);
+                    }
+                    else
+                    {
+                        return RedirectToAction("DeptAmountList", "DataEntry");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return View(model);
+
+        }
+
+        [HttpPost]
+        public ActionResult AddDeptAmount(DeptAmountViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
+                    var query = "select * from deptamount where Dept = '" + model.Dept + "' ";
+                    DataSet ds = dbfunction.GetDataset(query);
+                    if (ds.Tables[0].Rows.Count == 0)
+                    {
+                        query = "insert into deptamount (Dept,Amount) values ('" + model.Dept + "', " + model.Amount + ");";
+                        ds = dbfunction.GetDataset(query);
+                        ViewBag.SuccessMessage = "Department amount detail added successfully";
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = "Department amount detail is already exists";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditDeptAmount(DeptAmountViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
+                    var query = "select * from deptamount where Dept = '" + model.Dept + "'  and   deptamount_id != '" + model.deptamount_id + "'  ";
+                    DataSet ds = dbfunction.GetDataset(query);
+                    if (ds.Tables[0].Rows.Count == 0)
+                    {
+                        query = " update deptamount set   Dept = '" + model.Dept + "', Amount = " + model.Amount + "   where  deptamount_id = '" + model.deptamount_id + "';";
+                        ds = dbfunction.GetDataset(query);
+                        ViewBag.SuccessMessage = "Department amount detail updated successfully";
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = "Department amount detail is already exists";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteDeptAmount(string id)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                ItemclassViewModel model = new ItemclassViewModel();
+                DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
+                var query = " delete from deptamount  where deptamount_id = '" + id + "'  ";
+                DataSet ds = dbfunction.GetDataset(query);
+                response.Status = "1";
+                response.Message = "Department amount detail deleted successfully";
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return Json(response);
+        }
+
+
+
     }
 }

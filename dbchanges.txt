@@ -552,6 +552,36 @@ Alter table bol_1 Add bol1_pallet_type varchar(100) ;
 
 
 
+CREATE TABLE `indsell_compo` (
+  `indSell_ItemMaster` varchar(20) NOT NULL,
+  `indSell_ItemComponent` varchar(20) NOT NULL,
+  `indSell_Allowed` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`indSell_ItemMaster`,`indSell_ItemComponent`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+CREATE TABLE `deptamount` (
+  `deptamount_id` int auto_increment primary key,
+  `Dept` varchar(5) DEFAULT NULL,
+  `Amount` decimal(12,2)
+);
+
+insert into userclaims(MenuId,Columns,IsActive,CreatedBy,CreatedDate,RoleId)
+values
+(15,'',1,1,now(),1);
+
+insert into menus (Name,Parent,Action,Controller,Childmenus,Icon,parenticon)
+values( 'Department Amount','Data Entry','DeptAmountList','DataEntry','DeptAmountList,AddDeptAmount,EditDeptAmount',
+'fa fa-server','fa fa-server');
+
+
+
+
+
+
+
+
 
 
 
