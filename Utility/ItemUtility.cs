@@ -142,6 +142,32 @@ namespace MySqlBasicCore.Utility
                     model.BoxHeight = Convert.ToString(row["boxHeight"]) == "" ? (Decimal?)null : Convert.ToDecimal(row["boxHeight"]);
                     //model.Qrsselcode = Convert.ToString(row["qrsselcode"]);
                     //model.Qrsseldesc = Convert.ToString(row["qrsseldesc"]);
+
+                    
+
+                    if (ItemNum != "")
+                    {
+                        query = "select  * from items where  REPLACE(Itemnum, '\n', '')  = '" + ItemNum + "' and  ( ISNULL(`HEANDB`.`items`.`deletedon`) AND ((`HEANDB`.`items`.`category` BETWEEN 3 AND 6)  OR (`HEANDB`.`items`.`category` = 13))  AND ((`HEANDB`.`items`.`onorder` > 0)  OR (`HEANDB`.`items`.`onwater` > 0)  OR (`HEANDB`.`items`.`onhand` > 50)  OR ((`HEANDB`.`items`.`onhand` > 9)  AND (`HEANDB`.`items`.`hasLocation` = 1)) OR (`HEANDB`.`items`.`generalCode` = _latin1'NEW') OR (`HEANDB`.`items`.`generalCode` = _latin1'SSN')  OR (`HEANDB`.`items`.`generalCode` = _latin1'SSI') OR (`HEANDB`.`items`.`generalCode` = _latin1'SSL')  OR (`HEANDB`.`items`.`generalCode` = _latin1'SSF')) AND (`HEANDB`.`items`.`generalCode` <> _latin1'EXL')  AND (`HEANDB`.`items`.`generalCode` <> _latin1'TRE') AND (`HEANDB`.`items`.`generalCode` <> _latin1'CON') AND (`HEANDB`.`items`.`itemnum` REGEXP _latin1'^[0-9]')  AND (`HEANDB`.`items`.`price1` > 0) AND (COALESCE(`HEANDB`.`items`.`usageCode`,_latin1'') <> _latin1'') AND (COALESCE(`HEANDB`.`items`.`patternCode`,_latin1'') <> _latin1'')  AND (`HEANDB`.`items`.`hasPhoto` = 1) AND (`HEANDB`.`items`.`factoryPhoto` = 0 ) )   ";
+                    }
+                    else if (ItemDescription != "")
+                    {
+                        query = "select  * from items where  description = '" + ItemDescription + "'  ( ISNULL(`HEANDB`.`items`.`deletedon`) AND ((`HEANDB`.`items`.`category` BETWEEN 3 AND 6)  OR (`HEANDB`.`items`.`category` = 13))  AND ((`HEANDB`.`items`.`onorder` > 0)  OR (`HEANDB`.`items`.`onwater` > 0)  OR (`HEANDB`.`items`.`onhand` > 50)  OR ((`HEANDB`.`items`.`onhand` > 9)  AND (`HEANDB`.`items`.`hasLocation` = 1)) OR (`HEANDB`.`items`.`generalCode` = _latin1'NEW') OR (`HEANDB`.`items`.`generalCode` = _latin1'SSN')  OR (`HEANDB`.`items`.`generalCode` = _latin1'SSI') OR (`HEANDB`.`items`.`generalCode` = _latin1'SSL')  OR (`HEANDB`.`items`.`generalCode` = _latin1'SSF')) AND (`HEANDB`.`items`.`generalCode` <> _latin1'EXL')  AND (`HEANDB`.`items`.`generalCode` <> _latin1'TRE') AND (`HEANDB`.`items`.`generalCode` <> _latin1'CON') AND (`HEANDB`.`items`.`itemnum` REGEXP _latin1'^[0-9]')  AND (`HEANDB`.`items`.`price1` > 0) AND (COALESCE(`HEANDB`.`items`.`usageCode`,_latin1'') <> _latin1'') AND (COALESCE(`HEANDB`.`items`.`patternCode`,_latin1'') <> _latin1'')  AND (`HEANDB`.`items`.`hasPhoto` = 1) AND (`HEANDB`.`items`.`factoryPhoto` = 0 ) ) ";
+                    }
+                    else
+                    {
+                        query = "select  * from items where ( ISNULL(`HEANDB`.`items`.`deletedon`) AND ((`HEANDB`.`items`.`category` BETWEEN 3 AND 6)  OR (`HEANDB`.`items`.`category` = 13))  AND ((`HEANDB`.`items`.`onorder` > 0)  OR (`HEANDB`.`items`.`onwater` > 0)  OR (`HEANDB`.`items`.`onhand` > 50)  OR ((`HEANDB`.`items`.`onhand` > 9)  AND (`HEANDB`.`items`.`hasLocation` = 1)) OR (`HEANDB`.`items`.`generalCode` = _latin1'NEW') OR (`HEANDB`.`items`.`generalCode` = _latin1'SSN')  OR (`HEANDB`.`items`.`generalCode` = _latin1'SSI') OR (`HEANDB`.`items`.`generalCode` = _latin1'SSL')  OR (`HEANDB`.`items`.`generalCode` = _latin1'SSF')) AND (`HEANDB`.`items`.`generalCode` <> _latin1'EXL')  AND (`HEANDB`.`items`.`generalCode` <> _latin1'TRE') AND (`HEANDB`.`items`.`generalCode` <> _latin1'CON') AND (`HEANDB`.`items`.`itemnum` REGEXP _latin1'^[0-9]')  AND (`HEANDB`.`items`.`price1` > 0) AND (COALESCE(`HEANDB`.`items`.`usageCode`,_latin1'') <> _latin1'') AND (COALESCE(`HEANDB`.`items`.`patternCode`,_latin1'') <> _latin1'')  AND (`HEANDB`.`items`.`hasPhoto` = 1) AND (`HEANDB`.`items`.`factoryPhoto` = 0 ) ) ORDER BY itemnum DESC limit 1  ";
+                    }
+
+                      ds = dbfunction.GetDataset(query);
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        model.RulePassed = "1";
+                    }
+                    else
+                    {
+                        model.RulePassed = "0";
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -328,6 +354,20 @@ namespace MySqlBasicCore.Utility
                     model.BoxHeight = Convert.ToString(row["BoxHeight"]) == "" ? (Decimal?)null : Convert.ToDecimal(row["BoxHeight"]);
                     model.Qrsselcode = Convert.ToString(row["Qrsselcode"]);
                     model.Qrsseldesc = Convert.ToString(row["Qrsseldesc"]);
+
+                    query = "select  * from items where  REPLACE(Itemnum, '\n', '')  = '" + model.Itemnum + "' and  ( ISNULL(`HEANDB`.`items`.`deletedon`) AND ((`HEANDB`.`items`.`category` BETWEEN 3 AND 6)  OR (`HEANDB`.`items`.`category` = 13))  AND ((`HEANDB`.`items`.`onorder` > 0)  OR (`HEANDB`.`items`.`onwater` > 0)  OR (`HEANDB`.`items`.`onhand` > 50)  OR ((`HEANDB`.`items`.`onhand` > 9)  AND (`HEANDB`.`items`.`hasLocation` = 1)) OR (`HEANDB`.`items`.`generalCode` = _latin1'NEW') OR (`HEANDB`.`items`.`generalCode` = _latin1'SSN')  OR (`HEANDB`.`items`.`generalCode` = _latin1'SSI') OR (`HEANDB`.`items`.`generalCode` = _latin1'SSL')  OR (`HEANDB`.`items`.`generalCode` = _latin1'SSF')) AND (`HEANDB`.`items`.`generalCode` <> _latin1'EXL')  AND (`HEANDB`.`items`.`generalCode` <> _latin1'TRE') AND (`HEANDB`.`items`.`generalCode` <> _latin1'CON') AND (`HEANDB`.`items`.`itemnum` REGEXP _latin1'^[0-9]')  AND (`HEANDB`.`items`.`price1` > 0) AND (COALESCE(`HEANDB`.`items`.`usageCode`,_latin1'') <> _latin1'') AND (COALESCE(`HEANDB`.`items`.`patternCode`,_latin1'') <> _latin1'')  AND (`HEANDB`.`items`.`hasPhoto` = 1) AND (`HEANDB`.`items`.`factoryPhoto` = 0 ) )   ";
+
+                    ds = dbfunction.GetDataset(query);
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        model.RulePassed = "1";
+                    }
+                    else
+                    {
+                        model.RulePassed = "0";
+                    }
+
+
                 }
             }
             catch (Exception ex)

@@ -72,6 +72,7 @@ namespace MySqlBasicCore.Models
 
     public class ItemViewModel
     {
+        public string RulePassed { get; set; }
         public string OperationType { get; set; }
         public string SearchItemnumDescription { get; set; }
         public string SearchItemnum { get; set; }

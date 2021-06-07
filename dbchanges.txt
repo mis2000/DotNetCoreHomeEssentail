@@ -577,6 +577,13 @@ values( 'Department Amount','Data Entry','DeptAmountList','DataEntry','DeptAmoun
 
 
 
+insert into menus (Name,Parent,Action,Controller,Childmenus,Icon,parenticon)
+values( 'Item Rules','Inventory','ItemRules','Inventory','ItemRules',
+'fa fa-archive','fa fa-archive');
+
+insert into userclaims(MenuId,Columns,IsActive,CreatedBy,CreatedDate,RoleId)
+values
+(16,'',1,1,now(),1);
 
 
 
