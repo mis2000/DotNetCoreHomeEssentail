@@ -155,6 +155,7 @@ namespace MySqlBasicCore.Models
         public decimal? BoxHeight { get; set; }
         public string Qrsselcode { get; set; }
         public string Qrsseldesc { get; set; }
+        public string UsageName { get; set; }
     }
 
     public class ItemNumDescriptionViewModel

@@ -176,17 +176,17 @@ namespace MySqlBasicCore.Controllers
             return View(new IndsellCompoViewModel_Datatable());
         }
 
-        public ActionResult EditItemComponent(string id, string status="")
+        public ActionResult EditItemComponent(string id, string status = "")
         {
             EditIndsellCompoViewModel model = new EditIndsellCompoViewModel();
             try
             {
-               
+
                 {
 
-                    if (status!="")
+                    if (status != "")
                     {
-                        if (status=="Next")
+                        if (status == "Next")
                         {
                             var masterItems = _dbContext.tbl_IndsellCompo.Select(s => s.indSell_ItemMaster).Distinct().ToList();
                             var nextItem = "";
@@ -259,7 +259,7 @@ namespace MySqlBasicCore.Controllers
                                                    }).ToList();
 
                         var totalCount = model.ItemComponentList.Count();
-                        var checkCount = model.ItemComponentList.Where(w=>w.indSell_Allowed_Bool==true).Count();
+                        var checkCount = model.ItemComponentList.Where(w => w.indSell_Allowed_Bool == true).Count();
 
                         if (totalCount == checkCount)
                         {
@@ -456,7 +456,7 @@ namespace MySqlBasicCore.Controllers
                         {
                             nextItem = masterItems[i + 1];
                         }
-                        
+
                         i = masterItems.Count() + 1;
                         break;
                     }
@@ -493,10 +493,10 @@ namespace MySqlBasicCore.Controllers
                         }
                         else
                         {
-                            nextItem = masterItems[i -1];
+                            nextItem = masterItems[i - 1];
                         }
 
-                        
+
                         i = masterItems.Count() + 1;
                         break;
                     }
@@ -509,7 +509,7 @@ namespace MySqlBasicCore.Controllers
                 {
                     return RedirectToAction("EditItemComponent", new { id = nextItem });
                 }
-                
+
 
 
             }
@@ -520,6 +520,96 @@ namespace MySqlBasicCore.Controllers
             return View(model);
 
         }
+
+
+        public ActionResult ItemRules()
+        {
+
+            ItemViewModel model = new ItemViewModel();
+            try
+            {
+                ItemUtility itemutility = new ItemUtility(_appSettings);
+                ViewBag.PageLoad = true;
+            }
+            catch (Exception ex)
+            {
+
+
+            }
+
+
+            return View(model);
+
+        }
+
+        [HttpPost]
+        public ActionResult ItemRules(ItemViewModel model, string submit)
+        {
+            
+            ItemUtility itemutility = new ItemUtility(_appSettings);
+            if (submit != "submit")
+            {
+                if (String.IsNullOrEmpty(model.SearchItemnum))
+                {
+                    ViewBag.ItemDetail = itemutility.GetItemDetailByItemNumOrDescription(model.SearchItemnum ?? "", model.SearchDescription ?? "");
+                }
+                else
+                {
+                    if (submit == "up")
+                    {
+                        ViewBag.ItemDetail = itemutility.GetNextItemDetailByItemNumOrDescription(model.SearchItemnum, true);
+                        if (ViewBag.ItemDetail.Category == null)
+                        {
+                            ViewBag.NoRecordArrowKey = true;
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.ItemDetail = itemutility.GetNextItemDetailByItemNumOrDescription(model.SearchItemnum, false);
+                        if (ViewBag.ItemDetail.Category == null)
+                        {
+                            ViewBag.NoRecordArrowKey = true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ItemViewModel itemDetail = itemutility.GetItemDetailByItemNumOrDescription(model.SearchItemnum ?? "", model.SearchDescription ?? "");
+               
+                if (!String.IsNullOrEmpty(itemDetail.UsageCode) )
+                {
+                    DbfunctionUtility dbfunction = new DbfunctionUtility(_appSettings);
+                    string query = "select * from viewname where usageId ='"+ itemDetail.UsageCode+ "'";
+                    DataSet ds = dbfunction.GetDataset(query);
+                    if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        var row = ds.Tables[0].Rows[0];
+                        itemDetail.UsageName = Convert.ToString(row["UsageName"]);
+                    }
+                }
+
+                ViewBag.ItemDetail = itemDetail;
+
+            }
+
+            if (ViewBag.ItemDetail.Category == null)
+            {
+                ViewBag.NoRecord = true;
+                model.SearchItemnum = "";
+                model.SearchDescription = "";
+            }
+            else
+            {
+                model.SearchItemnum = ViewBag.ItemDetail.Itemnum;
+                model.SearchDescription = ViewBag.ItemDetail.Description;
+                model.SearchItemnumDescription = ViewBag.ItemDetail.Itemnum + " " + ViewBag.ItemDetail.Description;
+
+
+            }
+            return View(model);
+        }
+
 
         protected override void Dispose(bool disposing)
         {
